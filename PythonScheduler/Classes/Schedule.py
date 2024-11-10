@@ -1,1 +1,1 @@
-"Zack Dragos & Sampath Reddy M." 
+# Zack Dragos & Sampath Reddy M.
