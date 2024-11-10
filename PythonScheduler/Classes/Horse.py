@@ -2,7 +2,8 @@
 
 
 class Horse:
-    def __init__(self, leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True):
+    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True):
+        self._name = name
         self._leaser = leaser #The person who currently leases the horse, is empty string if nobody is leasing
         self._jumper_times = jumper_times #Number of times this week the horse has been scheduled to do a jumping lesson
         self._non_jumper_times = non_jumper_times #Number of times this week the horse has been scheduled to do a non-jumping lesson
@@ -53,3 +54,6 @@ class Horse:
     def set_is_jumping_horse(self, is_jumping_horse):
         """Sets whether the horse is a jumping horse."""
         self._is_jumping_horse = is_jumping_horse
+
+    def __str__(self):
+        return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse])
