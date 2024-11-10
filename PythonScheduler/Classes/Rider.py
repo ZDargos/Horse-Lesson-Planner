@@ -78,6 +78,9 @@ class Rider:
         return False
 
     def clear_lessons(self):
+        '''
+        Clears out weekly schedule
+        '''
         self._weekly_schedule = []
 
     # Getter and setter for total_owed
@@ -85,7 +88,35 @@ class Rider:
         """Gets the total amount owed by the rider."""
         return self._total_owed
 
-    def set_total_owed(self, total_owed):
-        """Sets the total amount owed by the rider."""
-        self._total_owed = total_owed
+    def add_charge(self, amount):
+        """Adds to the total amount owed by the rider."""
+        self._total_owed += amount
+
+    def remove_charge(self, amount):
+        '''
+        Removes money from total owed if bill is paid
+        '''
+        if self._total_owed < amount:
+            return False
+        self._total_owed -= amount
+        return True
+
+    def add_half_hour_lesson(self, day, hour):
+        '''
+        Adds a 30-minute-long lesson to their schedule, and accounts for the cost of it
+        '''
+        self._weekly_schedule.append((day,hour))
+        self.add_charge(75.0)
+
+    def add_hour_lesson(self, day, hour, prepaid=False):
+        '''
+        Adds an hour-long lesson to their schedule, and accounts for the cost of it
+        '''
+        self._weekly_schedule.append((day,hour))
+        if prepaid:
+            self.add_charge(85.00)
+            return
+        else:
+            self.add_charge(90.00)
+
 
