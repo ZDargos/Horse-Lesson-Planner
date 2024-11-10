@@ -107,6 +107,11 @@ class Rider:
         '''
         self._weekly_schedule.append((day,hour))
         self.add_charge(75.0)
+    def remove_half_hour_lesson(self, day, hour):
+        for i,lesson in enumerate(self._weekly_schedule):
+            if lesson == (day, hour):
+                self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i+1:]
+                self.remove_charge(75.00)
 
     def add_hour_lesson(self, day, hour, prepaid=False):
         '''
@@ -119,4 +124,15 @@ class Rider:
         else:
             self.add_charge(90.00)
 
+    def remove_hour_lesson(self, lesson, prepaid=False):
+        for i,lessonn in enumerate(self._weekly_schedule):
+            if lessonn == lesson:
+                self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i+1:]
+                if prepaid:
+                    self.remove_charge(85.00)
+                else:
+                    self.remove_charge(90.00)
+
+    def __str__(self):
+        return str([self._name, self._recent_horses, self._height, self._weight, self._skill_level, self._weekly_schedule, self._total_owed])
 

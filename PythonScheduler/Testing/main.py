@@ -8,8 +8,11 @@ from PythonScheduler.Classes.Weekly_Schedule import *
 
 
 def main():
-    horse = Horse("Spotty", "Joan", 0,0,True,True)
-    print(horse)
+    Schedule = Weekly_Schedule()
+    Schedule.add_horse(Horse("Kitty"))
+    Schedule.add_horse(Horse("Spotty"))
+    Schedule.add_rider(Rider("Sammy", None, 60, 150, 0, None, 0))
+
 
 if __name__ == "__main__":
     main()
