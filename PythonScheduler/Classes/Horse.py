@@ -23,7 +23,7 @@ class Horse:
         """Gets the number of times the horse has been scheduled for a jumping lesson."""
         return self._jumper_times
 
-    def set_jumper_times(self, jumper_times):
+    def add_jumper_times(self, jumper_times):
         """Sets the number of times the horse has been scheduled for a jumping lesson."""
         self._jumper_times = jumper_times
 
@@ -37,7 +37,7 @@ class Horse:
         self._non_jumper_times = non_jumper_times
 
     # Getter and setter for available
-    def get_available(self):
+    def is_available(self):
         """Gets the availability status of the horse."""
         return self._available
 
@@ -46,7 +46,7 @@ class Horse:
         self._available = available
 
     # Getter and setter for is_jumping_horse
-    def get_is_jumping_horse(self):
+    def is_jumping_horse(self):
         """Checks if the horse is a jumping horse."""
         return self._is_jumping_horse
 
