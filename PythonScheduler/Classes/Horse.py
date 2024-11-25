@@ -2,13 +2,14 @@
 
 
 class Horse:
-    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True):
+    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True, max_weight=190):
         self._name = name
         self._leaser = leaser #The person who currently leases the horse, is empty string if nobody is leasing
         self._jumper_times = jumper_times #Number of times this week the horse has been scheduled to do a jumping lesson
         self._non_jumper_times = non_jumper_times #Number of times this week the horse has been scheduled to do a non-jumping lesson
         self._available = available #Is the horse available this week
         self._is_jumping_horse = is_jumping_horse #Is the horse a jumping horse this week
+        self._max_weight = max_weight
 
     # Getter and setter for leaser
     def get_leaser(self):
@@ -57,5 +58,9 @@ class Horse:
 
     def get_name(self):
         return self._name
+
+    def get_max_weight(self):
+        return self._max_weight
+
     def __str__(self):
         return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse])

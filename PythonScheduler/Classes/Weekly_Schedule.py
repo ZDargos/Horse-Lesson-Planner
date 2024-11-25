@@ -110,7 +110,7 @@ class Weekly_Schedule:
 
     def is_horse_unavailable_today(self, day, horse_name, rider, jumper):
         horse = self.get_horse(horse_name)
-        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse())
+        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse()) or rider.get_weight() > horse.get_max_weight()
 
 
     def __str__(self):
