@@ -136,6 +136,6 @@ class Weekly_Schedule:
     def __str__(self):
         string = ""
         for planner in self._planner:
-            string += f'{planner}:  {str(self._planner[planner])}\n'
+            string += f'{planner}:\n{str(self._planner[planner])}\n'
         return string
 

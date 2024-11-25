@@ -56,8 +56,8 @@ class Daily_Schedule:
 
     def __str__(self):
         string = ""
-        for key, value in self._planner.items():
-            string += f'{key}: {value}, '
+        for key, value in sorted(self._planner.items()):
+            string += f'{key if key >= 10 else "0" + str(key)}: {value}\n'
         return string
 
 
