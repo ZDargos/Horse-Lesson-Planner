@@ -24,18 +24,18 @@ class Horse:
         """Gets the number of times the horse has been scheduled for a jumping lesson."""
         return self._jumper_times
 
-    def add_jumper_times(self, jumper_times):
+    def add_jumper_times(self):
         """Sets the number of times the horse has been scheduled for a jumping lesson."""
-        self._jumper_times = jumper_times
+        self._jumper_times += 1
 
     # Getter and setter for non_jumper_times
     def get_non_jumper_times(self):
         """Gets the number of times the horse has been scheduled for a non-jumping lesson."""
         return self._non_jumper_times
 
-    def set_non_jumper_times(self, non_jumper_times):
+    def add_non_jumper_times(self):
         """Sets the number of times the horse has been scheduled for a non-jumping lesson."""
-        self._non_jumper_times = non_jumper_times
+        self._non_jumper_times += 1
 
     # Getter and setter for available
     def is_available(self):
@@ -55,5 +55,7 @@ class Horse:
         """Sets whether the horse is a jumping horse."""
         self._is_jumping_horse = is_jumping_horse
 
+    def get_name(self):
+        return self._name
     def __str__(self):
         return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse])

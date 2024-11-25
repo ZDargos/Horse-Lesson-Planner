@@ -63,9 +63,12 @@ class Rider:
         """Gets the rider's weekly riding schedule."""
         return self._weekly_schedule
 
-    def add_lesson_time(self, lesson_time):
+    def add_lesson_time(self, day, time, length, jumper):
         """Sets the rider's weekly riding schedule."""
-        self._weekly_schedule.append(lesson_time)
+        if length <= 30:
+            self.add_half_hour_lesson(day,time, jumper)
+        else:
+            self.add_hour_lesson(day,time,jumper)
 
     def remove_lesson_time(self, lesson_time):
         '''
@@ -101,23 +104,24 @@ class Rider:
         self._total_owed -= amount
         return True
 
-    def add_half_hour_lesson(self, day, hour):
+    def add_half_hour_lesson(self, day, hour, jumper=False):
         '''
         Adds a 30-minute-long lesson to their schedule, and accounts for the cost of it
         '''
-        self._weekly_schedule.append((day,hour))
+        self._weekly_schedule.append((day,hour,jumper))
         self.add_charge(75.0)
-    def remove_half_hour_lesson(self, day, hour):
+
+    def remove_half_hour_lesson(self, day, hour, jumper=False):
         for i,lesson in enumerate(self._weekly_schedule):
-            if lesson == (day, hour):
+            if lesson == (day, hour, jumper):
                 self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i+1:]
                 self.remove_charge(75.00)
 
-    def add_hour_lesson(self, day, hour, prepaid=False):
+    def add_hour_lesson(self, day, hour, prepaid=False, jumper=False):
         '''
         Adds an hour-long lesson to their schedule, and accounts for the cost of it
         '''
-        self._weekly_schedule.append((day,hour))
+        self._weekly_schedule.append((day,hour,jumper))
         if prepaid:
             self.add_charge(85.00)
             return

@@ -24,8 +24,14 @@ class Weekly_Schedule:
     def get_riders(self):
         return self._riders
 
+    def get_rider(self, rider):
+        for r in self._riders:
+            if r.get_name() == rider:
+                return r
+
     def add_horse(self, horse):
         self._horses.append(horse)
+
 
     def remove_horse(self, horse):
         for i, Horse in enumerate(self._horses):
@@ -35,6 +41,10 @@ class Weekly_Schedule:
     def get_horses(self):
         return self._horses
 
+    def get_horse(self, horse):
+        for h in self._horses:
+            if h.get_name() == horse:
+                return h
     def update_schedule(self):
         self.reset_schedule()
         for rider in self._riders:
@@ -46,4 +56,33 @@ class Weekly_Schedule:
                              "Thursday": Daily_Schedule("Thursday"), "Friday": Daily_Schedule("Friday"), "Saturday": Daily_Schedule("Saturday"),
                              "Sunday": Daily_Schedule("Sunday")}
 
+
+    def add_lesson(self, rider, day, time, duration, jumper=False):
+        r = self.get_rider(rider)
+        r.add_lesson_time(day, time, duration, jumper)
+
+    def make_schedule(self):
+        '''
+        Main logical functionality of sorting which horse goes to what rider and when
+        :return: None
+        '''
+
+        #Update scheudle to make sure all riders and times are in
+        self.update_schedule()
+
+        #Assign all leased horses to their leasers
+        for horse in self._horses:
+            if self.get_rider(horse.get_leaser()) in self._riders:
+                for (day, hour, jumper) in self.get_rider(horse.get_leaser()).get_weekly_schedule():
+                    self._planner[day].set_horse(horse.get_leaser(), horse, hour, jumper)
+
+        #Now that all the riders who lease a horse are taken care of, we can assign horses to the rest
+
+
+
+    def __str__(self):
+        string = ""
+        for planner in self._planner:
+            string += f'{planner}:  {str(self._planner[planner])}\n'
+        return string
 

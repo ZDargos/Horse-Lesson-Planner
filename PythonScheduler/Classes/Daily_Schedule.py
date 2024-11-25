@@ -4,7 +4,7 @@
 class Daily_Schedule:
     def __init__(self, day, planner=None, riders=None, horses=None):
         self._day = day # Day of the week
-        self._planner = planner if planner is not None else {}  # List of Daily Schedules
+        self._planner = planner if planner is not None else {}  # List of Hourly Schedules
         self._riders = riders if riders is not None else []
         self._horses = horses if horses is not None else []
 
@@ -15,11 +15,28 @@ class Daily_Schedule:
 
     def get_planner(self):
         return self._planner
+
     def add_rider(self, rider, horse, hour):
         self._riders.append(rider)
         if hour in self._planner:
-            self._planner[hour].append((rider,horse))
+            self._planner[hour].append([rider.get_name(),horse])
         else:
-            self._planner[hour] = (rider,horse)
+            self._planner[hour] = [[rider.get_name(), None if not horse else horse.get_name()]]
+
+    def set_horse(self, rider, horse, hour, jumper):
+        for i, (Rider, Horse) in enumerate(self._planner[hour]):
+            if Rider == rider:
+                self._planner[hour][i][1] = horse.get_name()
+                if jumper:
+                    horse.add_jumper_times()
+                else:
+                    horse.add_non_jumper_times()
+
+
+    def __str__(self):
+        string = ""
+        for key, value in self._planner.items():
+            string += f'{key}: {value}, '
+        return string
 
 
