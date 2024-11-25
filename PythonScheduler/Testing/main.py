@@ -43,7 +43,7 @@ ALL_HORSES = [
 def main():
     Schedule = Weekly_Schedule()
     for horse in ALL_HORSES:
-        Schedule.add_horse(Horse(horse))
+        Schedule.add_horse(Horse(horse, is_jumping_horse = random.choice([True,False])))
     for i in range(10):
         Schedule.add_rider(Rider("Rider#" + str(i), None, random.randint(50,70), random.randint(100,190), 0, None, 0))
     Schedule.add_rider(Rider("Sammy", None, 60, 150, 0, None, 0))
