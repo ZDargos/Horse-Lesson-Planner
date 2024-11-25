@@ -8,7 +8,7 @@ class Rider:
         self._height = height
         self._weight = weight
         self._skill_level = skill_level # Integer skill level; 0 for beginner, 1 for jumper
-        self._weekly_schedule = weekly_schedule if weekly_schedule is not None else [] # List of tuples (Day of week, hour of the day [from 0 for midnight to 23 for 11pm])
+        self._weekly_schedule = weekly_schedule if weekly_schedule is not None else [] # List of tuples (Day of week, hour of the day [from 0 for midnight to 23 for 11pm], jumper [true or false])
         self._total_owed = total_owed # Float representing the total amount of money owed by this rider
 
     # Getter and setter for name

@@ -19,9 +19,12 @@ class Daily_Schedule:
     def add_rider(self, rider, horse, hour):
         self._riders.append(rider)
         if hour in self._planner:
-            self._planner[hour].append([rider.get_name(),horse])
+            self._planner[hour].append([rider.get_name(),None if not horse else horse.get_name()])
         else:
             self._planner[hour] = [[rider.get_name(), None if not horse else horse.get_name()]]
+        if horse:
+            self._horses.append(horse.get_name())
+
 
     def set_horse(self, rider, horse, hour, jumper):
         for i, (Rider, Horse) in enumerate(self._planner[hour]):
@@ -31,7 +34,11 @@ class Daily_Schedule:
                     horse.add_jumper_times()
                 else:
                     horse.add_non_jumper_times()
+                self._horses.append(horse.get_name())
 
+
+    def get_horses(self):
+        return self._horses
 
     def __str__(self):
         string = ""

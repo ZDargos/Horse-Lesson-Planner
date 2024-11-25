@@ -1,6 +1,7 @@
 # Zack Dragos & Sampath Reddy M.
 
 from Daily_Schedule import *
+import random
 
 class Weekly_Schedule:
     def __init__(self, planner=None, riders=None, horses=None):
@@ -69,14 +70,42 @@ class Weekly_Schedule:
 
         #Update scheudle to make sure all riders and times are in
         self.update_schedule()
-
+        leasers = []
         #Assign all leased horses to their leasers
         for horse in self._horses:
             if self.get_rider(horse.get_leaser()) in self._riders:
                 for (day, hour, jumper) in self.get_rider(horse.get_leaser()).get_weekly_schedule():
                     self._planner[day].set_horse(horse.get_leaser(), horse, hour, jumper)
+                    leasers.append(horse.get_leaser())
 
         #Now that all the riders who lease a horse are taken care of, we can assign horses to the rest
+        available_horses = [] #Create a list of horses who are currently available
+        for horse in self._horses:
+            if horse.is_available() and horse.get_jumper_times() < 3:
+                available_horses.append(horse.get_name())
+        used_horses = []
+        for rider in self._riders:
+            if rider.get_name() in leasers:
+                pass
+            else:
+                for (day, hour, jumper) in rider.get_weekly_schedule():
+                    if not available_horses:
+                        available_horses = used_horses
+                        used_horses = []
+                    #Randomly select a horse from the pool of available horses
+                    Horse = available_horses[random.randint(0, len(available_horses) - 1)]
+                    counter = 0
+                    while Horse in rider.get_recent_horses() or Horse in self._planner[day].get_horses(): # Make sure Horse is not been recently used by the rider
+                        Horse = available_horses[random.randint(0, len(available_horses) - 1)]
+                        counter+=1
+                        if counter > 1000: #In case you are only left with one horse that the final few riders have already used, reset the schedule making process
+                            raise "Impossible Schedule. No horse left that the rider has not recently ridden"
+
+                    available_horses.remove(Horse)
+                    used_horses.append(Horse)
+                    self._planner[day].set_horse(rider.get_name(), self.get_horse(Horse), hour, jumper)
+                    rider.add_recent_horse(Horse)
+
 
 
 

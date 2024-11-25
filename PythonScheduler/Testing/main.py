@@ -1,5 +1,5 @@
 # Zack Dragos & Sampath Reddy M.
-
+import random
 import sys
 import os
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\"))
@@ -10,19 +10,27 @@ from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
 
+def get_random_day():
+    days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    return random.choice(days_of_week)
 
 def main():
     Schedule = Weekly_Schedule()
     Schedule.add_horse(Horse("Kitty"))
+    Schedule.add_horse(Horse("HorseyWorsey"))
+    Schedule.add_horse(Horse("Special"))
+    Schedule.add_horse(Horse("Tabby"))
+    Schedule.add_horse(Horse("Duncan"))
     Schedule.add_horse(Horse("Spotty",leaser="Sammy"))
+    for i in range(10):
+        Schedule.add_rider(Rider("Rider#" + str(i), None, random.randint(50,70), random.randint(100,190), 0, None, 0))
     Schedule.add_rider(Rider("Sammy", None, 60, 150, 0, None, 0))
     Schedule.add_rider(Rider("Ryan", None, 60, 150, 0, None, 0))
-    Schedule.add_lesson("Sammy", "Monday", 8, 30, True)
-    Schedule.add_lesson("Ryan", "Tuesday", 10, 60, False)
-    Schedule.add_lesson("Ryan", "Monday", 10, 60, False)
-    Schedule.add_lesson("Ryan", "Monday", 8, 60, True)
-    Schedule.add_lesson("Sammy", "Monday", 18, 30, True)
-    Schedule.add_lesson("Sammy", "Wednesday", 8, 30, True)
+    Schedule.add_rider(Rider("Patrick", None, 60, 150, 0, None, 0))
+
+    for rider in Schedule.get_riders():
+        Schedule.add_lesson(rider.get_name(), get_random_day(), random.randint(8, 16), random.choice([30,60]), random.choice([True, False]))
+
     Schedule.make_schedule()
     for horse in Schedule.get_horses():
         print(horse)
