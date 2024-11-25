@@ -46,14 +46,17 @@ def main():
         Schedule.add_horse(Horse(horse, is_jumping_horse = random.choice([True,False]), max_weight=random.randint(150,230)))
     for i in range(10):
         Schedule.add_rider(Rider("Rider#" + str(i), None, random.randint(50,70), random.randint(100,190), 0, None, 0))
-    Schedule.add_rider(Rider("Sammy", None, 60, 150, 0, None, 0))
-    Schedule.add_rider(Rider("Ryan", None, 60, 150, 0, None, 0))
-    Schedule.add_rider(Rider("Patrick", None, 60, 150, 0, None, 0))
-    for i in range(3):
+    for i in range(4):
         for rider in Schedule.get_riders():
             Schedule.add_lesson(rider.get_name(), get_random_day(), random.randint(8, 16), random.choice([30,60]), random.choice([True, False]))
 
-    Schedule.make_schedule()
+    while True:
+        try:
+            Schedule.make_schedule()
+            break
+        except:
+            pass
+
     for horse in Schedule.get_horses():
         print(horse)
     for rider in Schedule.get_riders():
