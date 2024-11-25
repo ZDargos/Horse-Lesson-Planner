@@ -83,6 +83,7 @@ class Weekly_Schedule:
         for horse in self._horses:
             if horse.is_available() and horse.get_jumper_times() < 3:
                 available_horses.append(horse.get_name())
+
         used_horses = []
         for rider in self._riders:
             if rider.get_name() in leasers:
@@ -95,7 +96,7 @@ class Weekly_Schedule:
                     #Randomly select a horse from the pool of available horses
                     Horse = available_horses[random.randint(0, len(available_horses) - 1)]
                     counter = 0
-                    while Horse in rider.get_recent_horses() or Horse in self._planner[day].get_horses(): # Make sure Horse is not been recently used by the rider
+                    while self.is_horse_available_today(day, Horse, rider): # Make sure Horse is not been recently used by the rider
                         Horse = available_horses[random.randint(0, len(available_horses) - 1)]
                         counter+=1
                         if counter > 1000: #In case you are only left with one horse that the final few riders have already used, reset the schedule making process
@@ -107,6 +108,9 @@ class Weekly_Schedule:
                     rider.add_recent_horse(Horse)
 
 
+    def is_horse_available_today(self, day, horse_name, rider):
+        horse = self.get_horse(horse_name)
+        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3
 
 
     def __str__(self):
