@@ -44,10 +44,12 @@ def load_riders(fileName):
         data = line.split(",")
         if len(data) > 3:
             data[3] = data[3].split("|")
-            for i, d in enumerate(data[3]):
-                data[3][i] = data[3][i].split(";")
-            if data[3] == [['null']]:
+            if data[3] == ['null']:
                 data[3] = None
+            else:
+                for i, d in enumerate(data[3]):
+                    data[3][i] = data[3][i].split(";")
+                    data[3][i][-1] = eval(data[3][i][-1])
             Riders.append(data)
     return Riders
 
@@ -94,7 +96,7 @@ def main():
     upload_horses(Horses, Schedule)
     Riders = load_riders("RiderData.csv")
     upload_riders(Riders, Schedule)
-    
+
     while True:
         try:
             Schedule.make_schedule()

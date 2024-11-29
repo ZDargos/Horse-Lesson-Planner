@@ -134,7 +134,14 @@ class Weekly_Schedule:
         :return: true false
         '''
         horse = self.get_horse(horse_name)
-        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse()) or rider.get_weight() > horse.get_max_weight() or rider.get_skill_level() not in horse.get_skill_level()
+        is_unavail = horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse)
+        is_unavail = is_unavail or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse())
+        is_unavail = is_unavail or rider.get_weight() > horse.get_max_weight()
+        skill = False
+        for level in rider.get_skill_level().split("-"):
+            skill = skill or level in horse.get_skill_level()
+        is_unavail = is_unavail and not skill
+        return is_unavail
 
 
     def __str__(self):

@@ -54,10 +54,38 @@ class Daily_Schedule:
     def get_horses(self):
         return self._horses
 
+    def military_to_standard(self,military_time):
+        """
+        Convert military time (HHMM) to standard time (12-hour format with AM/PM).
+        Parameters: military_time (str): Time in HHMM format (e.g., "1400").
+        Returns: Time in 12-hour format with AM/PM (e.g., "02:00 PM").
+        """
+        try:
+            # Ensure the input is exactly 4 characters and is numeric
+            if len(military_time) != 4 or not military_time.isdigit():
+                raise ValueError("Invalid time format. Use HHMM format (e.g., 1400).")
+
+            # Parse hours and minutes
+            hours = int(military_time[:2])
+            minutes = int(military_time[2:])
+
+            # Validate time
+            if hours < 0 or hours > 23 or minutes < 0 or minutes > 59:
+                raise ValueError("Invalid time. Hours must be 00-23 and minutes 00-59.")
+
+            # Determine AM/PM and adjust hours for 12-hour format
+            period = "AM" if hours < 12 else "PM"
+            standard_hours = hours % 12 or 12  # Convert 0 or 12 to 12
+
+            # Return formatted time
+            return f"{standard_hours:02}:{minutes:02d} {period}"
+        except Exception as e:
+            return f"Error: {e}. Please provide time in HHMM format."
+
     def __str__(self):
         string = ""
         for key, value in sorted(self._planner.items()):
-            string += f'{key}: {value}\n'
+            string += f'{self.military_to_standard(key) if key != "-1" else "Hack"}: {value}\n'
         return string
 
 
