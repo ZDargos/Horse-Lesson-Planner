@@ -3,6 +3,8 @@
 from Daily_Schedule import *
 import random
 
+MAX_JUMPER_TIMES = 3
+
 class Weekly_Schedule:
     def __init__(self, planner=None, riders=None, horses=None):
         if planner:
@@ -73,10 +75,12 @@ class Weekly_Schedule:
         leasers = []
         #Assign all leased horses to their leasers
         for horse in self._horses:
-            if self.get_rider(horse.get_leaser()) in self._riders:
-                for (day, hour, jumper) in self.get_rider(horse.get_leaser()).get_weekly_schedule():
-                    self._planner[day].set_horse(horse.get_leaser(), horse, hour, jumper)
-                    leasers.append(horse.get_leaser())
+            for leaser in horse.get_leaser().split(";"): #Account for horses with multiple leasers
+                if self.get_rider(leaser) in self._riders:
+
+                    for (day, hour, jumper) in self.get_rider(leaser).get_weekly_schedule():
+                        self._planner[day].set_horse(leaser, horse, hour, jumper)
+                        leasers.append(leaser)
 
 
         '''
@@ -86,7 +90,7 @@ class Weekly_Schedule:
         # Create a list of horses who are currently available
         available_horses = []
         for horse in self._horses:
-            if horse.is_available() and horse.get_jumper_times() < 3:
+            if horse.is_available() and horse.get_jumper_times() < MAX_JUMPER_TIMES:
                 available_horses.append(horse.get_name())
 
 
@@ -130,7 +134,7 @@ class Weekly_Schedule:
         :return: true false
         '''
         horse = self.get_horse(horse_name)
-        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse()) or rider.get_weight() > horse.get_max_weight()
+        return horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse) or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse()) or rider.get_weight() > horse.get_max_weight() or rider.get_skill_level() not in horse.get_skill_level()
 
 
     def __str__(self):

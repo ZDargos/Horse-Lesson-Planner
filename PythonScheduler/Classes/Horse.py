@@ -1,8 +1,9 @@
 # Zack Dragos & Sampath Reddy M.
+from fontTools.varLib.instancer import setMacOverlapFlags
 
 
 class Horse:
-    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True, max_weight=190):
+    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True, max_weight=190, skill_level="B"):
         self._name = name
         self._leaser = leaser #The person who currently leases the horse, is empty string if nobody is leasing
         self._jumper_times = jumper_times #Number of times this week the horse has been scheduled to do a jumping lesson
@@ -10,7 +11,16 @@ class Horse:
         self._available = available #Is the horse available this week
         self._is_jumping_horse = is_jumping_horse #Is the horse a jumping horse this week
         self._max_weight = max_weight
+        self._skill_level = skill_level
 
+
+    def get_skill_level(self):
+        """Gets the skill level of the horse"""
+        return self._skill_level
+
+    def set_skill_level(self, skill_level):
+        """Sets a new skill level for the horse"""
+        self._skill_level = skill_level
     # Getter and setter for leaser
     def get_leaser(self):
         """Gets the name of the person currently leasing the horse."""

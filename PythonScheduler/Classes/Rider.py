@@ -2,13 +2,13 @@
 
 
 class Rider:
-    def __init__(self, name="", recent_horses=None, height=0, weight=0, skill_level=0, weekly_schedule=None, total_owed=0):
+    def __init__(self, name="", recent_horses=None, height=0, weight=0, skill_level="B", weekly_schedule=None, total_owed=0):
         self._name = name # Rider's name
         self._recent_horses = recent_horses if recent_horses is not None else [] # List of the 3 most recent horses
         self._height = height
         self._weight = weight
-        self._skill_level = skill_level # Integer skill level; 0 for beginner, 1 for jumper
-        self._weekly_schedule = weekly_schedule if weekly_schedule is not None else [] # List of tuples (Day of week, hour of the day [from 0 for midnight to 23 for 11pm], jumper [true or false])
+        self._skill_level = skill_level # String skill level; B for beginner, N for novice, I for intermediate, O for open. B-N beginner to novice and so on
+        self._weekly_schedule = weekly_schedule if weekly_schedule is not None else [] # List of tuples (Day of week, hour of the day [from 0 for midnight to 23 for 11pm], jumper [true or false], skill level)
         self._total_owed = total_owed # Float representing the total amount of money owed by this rider
 
     # Getter and setter for name
