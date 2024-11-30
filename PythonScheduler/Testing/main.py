@@ -32,7 +32,7 @@ def load_horses(fileName):
 
 def upload_horses(HorseData, Schedule):
     for horse in HorseData:
-        Schedule.add_horse(Horse(horse[0], is_jumping_horse = True if horse[1] == '1' else False, max_weight= int(horse[2]), leaser=horse[3] if horse[3] != 'null' else ""))
+        Schedule.add_horse(Horse(horse[0], is_jumping_horse = True if horse[1] == '1' else False, max_weight= int(horse[2]), leaser=horse[3] if horse[3] != 'null' else "", skill_level=horse[4], max_daily_jumps=int(horse[5])))
 
 def load_riders(fileName):
     Riders = []
@@ -96,14 +96,18 @@ def main():
     upload_horses(Horses, Schedule)
     Riders = load_riders("RiderData.csv")
     upload_riders(Riders, Schedule)
+    #Schedule.make_schedule()
 
-    while True:
+    attempts = 0
+    while attempts < 1000:
         try:
+            attempts+=1
             Schedule.make_schedule()
             break
         except:
             pass
-
+    if attempts == 1000:
+        raise "Failed to find a working schedule."
     for horse in Schedule.get_horses():
         print(horse)
     for rider in Schedule.get_riders():

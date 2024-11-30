@@ -9,6 +9,7 @@ class Daily_Schedule:
         self._horses = horses if horses is not None else []
         self._jumped_today = []
         self._walker_times_today = {}
+        self._jumper_times_today = {}
 
     def get_day(self):
         return self._day
@@ -35,6 +36,10 @@ class Daily_Schedule:
                 if jumper:
                     horse.add_jumper_times()
                     self._jumped_today.append(horse.get_name())
+                    if horse.get_name() in self._jumper_times_today:
+                        self._jumper_times_today[horse.get_name()] += 1
+                    else:
+                        self._jumper_times_today[horse.get_name()] = 1
                 else:
                     horse.add_non_jumper_times()
                     if horse.get_name() in self._walker_times_today:
@@ -43,8 +48,15 @@ class Daily_Schedule:
                         self._walker_times_today[horse.get_name()] = 1
                 self._horses.append(horse.get_name())
 
-    def jumped_today(self, Horse):
-        return Horse in self._jumped_today
+    def max_jumped_today(self, horse):
+        print(f"Checking {horse.get_name()} on {self._day}.")
+        if horse.get_name() in self._jumper_times_today:
+            print(f'They have been ridden {self._jumper_times_today[horse.get_name()]} times today')
+            if self._jumper_times_today[horse.get_name()] >= horse.get_max_daily_jumps():
+                return True
+            return False
+        else:
+            return False
 
     def num_walks_today(self, Horse):
         if Horse in self._walker_times_today:
@@ -81,6 +93,14 @@ class Daily_Schedule:
             return f"{standard_hours:02}:{minutes:02d} {period}"
         except Exception as e:
             return f"Error: {e}. Please provide time in HHMM format."
+
+    def riding_this_time(self, horse, time):
+        if time in self._planner:
+            for _,Horse in self._planner[time]:
+                if horse.get_name() == Horse:
+                    return True
+        return False
+
 
     def __str__(self):
         string = ""

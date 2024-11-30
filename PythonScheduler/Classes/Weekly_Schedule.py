@@ -77,7 +77,6 @@ class Weekly_Schedule:
         for horse in self._horses:
             for leaser in horse.get_leaser().split(";"): #Account for horses with multiple leasers
                 if self.get_rider(leaser) in self._riders:
-
                     for (day, hour, jumper) in self.get_rider(leaser).get_weekly_schedule():
                         self._planner[day].set_horse(leaser, horse, hour, jumper)
                         leasers.append(leaser)
@@ -107,7 +106,7 @@ class Weekly_Schedule:
                     #Randomly select a horse from the pool of available horses
                     Horse = available_horses[random.randint(0, len(available_horses) - 1)]
                     counter = 0
-                    while self.is_horse_unavailable_today(day, Horse, rider, jumper): # Make sure Horse is not been recently used by the rider
+                    while self.is_horse_unavailable_today(day, Horse, rider, jumper, hour): # Make sure Horse is not been recently used by the rider
                         Horse = available_horses[random.randint(0, len(available_horses) - 1)]
                         counter+=1
                         if counter == 1000: #In case you are only left with one horse that the final few riders have already used, reset the available horses list
@@ -121,10 +120,12 @@ class Weekly_Schedule:
                     available_horses.remove(Horse)
                     used_horses.append(Horse)
                     self._planner[day].set_horse(rider.get_name(), self.get_horse(Horse), hour, jumper)
+                    if self.get_horse(Horse).get_jumper_times() >= MAX_JUMPER_TIMES:
+                        used_horses.remove(Horse)
                     rider.add_recent_horse(Horse)
 
 
-    def is_horse_unavailable_today(self, day, horse_name, rider, jumper):
+    def is_horse_unavailable_today(self, day, horse_name, rider, jumper, hour):
         '''
         Boolean function that returns true if the horse is not available to the rider on the given day and lesson
         :param day: string of day of week
@@ -134,15 +135,30 @@ class Weekly_Schedule:
         :return: true false
         '''
         horse = self.get_horse(horse_name)
-        is_unavail = horse in rider.get_recent_horses() or self._planner[day].jumped_today(horse)
-        is_unavail = is_unavail or self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse())
-        is_unavail = is_unavail or rider.get_weight() > horse.get_max_weight()
-        skill = False
-        for level in rider.get_skill_level().split("-"):
-            skill = skill or level in horse.get_skill_level()
-        is_unavail = is_unavail and not skill
-        return is_unavail
 
+        #is_unavail = horse in rider.get_recent_horses()
+        return (self._planner[day].max_jumped_today(horse) or self._planner[day].max_jumped_today(horse) or
+                self._planner[day].num_walks_today(horse) > 3 or (jumper and not horse.is_jumping_horse()) or
+                rider.get_weight() > horse.get_max_weight() or self._planner[day].riding_this_time(horse, hour) or
+                self.match_skill_level(rider,horse) == False)
+
+    def match_skill_level(self, rider, horse):
+        for level in rider.get_skill_level().split("-"):
+            if level in horse.get_skill_level():
+                return True
+        return False
+
+    def find_rider_available_horses(self, available_horses, rider, day, jumper, hour):
+        horses_available_to_rider = []
+        for horse in available_horses:
+            if self.is_horse_unavailable_today(day, horse, rider, jumper, hour):
+                pass
+            else:
+                horses_available_to_rider.append(horse)
+        return horses_available_to_rider
+
+    def save_schedule(self):
+        pass
 
     def __str__(self):
         string = ""

@@ -3,7 +3,7 @@ from fontTools.varLib.instancer import setMacOverlapFlags
 
 
 class Horse:
-    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True, max_weight=190, skill_level="B"):
+    def __init__(self, name="", leaser="", jumper_times=0, non_jumper_times=0, available=True, is_jumping_horse=True, max_weight=190, skill_level="B", max_daily_jumps=1):
         self._name = name
         self._leaser = leaser #The person who currently leases the horse, is empty string if nobody is leasing
         self._jumper_times = jumper_times #Number of times this week the horse has been scheduled to do a jumping lesson
@@ -12,7 +12,11 @@ class Horse:
         self._is_jumping_horse = is_jumping_horse #Is the horse a jumping horse this week
         self._max_weight = max_weight
         self._skill_level = skill_level
+        self._max_daily_jumps = max_daily_jumps
 
+
+    def get_max_daily_jumps(self):
+        return self._max_daily_jumps
 
     def get_skill_level(self):
         """Gets the skill level of the horse"""
@@ -73,4 +77,4 @@ class Horse:
         return self._max_weight
 
     def __str__(self):
-        return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse])
+        return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse, self._max_weight, self._skill_level, self._max_daily_jumps])

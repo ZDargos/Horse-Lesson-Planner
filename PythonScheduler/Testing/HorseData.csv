@@ -1,18 +1,19 @@
-Name,Jumper?,Max Weight,Leaser,Difficulty
-Winnie,1,170,Gianna,B-N-I-O
-Kitty,0,150,null,B-N
-Theo,1,180,Nell,I-O
-Miss Patty,1,160,null,B-N-I
-Squirt,1,140,null,I-O
-Acorn,1,170,null,I-O
-Carmel,1,110,Teagan,B-N
-Honey,1,130,null,B-N-I
-Papa,0,180,null,B
-Heidi,1,180,null,N-I-O
-Elido,1,160,Cam;Joan,I-O
-Ikon,1,180,Milana,B-N-I-O
-Okie,1,160,JoJo,B-N-I
-Diesel,1,140,Lorena;Eva,N-I-O
-Sam,1,140,Kate,N-I
-Power,1,180,Ella,N-I-O
-Ella,1,160,Julia W,N-I-O
+Name,Jumper?,Max Weight,Leaser,Difficulty,Max Rides per Day
+Acorn,1,170,null,I-O,2
+Carmel,1,110,Teagan,B-N,1
+Diesel,1,140,Lorena;Eva,N-I-O,1
+Elido,1,160,Cam;Joan,I-O,1
+Ella,1,160,Julia W,N-I-O,1
+Heidi,1,180,null,N-I-O,1
+Honey,1,140,null,B-N-I,2
+Ikon,1,180,Milana,B-N-I-O,1
+Kitty,0,150,null,B-N,1
+Miss Patty,1,160,null,B-N-I,2
+Moose,1,200,Maggie,O,1
+Okie,1,160,JoJo,B-N-I,2
+Papa,0,160,null,B,1
+Power,1,180,Ella;Jamie,B-N-I-O,1
+Sam,1,140,Kate,N-I,1
+Squirt,1,140,null,I-O,1
+Theo,1,180,Nell,I-O,2
+Winnie,1,170,Gianna,B-N-I-O,2
