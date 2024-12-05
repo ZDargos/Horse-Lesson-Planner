@@ -7,9 +7,9 @@ import os
 
 
 
-sys.path.append(os.path.abspath("/Users/palaksood/Desktop/Horse-Lesson-Planner/PythonScheduler//"))
-sys.path.append(os.path.abspath("/Users/palaksood/Desktop/Horse-Lesson-Planner/PythonScheduler/Classes//"))
-sys.path.append(os.path.abspath("/Users/palaksood/Desktop/Horse-Lesson-Planner/PythonScheduler/Testing//"))
+sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\"))
+sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Classes"))
+sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Testing"))
 from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
@@ -133,6 +133,7 @@ class App(tk.Tk):
                     attempts += 1
                     print(f"Attempt {attempts} - Generating schedule...")
                     schedule.make_schedule()
+                    print(schedule)
                     break
                 except Exception as e:
                     print(f"Error during schedule generation (Attempt {attempts}): {e}")
@@ -166,35 +167,44 @@ class App(tk.Tk):
         back_button.pack(pady=20)
 
     def upload_horses(self, horse_data, schedule):
-        for _, row in horse_data.iterrows():
-            leaser = row['Leaser'] if row['Leaser'] != 'null' else None
+        for i, row in horse_data.iterrows():
+            leaser = row['Leaser'] if pd.notnull(row['Leaser']) else ''
             schedule.add_horse(Horse(
-                row['Name'], 
-                is_jumping_horse=bool(row['Jumper?']), 
+                row['Name'],
+                is_jumping_horse=True if row['Jumper?'] == 1 else False,
                 max_weight=int(row['Max Weight']),
-                leaser=leaser, 
-                skill_level=row['Difficulty'], 
+                leaser=leaser,
+                skill_level=row['Difficulty'],
                 max_daily_jumps=int(row['Max Rides per Day'])
             ))
+        for horse in schedule.get_horses():
+            print(horse)
 
     def upload_riders(self, rider_data, schedule):
         for _, row in rider_data.iterrows():
             weekly_schedule = row['Weekly Schedule']
-            
-            if isinstance(weekly_schedule, str) and weekly_schedule != "null":
+
+            if isinstance(weekly_schedule, str) and pd.notnull(weekly_schedule):
                 weekly_schedule = weekly_schedule.split("|")
+                for i, lesson in enumerate(weekly_schedule):
+                    lesson = lesson.split(';')
+                    lesson[-1] = eval(lesson[-1])
+                    weekly_schedule[i] = lesson
+
             else:
                 weekly_schedule = []  # Use empty list if unavailable
-            
+
             if not weekly_schedule:
                 print(f"Rider {row['Name']} has no schedule.")
-            
+
             schedule.add_rider(Rider(
-                row['Name'], 
-                weight=int(row['Weight']), 
-                skill_level=row['Skill Level'], 
+                row['Name'],
+                weight=int(row['Weight']),
+                skill_level=row['Skill Level'],
                 weekly_schedule=weekly_schedule
             ))
+        for rider in schedule.get_riders():
+            print(rider)
 
 
 # Run the application

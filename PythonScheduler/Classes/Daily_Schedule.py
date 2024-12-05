@@ -49,9 +49,7 @@ class Daily_Schedule:
                 self._horses.append(horse.get_name())
 
     def max_jumped_today(self, horse):
-        print(f"Checking {horse.get_name()} on {self._day}.")
         if horse.get_name() in self._jumper_times_today:
-            print(f'They have been ridden {self._jumper_times_today[horse.get_name()]} times today')
             if self._jumper_times_today[horse.get_name()] >= horse.get_max_daily_jumps():
                 return True
             return False
