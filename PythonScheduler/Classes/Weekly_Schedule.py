@@ -1,7 +1,9 @@
 # Zack Dragos & Sampath Reddy M.
 
-from Daily_Schedule import *
 import random
+
+from Classes.Daily_Schedule import *
+
 
 MAX_JUMPER_TIMES = 3
 

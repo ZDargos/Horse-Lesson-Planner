@@ -6,10 +6,8 @@ import sys
 import os
 
 
-
-sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\"))
-sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Classes"))
-sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Testing"))
+print(os.getcwd()[:-11])
+sys.path.append(os.path.abspath(os.getcwd()[:-11]))
 from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
@@ -32,7 +30,7 @@ class App(tk.Tk):
 
     def initialize_background_image(self):
         try:
-            self.image_path = "/Users/palaksood/Downloads/background.jpeg"
+            self.image_path = "temp-bg.jpg"
             self.original_image = Image.open(self.image_path)  # Use Image from PIL
             self.resize_background()
         except Exception as e:
