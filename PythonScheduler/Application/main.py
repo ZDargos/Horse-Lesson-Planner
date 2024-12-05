@@ -74,6 +74,18 @@ class App(tk.Tk):
         upload_rider_button = tk.Button(self, text="Upload Rider Data", command=self.upload_rider_data, font=("Arial", 14), bg="white", fg="black")
         upload_rider_button.pack(pady=10)
 
+        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=("Arial", 14), bg="white", fg="black")
+        add_horse_button.pack(pady=10)
+
+        remove_horse_button = tk.Button(self, text="Remove Horse", command=self.remove_horse, font=("Arial", 14), bg="white", fg="black")
+        remove_horse_button.pack(pady=10)
+
+        add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="white", fg="black")
+        add_rider_button.pack(pady=10)
+
+        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.remove_rider, font=("Arial", 14), bg="white", fg="black")
+        remove_rider_button.pack(pady=10)
+
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white", fg="black")
         back_button.pack(pady=10)
 
