@@ -13,7 +13,6 @@ from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
 
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
