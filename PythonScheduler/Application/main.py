@@ -120,10 +120,12 @@ class App(tk.Tk):
             messagebox.showwarning("No File Selected", "Please select a valid rider data file.")
 
         def add_horse(self):
+            add_horse_window = tk.Toplevel(self)
+            add_horse_window.title("Add Horse")
+            add_horse_window.geometry("400x400")
         # Open a new window for adding a horse
-        add_horse_window = tk.Toplevel(self)
-        add_horse_window.title("Add Horse")
-        add_horse_window.geometry("400x400")
+
+
 
         # Input fields
         tk.Label(add_horse_window, text="Name:").pack(pady=5)
@@ -171,18 +173,44 @@ class App(tk.Tk):
 
         tk.Button(add_horse_window, text="Add Horse", command=submit_horse).pack(pady=20)
 
-    
+    def add_rider(self):
+        # Open a new window for adding a rider
+        add_rider_window = tk.Toplevel(self)
+        add_rider_window.title("Add Rider")
+        add_rider_window.geometry("400x400")
 
-    def remove_horse(self):
-        try:
-            name = simpledialog.askstring("Remove Horse", "Enter Horse Name to Remove:")
-            removed = self.schedule.remove_horse(name)
-            if removed:
-                messagebox.showinfo("Horse Removed", f"{name} successfully removed from the schedule.")
-            else:
-                messagebox.showwarning("Not Found", f"Horse named {name} not found in the schedule.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error removing horse: {e}")
+        # Input fields
+        tk.Label(add_rider_window, text="Name:").pack(pady=5)
+        name_entry = tk.Entry(add_rider_window)
+        name_entry.pack(pady=5)
+
+        tk.Label(add_rider_window, text="Weight:").pack(pady=5)
+        weight_entry = tk.Entry(add_rider_window)
+        weight_entry.pack(pady=5)
+
+        tk.Label(add_rider_window, text="Skill Level:").pack(pady=5)
+        skill_level_entry = tk.Entry(add_rider_window)
+        skill_level_entry.pack(pady=5)
+
+        def submit_rider():
+            try:
+                # Gather inputs
+                name = name_entry.get()
+                weight = int(weight_entry.get())
+                skill_level = skill_level_entry.get()
+
+                # Create and add the new rider
+                new_rider = Rider(name, weight=weight, skill_level=skill_level, weekly_schedule=[])
+                self.schedule.add_rider(new_rider)
+                messagebox.showinfo("Success", f"Rider '{name}' added successfully.")
+                add_rider_window.destroy()
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to add rider: {e}")
+
+        # Add button to submit rider details
+        tk.Button(add_rider_window, text="Add Rider", command=submit_rider).pack(pady=20)
+
+
 
     def add_rider(self):
         try:

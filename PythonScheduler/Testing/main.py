@@ -3,15 +3,15 @@ import random
 import sys
 import os
 
-from PythonScheduler.Classes.Rider import Rider
+from PythonScheduler.Application.Classes.Rider import Rider
 
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\"))
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Classes"))
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Testing"))
 
-from Classes.Horse import *
-from Classes.Rider import *
-from Classes.Weekly_Schedule import *
+from PythonScheduler.Application.Classes.Horse import *
+from PythonScheduler.Application.Classes.Rider import *
+from PythonScheduler.Application.Classes.Weekly_Schedule import *
 
 def get_random_day():
     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -117,5 +117,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
