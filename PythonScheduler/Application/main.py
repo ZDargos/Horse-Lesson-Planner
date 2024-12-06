@@ -92,6 +92,10 @@ class App(tk.Tk):
         add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="white",
                                      fg="black")
         add_rider_button.pack(pady=10)
+        
+        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.add_rider, font=("Arial", 14), bg="white",
+                                     fg="black")
+        remove_rider_button.pack(pady=10)
 
         generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule, font=("Arial", 14), bg="white",
                                 fg="black")
