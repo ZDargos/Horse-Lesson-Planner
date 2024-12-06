@@ -13,9 +13,11 @@ from PythonScheduler.Application.Classes.Horse import *
 from PythonScheduler.Application.Classes.Rider import *
 from PythonScheduler.Application.Classes.Weekly_Schedule import *
 
+import random
+
 def get_random_day():
-    days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    return random.choice(days_of_week)
+    return random.choice(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+
 
 def load_horses(fileName):
     Horses = []
@@ -95,7 +97,7 @@ def main():
     Horses = load_horses("HorseData.csv")
     upload_horses(Horses, Schedule)
     Riders = load_riders("RiderData.csv")
-    upload_riders(Riders, Schedule)
+    upload_riders(Riders,Schedule)
     #Schedule.make_schedule()
 
     attempts = 0
