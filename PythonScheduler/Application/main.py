@@ -14,7 +14,6 @@ from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
 
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -93,6 +92,10 @@ class App(tk.Tk):
         add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="white",
                                      fg="black")
         add_rider_button.pack(pady=10)
+        
+        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.remove_rider, font=("Arial", 14), bg="white",
+                                     fg="black")
+        remove_rider_button.pack(pady=10)
 
         add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
                                      fg="black")
