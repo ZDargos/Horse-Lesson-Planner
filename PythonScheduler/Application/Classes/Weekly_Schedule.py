@@ -23,8 +23,10 @@ class Weekly_Schedule:
 
     def remove_rider(self, rider):
         for i, Rider in enumerate(self._riders):
-            if Rider == rider:
+            if Rider.get_name() == rider:
                 self._riders = self._riders[:i] + self._riders[i+1:]
+                return True
+        return False
 
     def get_riders(self):
         return self._riders
