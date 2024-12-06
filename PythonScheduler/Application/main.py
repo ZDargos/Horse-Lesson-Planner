@@ -116,6 +116,33 @@ class App(tk.Tk):
         else:
             messagebox.showwarning("No File Selected", "Please select a valid rider data file.")
 
+    def add_horse(self):
+        try:
+            name = simpledialog.askstring("Add Horse", "Enter Horse Name:")
+            max_weight = simpledialog.askinteger("Add Horse", "Enter Max Weight:")
+            difficulty = simpledialog.askstring("Add Horse", "Enter Skill Level:")
+            is_jumper = simpledialog.askstring("Add Horse", "Is it a Jumper? (yes/no):") == "yes"
+            max_rides = simpledialog.askinteger("Add Horse", "Enter Max Rides per Day:")
+            leaser = simpledialog.askstring("Add Horse", "Enter Leaser (Optional):") or ""
+
+            new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=difficulty, max_daily_jumps=max_rides, leaser=leaser)
+            self.schedule.add_horse(new_horse)
+            messagebox.showinfo("Horse Added", f"{name} successfully added to the schedule.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error adding horse: {e}")
+
+    def remove_horse(self):
+        try:
+            name = simpledialog.askstring("Remove Horse", "Enter Horse Name to Remove:")
+            removed = self.schedule.remove_horse(name)
+            if removed:
+                messagebox.showinfo("Horse Removed", f"{name} successfully removed from the schedule.")
+            else:
+                messagebox.showwarning("Not Found", f"Horse named {name} not found in the schedule.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error removing horse: {e}")
+
+
     def process_schedule(self, horse_data, rider_data):
         try:
             schedule = Weekly_Schedule()
