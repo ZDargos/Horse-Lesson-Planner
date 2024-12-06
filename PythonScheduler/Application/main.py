@@ -18,7 +18,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Welcome")
-        self.geometry("600x400")
+        self.geometry("600x800")
         self.resizable(True, True)
 
         self.bg_label = tk.Label(self)
@@ -93,9 +93,14 @@ class App(tk.Tk):
                                      fg="black")
         add_rider_button.pack(pady=10)
 
+        generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule, font=("Arial", 14), bg="white",
+                                fg="black")
+        generate_schedule_button.pack(pady=10)
+
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white",
                                 fg="black")
         back_button.pack(pady=10)
+
 
     def upload_horse_data(self):
         file_path = filedialog.askopenfilename(
@@ -124,7 +129,6 @@ class App(tk.Tk):
                     file_path)
                 messagebox.showinfo("Rider Data Selected",
                                     f"Rider data successfully uploaded.\n\nData Preview:\n{self.rider_data.head()}")
-                self.process_schedule(self.horse_data, self.rider_data)
             except Exception as e:
                 messagebox.showerror("Error", f"Error reading rider data file: {e}")
         else:
@@ -225,15 +229,15 @@ class App(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Error removing rider: {e}")
 
-    def process_schedule(self, horse_data, rider_data):
+    def process_schedule(self):
         try:
             schedule = Weekly_Schedule()
 
-            self.upload_horses(horse_data, schedule)
-            self.upload_riders(rider_data, schedule)
+            self.upload_horses(self.horse_data, schedule)
+            self.upload_riders(self.rider_data, schedule)
 
             attempts = 0
-            while attempts < 1000:
+            while attempts < 50:
                 try:
                     attempts += 1
                     print(f"Attempt {attempts} - Generating schedule...")
