@@ -133,7 +133,7 @@ class App(tk.Tk):
     def add_horse(self):
         add_horse_window = tk.Toplevel(self)
         add_horse_window.title("Add Horse")
-        add_horse_window.geometry("400x400")
+        add_horse_window.geometry("400x450")
 
         tk.Label(add_horse_window, text="Name:").pack(pady=5)
         name_entry = tk.Entry(add_horse_window)
