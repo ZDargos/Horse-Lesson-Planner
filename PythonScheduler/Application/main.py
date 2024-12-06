@@ -26,6 +26,9 @@ class App(tk.Tk):
         self.after(1, self.initialize_background_image)
         self.bind("<Configure>", self.resize_background)
 
+        self.schedule = Weekly_Schedule()
+        self.horse_data = None
+        self.rider_data = None
         self.welcome_screen()
 
     def initialize_background_image(self):
@@ -141,6 +144,30 @@ class App(tk.Tk):
                 messagebox.showwarning("Not Found", f"Horse named {name} not found in the schedule.")
         except Exception as e:
             messagebox.showerror("Error", f"Error removing horse: {e}")
+
+    def add_rider(self):
+        try:
+            name = simpledialog.askstring("Add Rider", "Enter Rider Name:")
+            weight = simpledialog.askinteger("Add Rider", "Enter Rider Weight:")
+            skill_level = simpledialog.askstring("Add Rider", "Enter Skill Level:")
+            schedule = []
+
+            new_rider = Rider(name, weight=weight, skill_level=skill_level, weekly_schedule=schedule)
+            self.schedule.add_rider(new_rider)
+            messagebox.showinfo("Rider Added", f"{name} successfully added to the schedule.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error adding rider: {e}")
+
+    def remove_rider(self):
+        try:
+            name = simpledialog.askstring("Remove Rider", "Enter Rider Name to Remove:")
+            removed = self.schedule.remove_rider(name)
+            if removed:
+                messagebox.showinfo("Rider Removed", f"{name} successfully removed from the schedule.")
+            else:
+                messagebox.showwarning("Not Found", f"Rider named {name} not found in the schedule.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error removing rider: {e}")
 
 
     def process_schedule(self, horse_data, rider_data):
