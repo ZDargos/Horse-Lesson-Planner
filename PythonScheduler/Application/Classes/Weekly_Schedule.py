@@ -1,6 +1,7 @@
 # Zack Dragos & Sampath Reddy M.
 
 from PythonScheduler.Application.Classes.Daily_Schedule import *
+from PythonScheduler.Application.Classes.Rider import *
 import random
 
 
@@ -52,6 +53,7 @@ class Weekly_Schedule:
     def update_schedule(self):
         self.reset_schedule()
         for rider in self._riders:
+            rider.reset_recent_horses()
             for lesson in rider.get_weekly_schedule():
                 self._planner[lesson[0]].add_rider(rider, None, lesson[1])
 
@@ -59,10 +61,15 @@ class Weekly_Schedule:
         self._planner = {"Monday": Daily_Schedule("Monday"), "Tuesday": Daily_Schedule("Tuesday"), "Wednesday": Daily_Schedule("Wednesday"),
                              "Thursday": Daily_Schedule("Thursday"), "Friday": Daily_Schedule("Friday"), "Saturday": Daily_Schedule("Saturday"),
                              "Sunday": Daily_Schedule("Sunday")}
+        for horse in self._horses:
+            horse.reset_horse()
 
 
     def add_lesson(self, rider, day, time, duration, jumper=False):
-        r = self.get_rider(rider)
+        if isinstance(rider, Rider):
+            r = rider
+        else:
+            r = self.get_rider(rider)
         r.add_lesson_time(day, time, duration, jumper)
 
     def make_schedule(self):

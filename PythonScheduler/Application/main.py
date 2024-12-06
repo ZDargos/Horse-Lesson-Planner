@@ -1,7 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog
+from tkinter import filedialog, messagebox, simpledialog, ttk
 import pandas as pd
 from PIL import Image, ImageTk  # Ensure Pillow is installed
+from tkinter import StringVar
 
 # Add these lines as per your current working directory setup to import classes
 import sys
@@ -93,6 +94,10 @@ class App(tk.Tk):
                                      fg="black")
         add_rider_button.pack(pady=10)
 
+        add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
+                                     fg="black")
+        add_lesson_button.pack(pady=10)
+
         generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule, font=("Arial", 14), bg="white",
                                 fg="black")
         generate_schedule_button.pack(pady=10)
@@ -113,6 +118,7 @@ class App(tk.Tk):
                     file_path)
                 messagebox.showinfo("Horse Data Selected",
                                     f"Horse data successfully uploaded.\n\nData Preview:\n{self.horse_data.head()}")
+                self.upload_horses(self.horse_data)
             except Exception as e:
                 messagebox.showerror("Error", f"Error reading horse data file: {e}")
         else:
@@ -129,6 +135,7 @@ class App(tk.Tk):
                     file_path)
                 messagebox.showinfo("Rider Data Selected",
                                     f"Rider data successfully uploaded.\n\nData Preview:\n{self.rider_data.head()}")
+                self.upload_riders(self.rider_data)
             except Exception as e:
                 messagebox.showerror("Error", f"Error reading rider data file: {e}")
         else:
@@ -214,6 +221,85 @@ class App(tk.Tk):
 
         tk.Button(add_rider_window, text="Add Rider", command=submit_rider).pack(pady=20)
 
+    def add_lesson(self):
+        add_lesson_window = tk.Toplevel(self)
+        add_lesson_window.title("Add Lesson")
+        add_lesson_window.geometry("400x400")
+
+        rider_name_option = StringVar()
+        riders = [r.get_name() for r in self.schedule.get_riders()]
+
+        rider_name_option.set(riders[0])
+        tk.Label(add_lesson_window, text="Name Of Rider:").pack(pady=2)
+        rider_options = tk.OptionMenu(add_lesson_window, rider_name_option, *riders)
+        rider_options.pack(pady=10)
+
+        days_of_week = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+        day_option = StringVar()
+
+        day_option.set(days_of_week[0])
+        tk.Label(add_lesson_window, text="Day of week:").pack(pady=2)
+        day_options = tk.OptionMenu(add_lesson_window, day_option, *days_of_week)
+        day_options.pack(pady=10)
+
+        tk.Label(add_lesson_window, text="Type of lesson:").pack(pady=2)
+        jump_var = StringVar()
+        jump_var.set("Jumping")
+        jumping_lesson_dropdown = ttk.Combobox(add_lesson_window, textvariable=jump_var, values=["Jumping", "Not Jumping"], width=10,
+                                     font=("Arial", 12),
+                                     state="readonly")
+        jumping_lesson_dropdown.pack(pady=10)
+
+        tk.Label(add_lesson_window, text="Duration of Lesson (in minutes):").pack(pady=2)
+        duration_var = StringVar()
+        duration_var.set("30")
+        duration_dropdown = ttk.Combobox(add_lesson_window, textvariable=duration_var,
+                                               values=["30", "60"], width=5,
+                                               font=("Arial", 12),
+                                               state="readonly")
+        duration_dropdown.pack(pady=10)
+
+        def get_time():
+            if ampm_var.get() == "AM":
+              if int(hour_var.get()) < 10:
+                  return f"0{hour_var.get()}{minute_var.get()}"
+              return f"{hour_var.get()}{minute_var.get()}"
+            return f"{int(hour_var.get())+12}{minute_var.get()}"
+
+        # Variables for hours, minutes, and AM/PM
+        hour_var = tk.StringVar(value="12")
+        minute_var = tk.StringVar(value="00")
+        ampm_var = tk.StringVar(value="AM")
+
+        # Hour Spinbox (1 to 12)
+        hour_spinbox = ttk.Spinbox(add_lesson_window, from_=1, to=12, wrap=True, textvariable=hour_var, width=5, font=("Arial", 12))
+        hour_spinbox.pack(side=tk.LEFT, padx=10,pady=10)
+
+        # Minute Spinbox (0 to 59)
+        minute_spinbox = ttk.Spinbox(add_lesson_window, from_=0, to=59, wrap=True, textvariable=minute_var, format="%02.0f", width=5,
+                                     font=("Arial", 12))
+        minute_spinbox.pack(side=tk.LEFT, padx=5, pady=10)
+
+        # AM/PM Dropdown
+        ampm_dropdown = ttk.Combobox(add_lesson_window, textvariable=ampm_var, values=["AM", "PM"], width=5, font=("Arial", 12),
+                                     state="readonly")
+        ampm_dropdown.pack(side=tk.LEFT, padx=5, pady=10)
+
+
+        def submit_lesson():
+            try:
+                rider = rider_name_option.get()
+                time = get_time()
+                day = day_option.get()
+                duration = int(duration_var.get())
+                jumper = True if jump_var.get() == "Jumping" else False
+
+                self.schedule.add_lesson(rider,day,time,duration,jumper)
+                messagebox.showinfo("Success", f"Lesson added successfully.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to add rider: {e}")
+
+        tk.Button(add_lesson_window, text="Add Lesson", command=submit_lesson).pack(pady=20)
     def remove_horse(self):
         # Placeholder for remove horse functionality
         pass
@@ -231,18 +317,13 @@ class App(tk.Tk):
 
     def process_schedule(self):
         try:
-            schedule = Weekly_Schedule()
-
-            self.upload_horses(self.horse_data, schedule)
-            self.upload_riders(self.rider_data, schedule)
-
             attempts = 0
             while attempts < 50:
                 try:
                     attempts += 1
                     print(f"Attempt {attempts} - Generating schedule...")
-                    schedule.make_schedule()
-                    print(schedule)
+                    self.schedule.make_schedule()
+                    print(self.schedule)
                     break
                 except Exception as e:
                     print(f"Error during schedule generation (Attempt {attempts}): {e}")
@@ -250,7 +331,7 @@ class App(tk.Tk):
             if attempts == 1000:
                 raise Exception("Failed to generate a working schedule.")
 
-            self.show_schedule(schedule)
+            self.show_schedule(self.schedule)
         except Exception as e:
             messagebox.showerror("Error", f"Error generating schedule: {e}")
 
@@ -264,22 +345,22 @@ class App(tk.Tk):
         schedule_label = tk.Label(self, text="Generated Schedule", font=("Arial", 16), bg="white")
         schedule_label.pack(pady=20)
 
-        for horse in schedule.get_horses():
-            horse_label = tk.Label(self, text=f"Horse: {horse.get_name()}", font=("Arial", 12), bg="white")
-            horse_label.pack(pady=5)
-
-        for rider in schedule.get_riders():
-            rider_label = tk.Label(self, text=f"Rider: {rider.get_name()}", font=("Arial", 12), bg="white")
-            rider_label.pack(pady=5)
+        # for horse in schedule.get_horses():
+        #     horse_label = tk.Label(self, text=f"Horse: {horse.get_name()}", font=("Arial", 12), bg="white")
+        #     horse_label.pack(pady=5)
+        #
+        # for rider in schedule.get_riders():
+        #     rider_label = tk.Label(self, text=f"Rider: {rider.get_name()}", font=("Arial", 12), bg="white")
+        #     rider_label.pack(pady=5)
 
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
-    def upload_horses(self, horse_data, schedule):
+    def upload_horses(self, horse_data):
         for i, row in horse_data.iterrows():
             leaser = row['Leaser'] if pd.notnull(row['Leaser']) else ''
-            schedule.add_horse(Horse(
+            self.schedule.add_horse(Horse(
                 row['Name'],
                 is_jumping_horse=True if row['Jumper?'] == 1 else False,
                 max_weight=int(row['Max Weight']),
@@ -287,10 +368,10 @@ class App(tk.Tk):
                 skill_level=row['Difficulty'],
                 max_daily_jumps=int(row['Max Rides per Day'])
             ))
-        for horse in schedule.get_horses():
+        for horse in self.schedule.get_horses():
             print(horse)
 
-    def upload_riders(self, rider_data, schedule):
+    def upload_riders(self, rider_data):
         for _, row in rider_data.iterrows():
             weekly_schedule = row['Weekly Schedule']
 
@@ -307,13 +388,13 @@ class App(tk.Tk):
             if not weekly_schedule:
                 print(f"Rider {row['Name']} has no schedule.")
 
-            schedule.add_rider(Rider(
+            self.schedule.add_rider(Rider(
                 row['Name'],
                 weight=int(row['Weight']),
                 skill_level=row['Skill Level'],
                 weekly_schedule=weekly_schedule
             ))
-        for rider in schedule.get_riders():
+        for rider in self.schedule.get_riders():
             print(rider)
 
 

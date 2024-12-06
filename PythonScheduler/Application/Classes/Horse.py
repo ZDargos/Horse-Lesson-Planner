@@ -76,5 +76,9 @@ class Horse:
     def get_max_weight(self):
         return self._max_weight
 
+    def reset_horse(self):
+        self._jumper_times = 0  # Number of times this week the horse has been scheduled to do a jumping lesson
+        self._non_jumper_times = 0  # Number of times this week the horse has been scheduled to do a non-jumping lesson
+
     def __str__(self):
         return str([self._name, self._leaser, self._jumper_times, self._non_jumper_times, self._available, self._is_jumping_horse, self._max_weight, self._skill_level, self._max_daily_jumps])

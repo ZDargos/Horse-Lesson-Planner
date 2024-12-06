@@ -31,6 +31,9 @@ class Rider:
             self._recent_horses = self._recent_horses[1:]
         self._recent_horses.append(recent_horse)
 
+    def reset_recent_horses(self):
+        self._recent_horses = []
+
     # Getter and setter for height
     def get_height(self):
         """Gets the rider's height."""
