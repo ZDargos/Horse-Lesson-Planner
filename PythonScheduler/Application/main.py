@@ -93,7 +93,7 @@ class App(tk.Tk):
                                      fg="black")
         add_rider_button.pack(pady=10)
         
-        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.add_rider, font=("Arial", 14), bg="white",
+        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.remove_rider, font=("Arial", 14), bg="white",
                                      fg="black")
         remove_rider_button.pack(pady=10)
 
