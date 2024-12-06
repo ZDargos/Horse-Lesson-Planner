@@ -119,20 +119,59 @@ class App(tk.Tk):
         else:
             messagebox.showwarning("No File Selected", "Please select a valid rider data file.")
 
-    def add_horse(self):
-        try:
-            name = simpledialog.askstring("Add Horse", "Enter Horse Name:")
-            max_weight = simpledialog.askinteger("Add Horse", "Enter Max Weight:")
-            difficulty = simpledialog.askstring("Add Horse", "Enter Skill Level:")
-            is_jumper = simpledialog.askstring("Add Horse", "Is it a Jumper? (yes/no):") == "yes"
-            max_rides = simpledialog.askinteger("Add Horse", "Enter Max Rides per Day:")
-            leaser = simpledialog.askstring("Add Horse", "Enter Leaser (Optional):") or ""
+        def add_horse(self):
+        # Open a new window for adding a horse
+        add_horse_window = tk.Toplevel(self)
+        add_horse_window.title("Add Horse")
+        add_horse_window.geometry("400x400")
 
-            new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=difficulty, max_daily_jumps=max_rides, leaser=leaser)
-            self.schedule.add_horse(new_horse)
-            messagebox.showinfo("Horse Added", f"{name} successfully added to the schedule.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error adding horse: {e}")
+        # Input fields
+        tk.Label(add_horse_window, text="Name:").pack(pady=5)
+        name_entry = tk.Entry(add_horse_window)
+        name_entry.pack(pady=5)
+
+        tk.Label(add_horse_window, text="Max Weight:").pack(pady=5)
+        max_weight_entry = tk.Entry(add_horse_window)
+        max_weight_entry.pack(pady=5)
+
+        tk.Label(add_horse_window, text="Skill Level:").pack(pady=5)
+        skill_level_entry = tk.Entry(add_horse_window)
+        skill_level_entry.pack(pady=5)
+
+        tk.Label(add_horse_window, text="Is Jumper (yes/no):").pack(pady=5)
+        is_jumper_entry = tk.Entry(add_horse_window)
+        is_jumper_entry.pack(pady=5)
+
+        tk.Label(add_horse_window, text="Max Rides per Day:").pack(pady=5)
+        max_rides_entry = tk.Entry(add_horse_window)
+        max_rides_entry.pack(pady=5)
+
+        tk.Label(add_horse_window, text="Leaser (optional):").pack(pady=5)
+        leaser_entry = tk.Entry(add_horse_window)
+        leaser_entry.pack(pady=5)
+
+        def submit_horse():
+            try:
+                # Gather inputs
+                name = name_entry.get()
+                max_weight = int(max_weight_entry.get())
+                skill_level = skill_level_entry.get()
+                is_jumper = is_jumper_entry.get().strip().lower() == "yes"
+                max_rides = int(max_rides_entry.get())
+                leaser = leaser_entry.get() or ""
+
+                # Create and add the new horse
+                new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=skill_level,
+                                max_daily_jumps=max_rides, leaser=leaser)
+                self.schedule.add_horse(new_horse)
+                messagebox.showinfo("Success", f"Horse '{name}' added successfully.")
+                add_horse_window.destroy()
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to add horse: {e}")
+
+        tk.Button(add_horse_window, text="Add Horse", command=submit_horse).pack(pady=20)
+
+    
 
     def remove_horse(self):
         try:
