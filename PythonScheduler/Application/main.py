@@ -1,12 +1,12 @@
 # Author: Zack Dragos, Sampath Reddy M., Palak Sood
 # Date: 12/13/24
 # Description: File storing all of the functionality of the application. The usage of tkinter and culmination of the app
-
-import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog, ttk
+# Importing necessary modules
+import tkinter as tk        #Main GUI Module
+from tkinter import filedialog, messagebox, simpledialog, ttk   #Additional tkinter modules
 import pandas as pd
-from PIL import Image, ImageTk  # Ensure Pillow is installed
-from tkinter import StringVar
+from PIL import Image, ImageTk  #used to handle images
+from tkinter import StringVar        #used to manage string variables in tkinter
 
 # Add these lines as per your current working directory setup to import classes
 import sys
@@ -14,6 +14,7 @@ import os
 
 print(os.getcwd()[:-11])  # prints the current working directory path
 sys.path.append(os.path.abspath(os.getcwd()[:-11]))
+#imports custom classes to manage data
 from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
@@ -23,12 +24,14 @@ class App(tk.Tk):
         '''
         Initializes the App class, setting up the main application window with its title, dimensions, background image, and default states for data and schedule.
         :return: None
-        '''
+        '''        
+        #Wecome window title,defaul sizing,window resizing allowed
         super().__init__()
         self.title("Welcome")
         self.geometry("600x800")
         self.resizable(True, True)
 
+        #placeholder for background label,image
         self.bg_label = tk.Label(self)
         self.bg_label.place(relwidth=1, relheight=1)
 
@@ -61,7 +64,7 @@ class App(tk.Tk):
         if not hasattr(self, 'original_image'):
             return
         resized_image = self.original_image.resize((self.winfo_width(), self.winfo_height()), Image.Resampling.LANCZOS) #ensure background fits frame size
-        self.background_image = ImageTk.PhotoImage(resized_image)
+        self.background_image = ImageTk.PhotoImage(resized_image)    # Converts to tkinter-compatible format
         self.bg_label.config(image=self.background_image)
 
     def welcome_screen(self):
@@ -74,7 +77,7 @@ class App(tk.Tk):
                 widget.destroy()
 
         self.bg_label.config(image=self.background_image)
-
+        # Creates and packs welcome label and button
         welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=("Arial", 16), bg="white")
         welcome_label.pack(pady=50)
 
@@ -92,7 +95,7 @@ class App(tk.Tk):
                 widget.destroy()
 
         self.bg_label.config(image=self.background_image)
-
+        # Created labels, buttons and packs them for file uploads
         instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=("Arial", 14),
                                      bg="white")
         instruction_label.pack(pady=20)
@@ -100,7 +103,7 @@ class App(tk.Tk):
         upload_button = tk.Button(self, text="Upload Horse Data", command=self.upload_horse_data, font=("Arial", 14),
                                   bg="white", fg="black")
         upload_button.pack(pady=10)
-
+         # Additional buttons to add/remove horses, riders, and lessons, gneerate schedules
         upload_rider_button = tk.Button(self, text="Upload Rider Data", command=self.upload_rider_data,
                                         font=("Arial", 14), bg="white", fg="black")
         upload_rider_button.pack(pady=10)
@@ -181,10 +184,12 @@ class App(tk.Tk):
         Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leaser.
         :return: None
         '''
+        
         add_horse_window = tk.Toplevel(self)
         add_horse_window.title("Add Horse")
         add_horse_window.geometry("400x450")
 
+        # Input fields for horse details
         tk.Label(add_horse_window, text="Name:").pack(pady=5)
         name_entry = tk.Entry(add_horse_window)
         name_entry.pack(pady=5)
@@ -209,6 +214,7 @@ class App(tk.Tk):
         leaser_entry = tk.Entry(add_horse_window)
         leaser_entry.pack(pady=5)
 
+         #Function to handle horse submission
         def submit_horse():
             try:
                 name = name_entry.get()
@@ -237,6 +243,7 @@ class App(tk.Tk):
         add_rider_window.title("Add Rider")
         add_rider_window.geometry("400x400")
 
+        # Input fields for rider details
         tk.Label(add_rider_window, text="Name:").pack(pady=5)
         name_entry = tk.Entry(add_rider_window)
         name_entry.pack(pady=5)
@@ -249,6 +256,7 @@ class App(tk.Tk):
         skill_level_entry = tk.Entry(add_rider_window)
         skill_level_entry.pack(pady=5)
 
+        # Function to handle rider submission
         def submit_rider():
             try:
                 name = name_entry.get()
@@ -269,10 +277,11 @@ class App(tk.Tk):
         Opens a new window to add a new lesson to the schedule, with options to select the rider, day, time, type of lesson, and duration.
         :return: None
         '''
-        add_lesson_window = tk.Toplevel(self)
+        add_lesson_window = tk.Toplevel(self)    # Creates a new top-level window
         add_lesson_window.title("Add Lesson")
         add_lesson_window.geometry("400x400")
 
+        # Dropdown for rider selection
         rider_name_option = StringVar()
         riders = [r.get_name() for r in self.schedule.get_riders()]
 
@@ -283,7 +292,7 @@ class App(tk.Tk):
         tk.Label(add_lesson_window, text="Name Of Rider:").pack(pady=2)
         rider_options = tk.OptionMenu(add_lesson_window, rider_name_option, *riders)
         rider_options.pack(pady=10)
-
+        # Dropdown for day selection
         days_of_week = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         day_option = StringVar()
 
@@ -291,7 +300,8 @@ class App(tk.Tk):
         tk.Label(add_lesson_window, text="Day of week:").pack(pady=2)
         day_options = tk.OptionMenu(add_lesson_window, day_option, *days_of_week)
         day_options.pack(pady=10)
-
+        
+        # Dropdown for lesson type
         tk.Label(add_lesson_window, text="Type of lesson:").pack(pady=2)
         jump_var = StringVar()
         jump_var.set("Jumping")
@@ -300,6 +310,7 @@ class App(tk.Tk):
                                      state="readonly")
         jumping_lesson_dropdown.pack(pady=10)
 
+        # Dropdown for lesson duration
         tk.Label(add_lesson_window, text="Duration of Lesson (in minutes):").pack(pady=2)
         duration_var = StringVar()
         duration_var.set("30")
@@ -309,6 +320,7 @@ class App(tk.Tk):
                                                state="readonly")
         duration_dropdown.pack(pady=10)
 
+        # Function to get time based on hour, minute, and AM/PM
         def get_time():
             if ampm_var.get() == "AM":
               if int(hour_var.get()) < 10:
@@ -335,9 +347,10 @@ class App(tk.Tk):
                                      state="readonly")
         ampm_dropdown.pack(side=tk.LEFT, padx=5, pady=10)
 
-
+        # Function to submit a lesson to the schedule
         def submit_lesson():
             try:
+                # Retrieves the selected rider,time,day and duration and convert duration of lesson to int
                 rider = rider_name_option.get()
                 time = get_time()
                 day = day_option.get()
@@ -348,9 +361,10 @@ class App(tk.Tk):
                 messagebox.showinfo("Success", f"Lesson added successfully.")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add rider: {e}")
-
+        # Button to add a lesson, triggering the `submit_lesson` function
         tk.Button(add_lesson_window, text="Add Lesson", command=submit_lesson).pack(pady=20)
-    def remove_horse(self):
+        
+    def remove_horse(self):# Function to remove a horse from the schedule
         '''
         Prompts the user to enter the name of a horse to remove from the schedule and processes the removal.
         :return: None
@@ -397,7 +411,7 @@ class App(tk.Tk):
                 except Exception as e:
                     print(f"Error during schedule generation (Attempt {attempts}): {e}")
 
-            if attempts == 1000:
+            if attempts == 1000: # Raises an exception if schedule generation fails
                 raise Exception("Failed to generate a working schedule.")
 
             self.show_schedule(self.schedule)
