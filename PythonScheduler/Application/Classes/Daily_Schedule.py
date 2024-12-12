@@ -71,6 +71,8 @@ class Daily_Schedule:
         Returns: Time in 12-hour format with AM/PM (e.g., "02:00 PM").
         """
         try:
+            if military_time == "-1":
+                return "Hack"
             # Ensure the input is exactly 4 characters and is numeric
             if len(military_time) != 4 or not military_time.isdigit():
                 raise ValueError("Invalid time format. Use HHMM format (e.g., 1400).")

@@ -1,7 +1,7 @@
 # Zack Dragos & Sampath Reddy M.
 
-from PythonScheduler.Application.Classes.Daily_Schedule import *
-from PythonScheduler.Application.Classes.Rider import *
+from Classes.Daily_Schedule import *
+from Classes.Rider import *
 import random
 
 

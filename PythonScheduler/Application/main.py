@@ -345,17 +345,53 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        schedule_label = tk.Label(self, text="Generated Schedule", font=("Arial", 16), bg="white")
+        generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule,
+                                             font=("Arial", 14), bg="white",
+                                             fg="black")
+        generate_schedule_button.pack(pady=10)
+        
+        schedule_label = tk.Label(self, text="Weekly Schedule", font=("Arial", 16), bg="white")
         schedule_label.pack(pady=20)
 
-        # for horse in schedule.get_horses():
-        #     horse_label = tk.Label(self, text=f"Horse: {horse.get_name()}", font=("Arial", 12), bg="white")
-        #     horse_label.pack(pady=5)
-        #
-        # for rider in schedule.get_riders():
-        #     rider_label = tk.Label(self, text=f"Rider: {rider.get_name()}", font=("Arial", 12), bg="white")
-        #     rider_label.pack(pady=5)
+        # Create a scrollable frame for the schedule
+        canvas = tk.Canvas(self, bg="white")
+        scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="white")
 
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Loop through each day in the weekly schedule
+        for day, daily_schedule in schedule._planner.items():
+            day_label = tk.Label(scrollable_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
+            day_label.pack(anchor="w", padx=10, pady=5)
+
+            # Loop through each hour in the day's planner
+            planner = daily_schedule.get_planner()
+            if planner:
+                for time, lessons in sorted(planner.items()):
+                    time_label = tk.Label(scrollable_frame, text=f"  {daily_schedule.military_to_standard(time)}",
+                                          font=("Arial", 12), bg="white")
+                    time_label.pack(anchor="w", padx=20)
+
+                    for rider, horse in lessons:
+                        lesson_label = tk.Label(scrollable_frame,
+                                                text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
+                                                font=("Arial", 10), bg="white")
+                        lesson_label.pack(anchor="w", padx=40)
+            else:
+                no_schedule_label = tk.Label(scrollable_frame, text="  No lessons scheduled.",
+                                             font=("Arial", 10, "italic"), bg="white")
+                no_schedule_label.pack(anchor="w", padx=20)
+
+        # Add a back button
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
