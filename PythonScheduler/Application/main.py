@@ -276,7 +276,10 @@ class App(tk.Tk):
         rider_name_option = StringVar()
         riders = [r.get_name() for r in self.schedule.get_riders()]
 
+        if len(riders) == 0:
+            riders = ["No Riders"]
         rider_name_option.set(riders[0])
+
         tk.Label(add_lesson_window, text="Name Of Rider:").pack(pady=2)
         rider_options = tk.OptionMenu(add_lesson_window, rider_name_option, *riders)
         rider_options.pack(pady=10)
