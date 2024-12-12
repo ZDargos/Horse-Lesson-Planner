@@ -1,3 +1,7 @@
+# Author: Zack Dragos, Sampath Reddy M., Palak Sood
+# Date: 12/13/24
+# Description: File storing all of the functionality of the application. The usage of tkinter and culmination of the app
+
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
 import pandas as pd
@@ -16,6 +20,10 @@ from Classes.Weekly_Schedule import *
 
 class App(tk.Tk):
     def __init__(self):
+        '''
+        Initializes the App class, setting up the main application window with its title, dimensions, background image, and default states for data and schedule.
+        :return: None
+        '''
         super().__init__()
         self.title("Welcome")
         self.geometry("600x800")
@@ -34,21 +42,33 @@ class App(tk.Tk):
         self.welcome_screen()
 
     def initialize_background_image(self):
+        '''
+        Loads and sets the background image for the application window, resizing it to fit the window dimensions.
+        :return: None
+        '''
         try:
-            self.image_path = "temp-bg.jpg"  # Ensure this image file is present in the directory
+            self.image_path = "bg.jpg"  # Ensure this image file is present in the directory
             self.original_image = Image.open(self.image_path)
             self.resize_background()
         except Exception as e:
             print(f"Error loading background image: {e}")
 
-    def resize_background(self, event=None):
+    def resize_background(self):
+        '''
+        Adjusts the background image dimensions dynamically when the application window is resized.
+        :return: None
+        '''
         if not hasattr(self, 'original_image'):
             return
-        resized_image = self.original_image.resize((self.winfo_width(), self.winfo_height()), Image.Resampling.LANCZOS)
+        resized_image = self.original_image.resize((self.winfo_width(), self.winfo_height()), Image.Resampling.LANCZOS) #ensure background fits frame size
         self.background_image = ImageTk.PhotoImage(resized_image)
         self.bg_label.config(image=self.background_image)
 
     def welcome_screen(self):
+        '''
+        Displays the welcome screen of the application, with a title and an "Enter" button to navigate to the file upload screen.
+        :return: None
+        '''
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
@@ -63,6 +83,10 @@ class App(tk.Tk):
         enter_button.pack(pady=20)
 
     def file_upload_screen(self):
+        '''
+        Displays the file upload screen, allowing the user to upload horse and rider data, and navigate to other functionalities such as adding or removing entities.
+        :return: None
+        '''
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
@@ -111,6 +135,10 @@ class App(tk.Tk):
 
 
     def upload_horse_data(self):
+        '''
+        Prompts the user to select and upload a file containing horse data in CSV or Excel format, and processes the file for use within the application.
+        :return: None
+        '''
         file_path = filedialog.askopenfilename(
             title="Select Horse Data File",
             filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx *.xls")]
@@ -128,6 +156,10 @@ class App(tk.Tk):
             messagebox.showwarning("No File Selected", "Please select a valid horse data file.")
 
     def upload_rider_data(self):
+        '''
+        Prompts the user to select and upload a file containing rider data in CSV or Excel format, and processes the file for use within the application.
+        :return: None
+        '''
         file_path = filedialog.askopenfilename(
             title="Select Rider Data File",
             filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx *.xls")]
@@ -145,6 +177,10 @@ class App(tk.Tk):
             messagebox.showwarning("No File Selected", "Please select a valid rider data file.")
 
     def add_horse(self):
+        '''
+        Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leaser.
+        :return: None
+        '''
         add_horse_window = tk.Toplevel(self)
         add_horse_window.title("Add Horse")
         add_horse_window.geometry("400x450")
@@ -193,6 +229,10 @@ class App(tk.Tk):
         tk.Button(add_horse_window, text="Add Horse", command=submit_horse).pack(pady=20)
 
     def add_rider(self):
+        '''
+        Opens a new window to add a new rider to the schedule, with fields for the rider's name, weight, and skill level.
+        :return: None
+        '''
         add_rider_window = tk.Toplevel(self)
         add_rider_window.title("Add Rider")
         add_rider_window.geometry("400x400")
@@ -225,6 +265,10 @@ class App(tk.Tk):
         tk.Button(add_rider_window, text="Add Rider", command=submit_rider).pack(pady=20)
 
     def add_lesson(self):
+        '''
+        Opens a new window to add a new lesson to the schedule, with options to select the rider, day, time, type of lesson, and duration.
+        :return: None
+        '''
         add_lesson_window = tk.Toplevel(self)
         add_lesson_window.title("Add Lesson")
         add_lesson_window.geometry("400x400")
@@ -304,10 +348,25 @@ class App(tk.Tk):
 
         tk.Button(add_lesson_window, text="Add Lesson", command=submit_lesson).pack(pady=20)
     def remove_horse(self):
-        # Placeholder for remove horse functionality
-        pass
+        '''
+        Prompts the user to enter the name of a horse to remove from the schedule and processes the removal.
+        :return: None
+        '''
+        try:
+            name = simpledialog.askstring("Remove Horse", "Enter Horse to Remove:")
+            removed = self.schedule.remove_horse(name)
+            if removed:
+                messagebox.showinfo("Horse Removed", f"{name} successfully removed from the schedule.")
+            else:
+                messagebox.showwarning("Not Found", f"Horse named {name} not found in the schedule.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error removing horse: {e}")
 
     def remove_rider(self):
+        '''
+        Prompts the user to enter the name of a rider to remove from the schedule and processes the removal.
+        :return: None
+        '''
         try:
             name = simpledialog.askstring("Remove Rider", "Enter Rider Name to Remove:")
             removed = self.schedule.remove_rider(name)
@@ -319,6 +378,10 @@ class App(tk.Tk):
             messagebox.showerror("Error", f"Error removing rider: {e}")
 
     def process_schedule(self):
+        '''
+        Attempts to generate a weekly schedule for lessons based on the input data, retrying multiple times in case of conflicts.
+        :return: None
+        '''
         try:
             attempts = 0
             while attempts < 50:
@@ -339,6 +402,11 @@ class App(tk.Tk):
             messagebox.showerror("Error", f"Error generating schedule: {e}")
 
     def show_schedule(self, schedule):
+        '''
+        Displays the generated weekly schedule in a scrollable format, showing lessons for each day and time.
+        :param schedule: an instance of the Weekly_Schedule class containing the schedule data
+        :return: None
+        '''
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
@@ -349,7 +417,7 @@ class App(tk.Tk):
                                              font=("Arial", 14), bg="white",
                                              fg="black")
         generate_schedule_button.pack(pady=10)
-        
+
         schedule_label = tk.Label(self, text="Weekly Schedule", font=("Arial", 16), bg="white")
         schedule_label.pack(pady=20)
 
@@ -392,11 +460,16 @@ class App(tk.Tk):
                 no_schedule_label.pack(anchor="w", padx=20)
 
         # Add a back button
-        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
     def upload_horses(self, horse_data):
+        '''
+        Processes uploaded horse data and integrates it into the application, adding horses to the schedule as needed.
+        :param horse_data: DataFrame containing the uploaded horse data
+        :return: None
+        '''
         for i, row in horse_data.iterrows():
             leaser = row['Leaser'] if pd.notnull(row['Leaser']) else ''
             self.schedule.add_horse(Horse(
@@ -411,6 +484,11 @@ class App(tk.Tk):
             print(horse)
 
     def upload_riders(self, rider_data):
+        '''
+        Processes uploaded rider data and integrates it into the application, adding riders to the schedule as needed.
+        :param rider_data: DataFrame containing the uploaded rider data
+        :return: None
+        '''
         for _, row in rider_data.iterrows():
             weekly_schedule = row['Weekly Schedule']
 
