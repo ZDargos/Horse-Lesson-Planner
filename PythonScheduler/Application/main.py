@@ -53,7 +53,7 @@ class App(tk.Tk):
         except Exception as e:
             print(f"Error loading background image: {e}")
 
-    def resize_background(self):
+    def resize_background(self, event=None):
         '''
         Adjusts the background image dimensions dynamically when the application window is resized.
         :return: None
@@ -413,7 +413,7 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule,
+        generate_schedule_button = tk.Button(self, text="Re-Generate Schedule", command=self.process_schedule,
                                              font=("Arial", 14), bg="white",
                                              fg="black")
         generate_schedule_button.pack(pady=10)
@@ -485,7 +485,7 @@ class App(tk.Tk):
 
     def upload_riders(self, rider_data):
         '''
-        Processes uploaded rider data and integrates it into the application, adding riders to the schedule as needed.
+        Processes uploaded rider data and integrates it into the application, adding horses to the schedule as needed.
         :param rider_data: DataFrame containing the uploaded rider data
         :return: None
         '''
