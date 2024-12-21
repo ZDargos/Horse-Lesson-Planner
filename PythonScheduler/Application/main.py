@@ -7,6 +7,8 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 import pandas as pd
 from PIL import Image, ImageTk  # Ensure Pillow is installed
 from tkinter import StringVar
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Add these lines as per your current working directory setup to import classes
 import sys
@@ -40,6 +42,10 @@ class App(tk.Tk):
         self.horse_data = None
         self.rider_data = None
         self.welcome_screen()
+
+        self.active_window = self
+
+        self.schedule_displayed = False
 
     def initialize_background_image(self):
         '''
@@ -91,6 +97,8 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
+        self.active_window = self
+
         self.bg_label.config(image=self.background_image)
 
         instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=("Arial", 14),
@@ -128,6 +136,10 @@ class App(tk.Tk):
         generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule, font=("Arial", 14), bg="white",
                                 fg="black")
         generate_schedule_button.pack(pady=10)
+
+        show_schedule_button = tk.Button(self, text="Show Schedule", command=lambda: self.show_schedule(self.schedule),font=("Arial", 14), bg="white",
+                                         fg="black")
+        show_schedule_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white",
                                 fg="black")
@@ -185,6 +197,8 @@ class App(tk.Tk):
         add_horse_window.title("Add Horse")
         add_horse_window.geometry("400x450")
 
+        self.active_window = add_horse_window
+
         tk.Label(add_horse_window, text="Name:").pack(pady=5)
         name_entry = tk.Entry(add_horse_window)
         name_entry.pack(pady=5)
@@ -237,6 +251,8 @@ class App(tk.Tk):
         add_rider_window.title("Add Rider")
         add_rider_window.geometry("400x400")
 
+        self.active_window = add_rider_window
+
         tk.Label(add_rider_window, text="Name:").pack(pady=5)
         name_entry = tk.Entry(add_rider_window)
         name_entry.pack(pady=5)
@@ -272,6 +288,8 @@ class App(tk.Tk):
         add_lesson_window = tk.Toplevel(self)
         add_lesson_window.title("Add Lesson")
         add_lesson_window.geometry("400x400")
+
+        self.active_window = add_lesson_window
 
         rider_name_option = StringVar()
         riders = [r.get_name() for r in self.schedule.get_riders()]
@@ -385,6 +403,7 @@ class App(tk.Tk):
         Attempts to generate a weekly schedule for lessons based on the input data, retrying multiple times in case of conflicts.
         :return: None
         '''
+
         try:
             attempts = 0
             while attempts < 50:
@@ -396,76 +415,161 @@ class App(tk.Tk):
                     break
                 except Exception as e:
                     print(f"Error during schedule generation (Attempt {attempts}): {e}")
-
+            if self.schedule_displayed:
+                self.show_schedule(self.schedule)
+            else:
+                messagebox.showinfo("Success", "Successfully created schedule!")
             if attempts == 1000:
                 raise Exception("Failed to generate a working schedule.")
 
-            self.show_schedule(self.schedule)
+
+
         except Exception as e:
             messagebox.showerror("Error", f"Error generating schedule: {e}")
 
     def show_schedule(self, schedule):
         '''
-        Displays the generated weekly schedule in a scrollable format, showing lessons for each day and time.
+        Displays the generated weekly schedule, adjusting layout dynamically based on window state (maximized or normal).
         :param schedule: an instance of the Weekly_Schedule class containing the schedule data
         :return: None
         '''
+        self.schedule_displayed = True
+        self.schedule_data = schedule  # Save the schedule data for re-rendering
+        self.current_state = self.state()  # Track the current window state
+
+        # Bind the window's configure event to update layout dynamically
+        self.bind("<Configure>", self.on_window_resize)
+
+        # Render the initial layout
+        self.render_schedule_layout()
+
+    def on_window_resize(self, event):
+        '''
+        Handles window resize events and updates the schedule layout if the window state changes.
+        :param event: The event triggered by resizing the window.
+        :return: None
+        '''
+        # Check if the current screen is the schedule screen before updating
+        if hasattr(self, "schedule_data"):
+            new_state = self.state()
+            if new_state != self.current_state:  # Only update if the state (e.g., maximized) changes
+                self.current_state = new_state
+                self.render_schedule_layout()
+
+    def render_schedule_layout(self):
+        '''
+        Renders the schedule layout dynamically based on the current window state.
+        :return: None
+        '''
+        # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
 
         self.bg_label.config(image=self.background_image)
 
+        # Header and control buttons
         generate_schedule_button = tk.Button(self, text="Re-Generate Schedule", command=self.process_schedule,
-                                             font=("Arial", 14), bg="white",
-                                             fg="black")
+                                             font=("Arial", 14), bg="white", fg="black")
         generate_schedule_button.pack(pady=10)
 
         schedule_label = tk.Label(self, text="Weekly Schedule", font=("Arial", 16), bg="white")
         schedule_label.pack(pady=20)
 
-        # Create a scrollable frame for the schedule
-        canvas = tk.Canvas(self, bg="white")
-        scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="white")
+        export_button = ttk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf)
+        export_button.pack(pady=10)
 
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
+        is_maximized = self.state() == 'zoomed'
 
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        if is_maximized:
+            # Multi-column layout with horizontal scrolling
+            outer_canvas = tk.Canvas(self, bg="white")
+            x_scrollbar = tk.Scrollbar(self, orient="horizontal", command=outer_canvas.xview)
+            outer_frame = tk.Frame(outer_canvas, bg="white")
+            self.resize_background()
 
-        # Loop through each day in the weekly schedule
-        for day, daily_schedule in schedule._planner.items():
-            day_label = tk.Label(scrollable_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
-            day_label.pack(anchor="w", padx=10, pady=5)
+            outer_frame.bind(
+                "<Configure>",
+                lambda e: outer_canvas.configure(scrollregion=outer_canvas.bbox("all"))
+            )
+            outer_canvas.create_window((0, 0), window=outer_frame, anchor="nw")
+            outer_canvas.configure(xscrollcommand=x_scrollbar.set)
 
-            # Loop through each hour in the day's planner
-            planner = daily_schedule.get_planner()
-            if planner:
-                for time, lessons in sorted(planner.items()):
-                    time_label = tk.Label(scrollable_frame, text=f"  {daily_schedule.military_to_standard(time)}",
-                                          font=("Arial", 12), bg="white")
-                    time_label.pack(anchor="w", padx=20)
+            outer_canvas.pack(side="top", fill="both", expand=True)
+            x_scrollbar.pack(side="bottom", fill="x")
 
-                    for rider, horse in lessons:
-                        lesson_label = tk.Label(scrollable_frame,
-                                                text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
-                                                font=("Arial", 10), bg="white")
-                        lesson_label.pack(anchor="w", padx=40)
-            else:
-                no_schedule_label = tk.Label(scrollable_frame, text="  No lessons scheduled.",
-                                             font=("Arial", 10, "italic"), bg="white")
-                no_schedule_label.pack(anchor="w", padx=20)
+            for col, (day, daily_schedule) in enumerate(self.schedule_data._planner.items()):
+                day_frame = tk.Frame(outer_frame, bg="white", borderwidth=2, relief="groove")
+                day_frame.grid(row=0, column=col, padx=10, pady=10, sticky="n")
 
-        # Add a back button
-        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
+                day_label = tk.Label(day_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
+                day_label.pack(anchor="w", padx=10, pady=5)
+
+                planner = daily_schedule.get_planner()
+                if planner:
+                    for time, lessons in sorted(planner.items()):
+                        time_label = tk.Label(day_frame, text=f"  {daily_schedule.military_to_standard(time)}",
+                                              font=("Arial", 12), bg="white")
+                        time_label.pack(anchor="w", padx=20)
+
+                        for rider, horse in lessons:
+                            lesson_label = tk.Label(day_frame,
+                                                    text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
+                                                    font=("Arial", 10), bg="white")
+                            lesson_label.pack(anchor="w", padx=40)
+                else:
+                    no_schedule_label = tk.Label(day_frame, text="  No lessons scheduled.",
+                                                 font=("Arial", 10, "italic"), bg="white")
+                    no_schedule_label.pack(anchor="w", padx=20)
+        else:
+            # Single-column scrollable layout for normal state
+            canvas = tk.Canvas(self, bg="white")
+            scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
+            scrollable_frame = tk.Frame(canvas, bg="white")
+
+            scrollable_frame.bind(
+                "<Configure>",
+                lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            )
+            canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+            canvas.configure(yscrollcommand=scrollbar.set)
+
+            canvas.pack(side="left", fill="both", expand=True)
+            scrollbar.pack(side="right", fill="y")
+
+            for day, daily_schedule in self.schedule_data._planner.items():
+                day_label = tk.Label(scrollable_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
+                day_label.pack(anchor="w", padx=10, pady=5)
+
+                planner = daily_schedule.get_planner()
+                if planner:
+                    for time, lessons in sorted(planner.items()):
+                        time_label = tk.Label(scrollable_frame, text=f"  {daily_schedule.military_to_standard(time)}",
+                                              font=("Arial", 12), bg="white")
+                        time_label.pack(anchor="w", padx=20)
+
+                        for rider, horse in lessons:
+                            lesson_label = tk.Label(scrollable_frame,
+                                                    text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
+                                                    font=("Arial", 10), bg="white")
+                            lesson_label.pack(anchor="w", padx=40)
+                else:
+                    no_schedule_label = tk.Label(scrollable_frame, text="  No lessons scheduled.",
+                                                 font=("Arial", 10, "italic"), bg="white")
+                    no_schedule_label.pack(anchor="w", padx=20)
+
+        back_button = tk.Button(self, text="Back", command=self.leave_schedule_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
+
+    def leave_schedule_screen(self):
+        '''
+        Unbinds the resize event and navigates away from the schedule screen.
+        :return: None
+        '''
+        self.unbind("<Configure>")  # Unbind resize event
+        self.file_upload_screen()  # Navigate to the file upload screen
+        self.schedule_displayed = False
 
     def upload_horses(self, horse_data):
         '''
@@ -516,6 +620,86 @@ class App(tk.Tk):
             ))
         for rider in self.schedule.get_riders():
             print(rider)
+
+    def export_schedule_as_pdf(self):
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".pdf",
+            filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
+        )
+        if not file_path:
+            return
+
+        try:
+            pdf = canvas.Canvas(file_path, pagesize=letter)
+            pdf.setFont("Helvetica", 14)
+            left_margin = 50
+            right_margin = 300
+            column_gap = 20
+            y_position = 750
+            current_column = left_margin
+
+            # Title
+            pdf.drawString(250, y_position, "Weekly Schedule")
+            y_position -= 30
+
+            for day, daily_schedule in self.schedule._planner.items():
+                # Estimate height needed for the day's content
+                planner = daily_schedule.get_planner()
+                lines_needed = 1  # For the day header
+                if planner:
+                    for time, details in sorted(planner.items()):
+                        lines_needed += 1  # Time header
+                        lines_needed += len(details)  # Each lesson
+                else:
+                    lines_needed += 1  # "No lessons scheduled" message
+
+                # Estimate required space (15 units per line)
+                space_needed = lines_needed * 15 + 10  # Add padding between days
+
+                # Check if there's enough space in the current column
+                if y_position - space_needed < 50:
+                    if current_column == left_margin:
+                        # Switch to the right column
+                        current_column = right_margin
+                        y_position = 720
+                    else:
+                        # Move to a new page
+                        pdf.showPage()
+                        pdf.setFont("Helvetica", 14)
+                        current_column = left_margin
+                        y_position = 720
+
+                # Add day header
+                pdf.setFont("Helvetica-Bold", 12)
+                pdf.drawString(current_column, y_position, f"{day}:")
+                y_position -= 20
+
+                if planner:
+                    for time, details in sorted(planner.items()):
+                        # Add time
+                        pdf.setFont("Helvetica", 12)
+                        pdf.drawString(current_column + 20, y_position, f"{daily_schedule.military_to_standard(time)}:")
+                        y_position -= 15
+
+                        for rider, horse in details:
+                            # Add rider and horse details
+                            horse_name = horse if horse else "TBD"
+                            pdf.setFont("Helvetica", 10)
+                            pdf.drawString(current_column + 40, y_position, f"Rider: {rider} | Horse: {horse_name}")
+                            y_position -= 15
+                else:
+                    # Add "No lessons scheduled" message
+                    pdf.setFont("Helvetica-Oblique", 10)
+                    pdf.drawString(current_column + 20, y_position, "No lessons scheduled.")
+                    y_position -= 15
+
+                # Add spacing between days
+                y_position -= 10
+
+            pdf.save()
+            messagebox.showinfo("Success", f"Schedule exported as PDF to {file_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to export schedule: {e}")
 
 
 # Application entry
