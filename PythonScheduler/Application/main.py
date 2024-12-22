@@ -320,7 +320,7 @@ class App(tk.Tk):
         rider_name_option = StringVar()
         riders = [r.get_name() for r in self.schedule.get_riders()]
         riders.sort()
-        
+
         if len(riders) == 0:
             riders = ["No Riders"]
         rider_name_option.set(riders[0])
