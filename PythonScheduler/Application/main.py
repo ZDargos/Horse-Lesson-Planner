@@ -183,12 +183,15 @@ class App(tk.Tk):
 
     def add_horse(self):
         '''
-        Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leaser.
+        Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leasers.
         :return: None
         '''
+        import tkinter as tk
+        from tkinter import messagebox, StringVar
+
         add_horse_window = tk.Toplevel(self)
         add_horse_window.title("Add Horse")
-        add_horse_window.geometry("400x450")
+        add_horse_window.geometry("400x600")
 
         self.active_window = add_horse_window
 
@@ -201,7 +204,6 @@ class App(tk.Tk):
         max_weight_entry.pack(pady=5)
 
         tk.Label(add_horse_window, text="Skill Level:").pack(pady=5)
-        # Skill Level Checkboxes
         skill_levels = {
             "Beginner": tk.IntVar(),
             "Novice": tk.IntVar(),
@@ -219,17 +221,31 @@ class App(tk.Tk):
         max_rides_entry = tk.Entry(add_horse_window)
         max_rides_entry.pack(pady=5)
 
-        rider_name_option = StringVar()
+        leaser_frame = tk.Frame(add_horse_window)
+        leaser_frame.pack(pady=10, fill=tk.X)
+
+        leaser_menus = []
+
         riders = [r.get_name() for r in self.schedule.get_riders()]
         riders.sort()
-
         if len(riders) == 0:
             riders = ["No Riders"]
-        rider_name_option.set(riders[0])
 
-        tk.Label(add_horse_window, text="Leaser (optional):").pack(pady=2)
-        rider_options = tk.OptionMenu(add_horse_window, rider_name_option, *riders)
-        rider_options.pack(pady=10)
+        def add_leaser_menu():
+            leaser_var = StringVar()
+            leaser_var.set(riders[0])  # Default to the first rider in the list
+            menu = tk.OptionMenu(leaser_frame, leaser_var, *riders)
+            menu.pack(pady=2)
+            leaser_menus.append((leaser_var, menu))
+
+        def remove_leaser_menu():
+            if leaser_menus:
+                _, last_menu = leaser_menus.pop()
+                last_menu.destroy()
+
+        tk.Label(add_horse_window, text="Leasers (optional):").pack(pady=5)
+        tk.Button(add_horse_window, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Button(add_horse_window, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
 
         def submit_horse():
             try:
@@ -243,10 +259,11 @@ class App(tk.Tk):
                 skill_level = "-".join(skills)
                 is_jumper = is_jumper_entry.get().strip().lower() == "yes"
                 max_rides = int(max_rides_entry.get())
-                leaser = rider_name_option.get()
+                leasers = [leaser_var.get() for leaser_var, _ in leaser_menus if leaser_var.get() != "No Riders"]
+                leasers = ";".join(leasers)
 
                 new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=skill_level,
-                                  max_daily_jumps=max_rides, leaser=leaser)
+                                  max_daily_jumps=max_rides, leasers=leasers)
                 self.schedule.add_horse(new_horse)
                 messagebox.showinfo("Success", f"Horse '{name}' added successfully.")
                 add_horse_window.destroy()
