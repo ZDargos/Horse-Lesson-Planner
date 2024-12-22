@@ -66,9 +66,9 @@ class App(tk.Tk):
         Adjusts the background image dimensions dynamically when the application window is resized.
         :return: None
         '''
-        if not hasattr(self, 'original_image'):
+        if not hasattr(self, 'original_image') or not hasattr(self, 'bg_label') or not self.bg_label.winfo_exists():
             return
-        resized_image = self.original_image.resize((self.winfo_width(), self.winfo_height()), Image.Resampling.LANCZOS) #ensure background fits frame size
+        resized_image = self.original_image.resize((self.winfo_width(), self.winfo_height()), Image.Resampling.LANCZOS)
         self.background_image = ImageTk.PhotoImage(resized_image)
         self.bg_label.config(image=self.background_image)
 
@@ -152,54 +152,141 @@ class App(tk.Tk):
 
     def display_all_riders(self):
         """
-        Displays all riders currently on file in a new window.
+        Displays all riders using a Treeview for faster rendering.
         :return: None
         """
-        # Create a new window for displaying riders
-        riders_window = tk.Toplevel(self)
-        riders_window.title("Riders List")
-        riders_window.geometry("400x600")
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
 
-        # Header label
-        header_label = tk.Label(riders_window, text=f"All Riders: {len(self.schedule.get_riders())} Total", font=("Arial", 16), bg="white")
+        header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}", font=("Arial", 16), bg="white")
         header_label.pack(pady=10)
 
-        # Scrollable frame setup
-        canvas = tk.Canvas(riders_window, bg="white")
-        scrollbar = tk.Scrollbar(riders_window, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="white")
+        style = ttk.Style()
+        style.configure("Treeview", font=("Arial", 14))  # Row font
+        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))  # Header font
 
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
+        # Treeview setup
+        tree = ttk.Treeview(self, columns=("Name"), show="headings", height=20)
+        tree.heading("Name", text="Rider Name  |  Double Click To See More Information")
+        tree.column("Name", anchor="center", width=75)
 
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
 
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Retrieve and display rider names
+        # Add riders to the Treeview
         riders = self.schedule.get_riders()
         riders = [i.get_name() for i in riders]
         riders.sort()
+        for rider in riders:
+            tree.insert("", "end", values=(rider))
 
+        def on_double_click(event):
+            selected_item = tree.selection()
+            if selected_item:
+                rider_name = tree.item(selected_item, "values")[0]
+                rider = next((r for r in riders if r == rider_name), None)
+                if rider:
+                    self.display_rider_information(self.schedule.get_rider(rider))
 
-        if riders:
-            for rider in riders:
-                rider_label = tk.Label(scrollable_frame, text=f'{rider}', font=("Times New Roman", 15), bg="white")
-                rider_label.pack(anchor="w", padx=10, pady=5)
+        tree.bind("<Double-1>", on_double_click)
+        tree.pack(fill="both", expand=True)
+
+        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
+                                fg="black")
+        back_button.pack(pady=20)
+
+    def display_rider_information(self, rider):
+        """
+        Displays detailed information about a specific rider in the current window.
+        :param rider: Rider object whose information is to be displayed.
+        :return: None
+        """
+        # Reinitialize the background label if it's missing
+        if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
+            self.bg_label = tk.Label(self)
+            self.bg_label.place(relwidth=1, relheight=1)
+            self.resize_background()
+
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
+
+        tk.Label(self, text=f"Name: {rider.get_name()}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Weight: {rider.get_weight()} lbs", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Skill Level: {rider.get_skill_level()}", font=("Arial", 12), bg="white").pack(pady=5)
+
+        recent_horses = rider.get_recent_horses()
+        if recent_horses:
+            tk.Label(self, text="Recent Horses:", font=("Arial", 12, "bold"), bg="white").pack(pady=5)
+            for horse in recent_horses:
+                tk.Label(self, text=f"- {horse}", font=("Arial", 12), bg="white").pack(anchor="w", padx=20)
         else:
-            no_riders_label = tk.Label(scrollable_frame, text="No riders found.", font=("Consolas", 12, "italic"),
-                                       bg="white")
-            no_riders_label.pack(anchor="center", pady=20)
+            tk.Label(self, text="No recent horses.", font=("Arial", 12, "italic"), bg="white").pack(pady=5)
 
-        # Close button
-        close_button = tk.Button(riders_window, text="Close", command=riders_window.destroy, font=("Arial", 12),
-                                 bg="#f44336", fg="black")
-        close_button.pack(pady=20)
+        tk.Label(self, text=f"Total Owed: ${rider.get_total_owed():.2f}", font=("Arial", 12), bg="white").pack(pady=5)
 
+        def edit_rider():
+            self.edit_rider_information(rider)
+
+        edit_button = tk.Button(self, text="Edit", command=edit_rider, font=("Arial", 12), bg="#FFC107", fg="black")
+        edit_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="#f44336",
+                                fg="black")
+        back_button.pack(pady=10)
+
+    def edit_rider_information(self, rider):
+        """
+        Opens a form in the current window to edit a rider's information.
+        :param rider: Rider object to edit.
+        :return: None
+        """
+        # Clear all widgets from the current window
+        for widget in self.winfo_children():
+            widget.destroy()
+
+        tk.Label(self, text="Edit Rider Information", font=("Arial", 14), bg="white").pack(pady=10)
+
+        # Name
+        tk.Label(self, text="Name:", font=("Arial", 12), bg="white").pack(pady=5)
+        name_entry = tk.Entry(self)
+        name_entry.insert(0, rider.get_name())
+        name_entry.pack(pady=5)
+
+        # Weight
+        tk.Label(self, text="Weight (lbs):", font=("Arial", 12), bg="white").pack(pady=5)
+        weight_entry = tk.Entry(self)
+        weight_entry.insert(0, str(rider.get_weight()))
+        weight_entry.pack(pady=5)
+
+        # Skill Level
+        tk.Label(self, text="Skill Level:", font=("Arial", 12), bg="white").pack(pady=5)
+        skill_entry = tk.Entry(self)
+        skill_entry.insert(0, rider.get_skill_level())
+        skill_entry.pack(pady=5)
+
+        def save_changes():
+            try:
+                new_name = name_entry.get()
+                new_weight = int(weight_entry.get())
+                new_skill = skill_entry.get()
+
+                rider.set_name(new_name)
+                rider.set_weight(new_weight)
+                rider.set_skill_level(new_skill)
+
+                messagebox.showinfo("Success", "Rider information updated successfully.")
+                self.display_rider_information(rider)
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to update rider: {e}")
+
+        save_button = tk.Button(self, text="Save", command=save_changes, font=("Arial", 12), bg="#4CAF50", fg="white")
+        save_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Cancel", command=lambda: self.display_rider_information(rider),
+                                font=("Arial", 12), bg="#f44336", fg="black")
+        back_button.pack(pady=10)
 
     def load_saves(self):
         self.data_manipulator.load_riders_from_pickle(self.schedule)
