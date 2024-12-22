@@ -201,8 +201,15 @@ class App(tk.Tk):
         max_weight_entry.pack(pady=5)
 
         tk.Label(add_horse_window, text="Skill Level:").pack(pady=5)
-        skill_level_entry = tk.Entry(add_horse_window)
-        skill_level_entry.pack(pady=5)
+        # Skill Level Checkboxes
+        skill_levels = {
+            "Beginner": tk.IntVar(),
+            "Novice": tk.IntVar(),
+            "Intermediate": tk.IntVar(),
+            "Open": tk.IntVar(),
+        }
+        for level, var in skill_levels.items():
+            tk.Checkbutton(add_horse_window, text=level, variable=var).pack(pady=3)
 
         tk.Label(add_horse_window, text="Is Jumper (yes/no):").pack(pady=5)
         is_jumper_entry = tk.Entry(add_horse_window)
@@ -212,18 +219,31 @@ class App(tk.Tk):
         max_rides_entry = tk.Entry(add_horse_window)
         max_rides_entry.pack(pady=5)
 
-        tk.Label(add_horse_window, text="Leaser (optional):").pack(pady=5)
-        leaser_entry = tk.Entry(add_horse_window)
-        leaser_entry.pack(pady=5)
+        rider_name_option = StringVar()
+        riders = [r.get_name() for r in self.schedule.get_riders()]
+        riders.sort()
+
+        if len(riders) == 0:
+            riders = ["No Riders"]
+        rider_name_option.set(riders[0])
+
+        tk.Label(add_horse_window, text="Leaser (optional):").pack(pady=2)
+        rider_options = tk.OptionMenu(add_horse_window, rider_name_option, *riders)
+        rider_options.pack(pady=10)
 
         def submit_horse():
             try:
                 name = name_entry.get()
                 max_weight = int(max_weight_entry.get())
-                skill_level = skill_level_entry.get()
+                selected_skills = [level for level, var in skill_levels.items() if var.get() == 1]
+                if not selected_skills:
+                    messagebox.showerror("Skill Issue!", "At least one skill level must be selected!")
+                    return
+                skills = [skill[0] for skill in selected_skills]
+                skill_level = "-".join(skills)
                 is_jumper = is_jumper_entry.get().strip().lower() == "yes"
                 max_rides = int(max_rides_entry.get())
-                leaser = leaser_entry.get() or ""
+                leaser = rider_name_option.get()
 
                 new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=skill_level,
                                   max_daily_jumps=max_rides, leaser=leaser)
@@ -255,14 +275,27 @@ class App(tk.Tk):
         weight_entry.pack(pady=5)
 
         tk.Label(add_rider_window, text="Skill Level:").pack(pady=5)
-        skill_level_entry = tk.Entry(add_rider_window)
-        skill_level_entry.pack(pady=5)
+
+        # Skill Level Checkboxes
+        skill_levels = {
+            "Beginner": tk.IntVar(),
+            "Novice": tk.IntVar(),
+            "Intermediate": tk.IntVar(),
+            "Open": tk.IntVar(),
+        }
+        for level, var in skill_levels.items():
+            tk.Checkbutton(add_rider_window, text=level, variable=var).pack(pady=3)
 
         def submit_rider():
             try:
                 name = name_entry.get()
                 weight = int(weight_entry.get())
-                skill_level = skill_level_entry.get()
+                selected_skills = [level for level, var in skill_levels.items() if var.get() == 1]
+                if not selected_skills:
+                    messagebox.showerror("Skill Issue!", "At least one skill level must be selected!")
+                    return
+                skills = [skill[0] for skill in selected_skills]
+                skill_level = "-".join(skills)
 
                 new_rider = Rider(name, weight=weight, skill_level=skill_level, weekly_schedule=[])
                 self.schedule.add_rider(new_rider)
@@ -286,7 +319,8 @@ class App(tk.Tk):
 
         rider_name_option = StringVar()
         riders = [r.get_name() for r in self.schedule.get_riders()]
-
+        riders.sort()
+        
         if len(riders) == 0:
             riders = ["No Riders"]
         rider_name_option.set(riders[0])
