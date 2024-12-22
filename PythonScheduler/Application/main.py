@@ -19,6 +19,7 @@ sys.path.append(os.path.abspath(os.getcwd()[:-11]))
 from Classes.Horse import *
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
+from Classes.Data_Manipulation import *
 
 class App(tk.Tk):
     def __init__(self):
@@ -39,8 +40,7 @@ class App(tk.Tk):
         self.bind("<Configure>", self.resize_background)
 
         self.schedule = Weekly_Schedule()
-        self.horse_data = None
-        self.rider_data = None
+        self.data_manipulator = Data_Manipulation(".data/rider_data.pkl", ".data/horse_data.pkl")
         self.welcome_screen()
 
         self.active_window = self
@@ -155,17 +155,8 @@ class App(tk.Tk):
             title="Select Horse Data File",
             filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx *.xls")]
         )
-        if file_path:
-            try:
-                self.horse_data = pd.read_excel(file_path) if file_path.endswith(('.xlsx', '.xls')) else pd.read_csv(
-                    file_path)
-                messagebox.showinfo("Horse Data Selected",
-                                    f"Horse data successfully uploaded.\n\nData Preview:\n{self.horse_data.head()}")
-                self.upload_horses(self.horse_data)
-            except Exception as e:
-                messagebox.showerror("Error", f"Error reading horse data file: {e}")
-        else:
-            messagebox.showwarning("No File Selected", "Please select a valid horse data file.")
+        self.data_manipulator.load_horses_from_excel(file_path, self.schedule)
+
 
     def upload_rider_data(self):
         '''
@@ -176,17 +167,8 @@ class App(tk.Tk):
             title="Select Rider Data File",
             filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx *.xls")]
         )
-        if file_path:
-            try:
-                self.rider_data = pd.read_excel(file_path) if file_path.endswith(('.xlsx', '.xls')) else pd.read_csv(
-                    file_path)
-                messagebox.showinfo("Rider Data Selected",
-                                    f"Rider data successfully uploaded.\n\nData Preview:\n{self.rider_data.head()}")
-                self.upload_riders(self.rider_data)
-            except Exception as e:
-                messagebox.showerror("Error", f"Error reading rider data file: {e}")
-        else:
-            messagebox.showwarning("No File Selected", "Please select a valid rider data file.")
+        self.data_manipulator.load_riders_from_excel(file_path, self.schedule)
+
 
     def add_horse(self):
         '''
@@ -570,25 +552,6 @@ class App(tk.Tk):
         self.unbind("<Configure>")  # Unbind resize event
         self.file_upload_screen()  # Navigate to the file upload screen
         self.schedule_displayed = False
-
-    def upload_horses(self, horse_data):
-        '''
-        Processes uploaded horse data and integrates it into the application, adding horses to the schedule as needed.
-        :param horse_data: DataFrame containing the uploaded horse data
-        :return: None
-        '''
-        for i, row in horse_data.iterrows():
-            leaser = row['Leaser'] if pd.notnull(row['Leaser']) else ''
-            self.schedule.add_horse(Horse(
-                row['Name'],
-                is_jumping_horse=True if row['Jumper?'] == 1 else False,
-                max_weight=int(row['Max Weight']),
-                leaser=leaser,
-                skill_level=row['Difficulty'],
-                max_daily_jumps=int(row['Max Rides per Day'])
-            ))
-        for horse in self.schedule.get_horses():
-            print(horse)
 
     def upload_riders(self, rider_data):
         '''
