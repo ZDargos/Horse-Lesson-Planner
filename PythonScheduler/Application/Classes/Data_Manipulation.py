@@ -32,15 +32,37 @@ class Data_Manipulation:
             print(f"An error occurred while saving the data: {e}")
             return 1
 
-    def load_riders_from_pickle(self):
+    def save_horses_to_pickle(self, horses):
+        try:
+            # Open the file in binary write mode
+            with open(self.__horse_file, "wb") as file:
+                # Serialize the data using pickle
+                pickle.dump(horses, file)
+            print(f"Data saved successfully to {self.__horse_file}.")
+            return 0
+        except Exception as e:
+            print(f"An error occurred while saving the data: {e}")
+            return 1
+
+    def load_riders_from_pickle(self, schedule):
         try:
             with open(self.__rider_file, "rb") as file:
-                self._rider_meta_data = pickle.load(file)
+                schedule.set_riders(pickle.load(file))
             print("Data loaded successfully.")
-            return self._rider_meta_data
+            return 0
         except Exception as e:
             print(f"An error occurred while loading the data: {e}")
-            return None
+            return 1
+
+    def load_horses_from_pickle(self, schedule):
+        try:
+            with open(self.__horse_file, "rb") as file:
+                schedule.set_horses(pickle.load(file))
+            print("Data loaded successfully.")
+            return 0
+        except Exception as e:
+            print(f"An error occurred while loading the data: {e}")
+            return 1
 
     def load_riders_from_excel(self, file_path, schedule):
         if file_path:
@@ -49,6 +71,7 @@ class Data_Manipulation:
                     file_path)
                 messagebox.showinfo("Rider Data Selected",
                                     f"Rider data successfully uploaded.\n\nData Preview:\n{rider_data.head()}")
+                schedule.set_riders([])
                 for _, row in rider_data.iterrows():
                     weekly_schedule = row['Weekly Schedule']
 
@@ -86,6 +109,7 @@ class Data_Manipulation:
                     file_path)
                 messagebox.showinfo("Horse Data Selected",
                                     f"Horse data successfully uploaded.\n\nData Preview:\n{horse_data.head()}")
+                schedule.set_horses([])
                 for i, row in horse_data.iterrows():
                     leaser = row['Leaser'] if pd.notnull(row['Leaser']) else ''
                     schedule.add_horse(Horse(

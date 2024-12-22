@@ -41,6 +41,8 @@ class App(tk.Tk):
 
         self.schedule = Weekly_Schedule()
         self.data_manipulator = Data_Manipulation(".data/rider_data.pkl", ".data/horse_data.pkl")
+        self.load_saves()
+
         self.welcome_screen()
 
         self.active_window = self
@@ -109,7 +111,7 @@ class App(tk.Tk):
                                   bg="white", fg="black")
         upload_button.pack(pady=10)
 
-        upload_rider_button = tk.Button(self, text="Upload Rider Data", command=self.upload_rider_data,
+        upload_rider_button = tk.Button(self, text="Upload Rider Data", command=self.upload_rider_data_from_excel,
                                         font=("Arial", 14), bg="white", fg="black")
         upload_rider_button.pack(pady=10)
 
@@ -145,7 +147,9 @@ class App(tk.Tk):
                                 fg="black")
         back_button.pack(pady=10)
 
-
+    def load_saves(self):
+        self.data_manipulator.load_riders_from_pickle(self.schedule)
+        self.data_manipulator.load_horses_from_pickle(self.schedule)
     def upload_horse_data(self):
         '''
         Prompts the user to select and upload a file containing horse data in CSV or Excel format, and processes the file for use within the application.
@@ -158,7 +162,7 @@ class App(tk.Tk):
         self.data_manipulator.load_horses_from_excel(file_path, self.schedule)
 
 
-    def upload_rider_data(self):
+    def upload_rider_data_from_excel(self):
         '''
         Prompts the user to select and upload a file containing rider data in CSV or Excel format, and processes the file for use within the application.
         :return: None
@@ -169,6 +173,13 @@ class App(tk.Tk):
         )
         self.data_manipulator.load_riders_from_excel(file_path, self.schedule)
 
+
+    def save_rider_data(self):
+        self.data_manipulator.save_riders_to_pickle(self.schedule.get_riders())
+
+    def save_horse_data(self):
+        self.schedule.reset_horses()
+        self.data_manipulator.save_horses_to_pickle(self.schedule.get_horses())
 
     def add_horse(self):
         '''
@@ -585,6 +596,9 @@ class App(tk.Tk):
             print(rider)
 
     def export_schedule_as_pdf(self):
+        response = messagebox.askokcancel("Are you sure", "Rider and horse data will be updated. Are you sure you want to go with this schedule?")
+        if not response:
+            return 1
         file_path = filedialog.asksaveasfilename(
             defaultextension=".pdf",
             filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
@@ -661,6 +675,9 @@ class App(tk.Tk):
 
             pdf.save()
             messagebox.showinfo("Success", f"Schedule exported as PDF to {file_path}")
+            self.save_rider_data()
+            self.save_horse_data()
+
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export schedule: {e}")
 

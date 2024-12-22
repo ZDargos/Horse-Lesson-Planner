@@ -54,6 +54,16 @@ class Weekly_Schedule:
         '''
         return self._riders
 
+    def set_riders(self, riders):
+        self._riders = riders
+
+    def set_horses(self, horses):
+        self._horses = horses
+
+    def reset_horses(self):
+        for horse in self._horses:
+            horse.reset_horse()
+
     def get_rider(self, rider):
         '''
         Gets a rider object by name.
