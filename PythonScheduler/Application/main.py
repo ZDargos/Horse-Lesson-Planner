@@ -263,7 +263,7 @@ class App(tk.Tk):
                 leasers = ";".join(leasers)
 
                 new_horse = Horse(name, is_jumping_horse=is_jumper, max_weight=max_weight, skill_level=skill_level,
-                                  max_daily_jumps=max_rides, leasers=leasers)
+                                  max_daily_jumps=max_rides, leaser=leasers)
                 self.schedule.add_horse(new_horse)
                 messagebox.showinfo("Success", f"Horse '{name}' added successfully.")
                 add_horse_window.destroy()
