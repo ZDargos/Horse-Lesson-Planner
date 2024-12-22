@@ -6,7 +6,7 @@ Cam,125,I-O,Tuesday;1630;True|Saturday;1000;True|Sunday;1000;True
 Caroline,100,B,Saturday;1200;True
 Charlotte,100,B-N,null
 Cora G,135,O,null
-Cora M,90,B,null
+Cora M,85,B,Saturday;1300;False
 Ella,120,I-O,Tuesday;-1;True|Thursday;1530;True|Sunday;1000;True
 Eva,125,N-I,Thursday;1730;True|Sunday;0900;True
 Gianna,125,I-O,Tuesday;1530;True|Wednesday;-1;True|Sunday;1000;True|Thursday;1530;True
@@ -36,4 +36,3 @@ Teagan,110,N,Wednesday;-1;True|Saturday;1100;True
 Veronica,85,B-N,Saturday;1200;True
 Violette,120,N-I,Tuesday;1730;False|Sunday;1100;False
 Sofia,85,B,Saturday;1300;False
-Cora M,85,B,Saturday;1300;False

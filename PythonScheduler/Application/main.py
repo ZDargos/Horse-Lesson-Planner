@@ -143,9 +143,63 @@ class App(tk.Tk):
                                          fg="black")
         show_schedule_button.pack(pady=10)
 
+        tk.Button(self, text="View All Riders", command=self.display_all_riders, font=("Arial", 14), bg="white", fg="black").pack(pady=10)
+
+
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white",
                                 fg="black")
         back_button.pack(pady=10)
+
+    def display_all_riders(self):
+        """
+        Displays all riders currently on file in a new window.
+        :return: None
+        """
+        # Create a new window for displaying riders
+        riders_window = tk.Toplevel(self)
+        riders_window.title("Riders List")
+        riders_window.geometry("400x600")
+
+        # Header label
+        header_label = tk.Label(riders_window, text=f"All Riders: {len(self.schedule.get_riders())} Total", font=("Arial", 16), bg="white")
+        header_label.pack(pady=10)
+
+        # Scrollable frame setup
+        canvas = tk.Canvas(riders_window, bg="white")
+        scrollbar = tk.Scrollbar(riders_window, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="white")
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Retrieve and display rider names
+        riders = self.schedule.get_riders()
+        riders = [i.get_name() for i in riders]
+        riders.sort()
+
+
+        if riders:
+            for rider in riders:
+                rider_label = tk.Label(scrollable_frame, text=f'{rider}', font=("Times New Roman", 15), bg="white")
+                rider_label.pack(anchor="w", padx=10, pady=5)
+        else:
+            no_riders_label = tk.Label(scrollable_frame, text="No riders found.", font=("Consolas", 12, "italic"),
+                                       bg="white")
+            no_riders_label.pack(anchor="center", pady=20)
+
+        # Close button
+        close_button = tk.Button(riders_window, text="Close", command=riders_window.destroy, font=("Arial", 12),
+                                 bg="#f44336", fg="black")
+        close_button.pack(pady=20)
+
 
     def load_saves(self):
         self.data_manipulator.load_riders_from_pickle(self.schedule)

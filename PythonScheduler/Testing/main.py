@@ -2,8 +2,8 @@
 import random
 import sys
 import os
+from PythonScheduler.Application.Classes.Data_Manipulation import *
 
-from PythonScheduler.Application.Classes.Rider import Rider
 
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\"))
 sys.path.append(os.path.abspath("C:\\Users\\zrdra\\gitRepositories\\Horse-Lesson-Planner\\PythonScheduler\\Classes"))
