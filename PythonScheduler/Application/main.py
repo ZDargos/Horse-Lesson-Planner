@@ -247,8 +247,14 @@ class App(tk.Tk):
 
         edit_button = tk.Button(self, text="Edit", command=edit_rider, font=("Arial", 12), bg="#FFC107", fg="black")
         edit_button.pack(pady=10)
+        def delete_rider():
+            self.schedule.remove_rider(rider.get_name())
+            self.display_all_riders()
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="#f44336",
+        delete_rider_button = tk.Button(self, text="Delete Rider", command=delete_rider, font=("Arial", 12), bg="#f44336", fg="black")
+        delete_rider_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="gray",
                                 fg="black")
         back_button.pack(pady=10)
 
