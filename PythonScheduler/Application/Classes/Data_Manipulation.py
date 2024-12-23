@@ -4,6 +4,7 @@
 import pickle
 from tkinter import messagebox
 import pandas as pd
+import datetime
 from Classes.Rider import *
 from Classes.Weekly_Schedule import *
 from Classes.Horse import *
@@ -39,6 +40,18 @@ class Data_Manipulation:
                 # Serialize the data using pickle
                 pickle.dump(horses, file)
             print(f"Data saved successfully to {self.__horse_file}.")
+            return 0
+        except Exception as e:
+            print(f"An error occurred while saving the data: {e}")
+            return 1
+
+    def save_schedule_to_pickle(self, schedule):
+        try:
+            # Open the file in binary write mode
+            with open(".data//schedules//schedule_" + self.get_time_stamp() + ".pkl", "wb") as file:
+                # Serialize the data using pickle
+                pickle.dump(schedule, file)
+            print(f"Data saved successfully to {'.data//schedules//schedule_' + self.get_time_stamp() + '.pkl'}.")
             return 0
         except Exception as e:
             print(f"An error occurred while saving the data: {e}")
@@ -158,3 +171,8 @@ class Data_Manipulation:
             return f"{standard_hours:02}:{minutes:02d} {period}"
         except Exception as e:
             return f"Error: {e}. Please provide time in HHMM format."
+
+    def get_time_stamp(self):
+        today = datetime.date.today()  # Find the most recent Sunday
+        start_of_week = today - datetime.timedelta(days=today.weekday() + 1)
+        return str(start_of_week)  # Get the start of the current week

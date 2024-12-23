@@ -83,7 +83,7 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=("Arial", 16), bg="white")
+        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=("Arial", 16), bg="white", borderwidth=-10)
         welcome_label.pack(pady=50)
 
         enter_button = tk.Button(self, text="Enter", command=self.file_upload_screen, font=("Arial", 14), bg="white",
@@ -122,10 +122,6 @@ class App(tk.Tk):
         remove_horse_button = tk.Button(self, text="Remove Horse", command=self.remove_horse, font=("Arial", 14),
                                         bg="white", fg="black")
         remove_horse_button.pack(pady=10)
-
-        add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="white",
-                                     fg="black")
-        add_rider_button.pack(pady=10)
 
         add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
                                      fg="black")
@@ -191,6 +187,10 @@ class App(tk.Tk):
         tree.bind("<Double-1>", on_double_click)
         tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
+        add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="#61e334",
+                                     fg="black")
+        add_rider_button.pack(pady=10)
+
         back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
@@ -218,9 +218,12 @@ class App(tk.Tk):
 
         recent_horses = rider.get_recent_horses()
         if recent_horses:
-            tk.Label(self, text="Recent Horses:", font=("Arial", 12, "bold"), bg="white").pack(pady=5)
+            horses = ""
             for horse in recent_horses:
-                tk.Label(self, text=f"- {horse}", font=("Arial", 12), bg="white").pack(anchor="w", padx=20)
+                horses += f'{horse}'
+                if horse != recent_horses[-1]:
+                    horses += ", "
+            tk.Label(self, text=f"Recent Horses: {horses}", font=("Arial", 12, "bold"), bg="white").pack(pady=5)
         else:
             tk.Label(self, text="No recent horses.", font=("Arial", 12, "italic"), bg="white").pack(pady=5)
 
@@ -262,7 +265,8 @@ class App(tk.Tk):
         """
         # Clear all widgets from the current window
         for widget in self.winfo_children():
-            widget.destroy()
+            if widget != self.bg_label:
+                widget.destroy()
 
         tk.Label(self, text="Edit Rider Information", font=("Arial", 14), bg="white").pack(pady=10)
 
@@ -279,16 +283,29 @@ class App(tk.Tk):
         weight_entry.pack(pady=5)
 
         # Skill Level
-        tk.Label(self, text="Skill Level:", font=("Arial", 12), bg="white").pack(pady=5)
-        skill_entry = tk.Entry(self)
-        skill_entry.insert(0, rider.get_skill_level())
-        skill_entry.pack(pady=5)
+        tk.Label(self, text="Skill Level:").pack(pady=5)
+        skill_levels = {
+            "Beginner": tk.IntVar(value=0 if "B" not in rider.get_skill_level() else 1),
+            "Novice": tk.IntVar(value=0 if "N" not in rider.get_skill_level() else 1),
+            "Intermediate": tk.IntVar(value=0 if "I" not in rider.get_skill_level() else 1),
+            "Open": tk.IntVar(value=0 if "O" not in rider.get_skill_level() else 1),
+        }
+        for level, var in skill_levels.items():
+            check_box = tk.Checkbutton(self, text=level, variable=var)
+            check_box.pack(pady=5)
+
+
 
         def save_changes():
             try:
                 new_name = name_entry.get()
                 new_weight = int(weight_entry.get())
-                new_skill = skill_entry.get()
+                selected_skills = [level for level, var in skill_levels.items() if var.get() == 1]
+                if not selected_skills:
+                    messagebox.showerror("Skill Issue!", "At least one skill level must be selected!")
+                    return
+                skills = [skill[0] for skill in selected_skills]
+                new_skill = "-".join(skills)
 
                 rider.set_name(new_name)
                 rider.set_weight(new_weight)
@@ -339,6 +356,9 @@ class App(tk.Tk):
     def save_horse_data(self):
         self.schedule.reset_horses()
         self.data_manipulator.save_horses_to_pickle(self.schedule.get_horses())
+
+    def save_schedule_data(self):
+        self.data_manipulator.save_schedule_to_pickle(self.schedule)
 
     def add_horse(self):
         '''
@@ -436,21 +456,26 @@ class App(tk.Tk):
         Opens a new window to add a new rider to the schedule, with fields for the rider's name, weight, and skill level.
         :return: None
         '''
-        add_rider_window = tk.Toplevel(self)
-        add_rider_window.title("Add Rider")
-        add_rider_window.geometry("400x400")
+        # Reinitialize the background label if it's missing
+        if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
+            self.bg_label = tk.Label(self)
+            self.bg_label.place(relwidth=1, relheight=1)
+            self.resize_background()
 
-        self.active_window = add_rider_window
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
 
-        tk.Label(add_rider_window, text="Name:").pack(pady=5)
-        name_entry = tk.Entry(add_rider_window)
+        tk.Label(self, text="Name:", font=("Arial", 15)).pack(pady=5)
+        name_entry = tk.Entry(self)
         name_entry.pack(pady=5)
 
-        tk.Label(add_rider_window, text="Weight:").pack(pady=5)
-        weight_entry = tk.Entry(add_rider_window)
+        tk.Label(self, text="Weight:", font=("Arial", 15)).pack(pady=5)
+        weight_entry = tk.Entry(self)
         weight_entry.pack(pady=5)
 
-        tk.Label(add_rider_window, text="Skill Level:").pack(pady=5)
+        tk.Label(self, text="Skill Level:", font=("Arial", 15)).pack(pady=5)
 
         # Skill Level Checkboxes
         skill_levels = {
@@ -460,7 +485,7 @@ class App(tk.Tk):
             "Open": tk.IntVar(),
         }
         for level, var in skill_levels.items():
-            tk.Checkbutton(add_rider_window, text=level, variable=var).pack(pady=3)
+            tk.Checkbutton(self, text=level, variable=var, font=("Arial", 15), bg="#A9876E").pack(pady=3)
 
         def submit_rider():
             try:
@@ -476,11 +501,15 @@ class App(tk.Tk):
                 new_rider = Rider(name, weight=weight, skill_level=skill_level, weekly_schedule=[])
                 self.schedule.add_rider(new_rider)
                 messagebox.showinfo("Success", f"Rider '{name}' added successfully.")
-                add_rider_window.destroy()
+                self.display_all_riders()
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add rider: {e}")
 
-        tk.Button(add_rider_window, text="Add Rider", command=submit_rider).pack(pady=20)
+        tk.Button(self, text="Add Rider", command=submit_rider, bg="#61e334", font=("Arial", 15)).pack(pady=20)
+
+        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="#f44336",
+                                fg="black")
+        back_button.pack(pady=20)
 
     def add_lesson(self):
         '''
@@ -661,7 +690,7 @@ class App(tk.Tk):
                                              font=("Arial", 14), bg="white", fg="black")
         generate_schedule_button.pack(pady=10)
 
-        schedule_label = tk.Label(self, text="Weekly Schedule", font=("Arial", 16), bg="white")
+        schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=("Arial", 16), bg="white")
         schedule_label.pack(pady=20)
 
         export_button = ttk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf)
@@ -872,6 +901,7 @@ class App(tk.Tk):
             messagebox.showinfo("Success", f"Schedule exported as PDF to {file_path}")
             self.save_rider_data()
             self.save_horse_data()
+            self.save_schedule_data()
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export schedule: {e}")
