@@ -126,10 +126,6 @@ class App(tk.Tk):
         add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="white",
                                      fg="black")
         add_rider_button.pack(pady=10)
-        
-        remove_rider_button = tk.Button(self, text="Remove Rider", command=self.remove_rider, font=("Arial", 14), bg="white",
-                                     fg="black")
-        remove_rider_button.pack(pady=10)
 
         add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
                                      fg="black")
@@ -589,21 +585,6 @@ class App(tk.Tk):
                 messagebox.showwarning("Not Found", f"Horse named {name} not found in the schedule.")
         except Exception as e:
             messagebox.showerror("Error", f"Error removing horse: {e}")
-
-    def remove_rider(self):
-        '''
-        Prompts the user to enter the name of a rider to remove from the schedule and processes the removal.
-        :return: None
-        '''
-        try:
-            name = simpledialog.askstring("Remove Rider", "Enter Rider Name to Remove:")
-            removed = self.schedule.remove_rider(name)
-            if removed:
-                messagebox.showinfo("Rider Removed", f"{name} successfully removed from the schedule.")
-            else:
-                messagebox.showwarning("Not Found", f"Rider named {name} not found in the schedule.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error removing rider: {e}")
 
     def process_schedule(self):
         '''
