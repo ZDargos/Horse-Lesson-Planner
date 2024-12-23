@@ -195,7 +195,7 @@ class App(tk.Tk):
         tree.bind("<Double-1>", on_double_click)
         tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
-        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
@@ -230,6 +230,18 @@ class App(tk.Tk):
 
         tk.Label(self, text=f"Total Owed: ${rider.get_total_owed():.2f}", font=("Arial", 12), bg="white").pack(pady=5)
 
+        lessons = rider.get_weekly_schedule()
+        tk.Label(self, text="Current Lessons:", font=("Arial", 12), bg="white").pack(pady=5)
+        all_lessons = ""
+        def lesson_to_string(lesson):
+            time = self.data_manipulator.military_to_standard(lesson[1])
+            return f'{time} on {lesson[0]} and {"jumping" if lesson[2] else "not jumping"}'
+        if lessons:
+            for lesson in lessons:
+                all_lessons+= f'{lesson_to_string(lesson)}\n'
+            tk.Label(self, text=all_lessons, font=("Arial", 12), bg="white").pack(pady=5)
+        else:
+            tk.Label(self, text="No lessons planned", font=("Arial", 12, "italic"), bg="white").pack(pady=5)
         def edit_rider():
             self.edit_rider_information(rider)
 
