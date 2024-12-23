@@ -115,32 +115,215 @@ class App(tk.Tk):
                                         font=("Arial", 14), bg="white", fg="black")
         upload_rider_button.pack(pady=10)
 
-        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=("Arial", 14), bg="white",
-                                     fg="black")
-        add_horse_button.pack(pady=10)
-
-        remove_horse_button = tk.Button(self, text="Remove Horse", command=self.remove_horse, font=("Arial", 14),
-                                        bg="white", fg="black")
-        remove_horse_button.pack(pady=10)
-
         add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
                                      fg="black")
         add_lesson_button.pack(pady=10)
 
-        generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule, font=("Arial", 14), bg="white",
-                                fg="black")
+        tk.Button(self, text="View All Riders", command=self.display_all_riders, font=("Arial", 14), bg="white", fg="black").pack(pady=10)
+
+        tk.Button(self, text="View All Horses", command=self.display_all_horses, font=("Arial", 14), bg="white",
+                  fg="black").pack(pady=10)
+
+        generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule,
+                                             font=("Arial", 14), bg="white",
+                                             fg="black")
         generate_schedule_button.pack(pady=10)
 
-        show_schedule_button = tk.Button(self, text="Show Schedule", command=lambda: self.show_schedule(self.schedule),font=("Arial", 14), bg="white",
+        show_schedule_button = tk.Button(self, text="Show Schedule", command=lambda: self.show_schedule(self.schedule),
+                                         font=("Arial", 14), bg="white",
                                          fg="black")
         show_schedule_button.pack(pady=10)
-
-        tk.Button(self, text="View All Riders", command=self.display_all_riders, font=("Arial", 14), bg="white", fg="black").pack(pady=10)
 
 
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white",
                                 fg="black")
         back_button.pack(pady=10)
+
+
+    def display_all_horses(self):
+        """
+        Displays all horses using a Treeview for faster rendering with a fixed-size box.
+        :return: None
+        """
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
+
+        header_label = tk.Label(self, text=f"All Horses: {len(self.schedule.get_horses())}\nDouble Click To See Details", font=("Arial", 16),
+                                bg="white")
+        header_label.pack(pady=10)
+
+        style = ttk.Style()
+        style.configure("Treeview", font=("Arial", 14))  # Row font
+        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))  # Header font
+
+        # Treeview setup with fixed width and height
+        tree_frame = tk.Frame(self, width=250, height=300)  # Fixed frame size
+        tree_frame.pack(pady=20)
+        tree_frame.pack_propagate(False)  # Prevent the frame from resizing to its content
+
+        tree = ttk.Treeview(tree_frame, columns=("Name"), show="headings", height=20)
+        tree.heading("Name", text="Horses")
+        tree.column("Name", anchor="w", width=200)  # Adjust column width
+
+        # Add riders to the Treeview
+        horses = self.schedule.get_horses()
+        horses = [i.get_name() for i in horses]
+        horses.sort()
+        for horse in horses:
+            tree.insert("", "end", values=(horse,))
+
+        def on_double_click(event):
+            selected_item = tree.selection()
+            if selected_item:
+                horse_name = tree.item(selected_item, "values")[0]
+                horse = next((r for r in horses if r == horse_name), None)
+                if horse:
+                    self.display_horse_information(self.schedule.get_horse(horse))
+
+        tree.bind("<Double-1>", on_double_click)
+        tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
+
+        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=("Arial", 14), bg="white",
+                                     fg="black")
+        add_horse_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
+                                fg="black")
+        back_button.pack(pady=20)
+
+    def display_horse_information(self, horse):
+        """
+        Displays detailed information about a specific horse in the current window.
+        :param horse: Horse object whose information is to be displayed.
+        :return: None
+        """
+        # Reinitialize the background label if it's missing
+        if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
+            self.bg_label = tk.Label(self)
+            self.bg_label.place(relwidth=1, relheight=1)
+            self.resize_background()
+
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
+
+        tk.Label(self, text=f"Name: {horse.get_name()}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Leaser: {horse.get_leaser()}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Max Weight: {horse.get_max_weight()} lbs", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Skill Level: {horse.get_skill_level()}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Jumper: {'Yes' if horse.is_jumping_horse() else 'No'}", font=("Arial", 12),
+                 bg="white").pack(pady=5)
+        tk.Label(self, text=f"Max Daily Jumps: {horse.get_max_daily_jumps()}", font=("Arial", 12), bg="white").pack(
+            pady=5)
+
+        jumper_times = horse.get_jumper_times()
+        non_jumper_times = horse.get_non_jumper_times()
+        tk.Label(self, text=f"Jumper Times This Week: {jumper_times}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Non-Jumper Times This Week: {non_jumper_times}", font=("Arial", 12), bg="white").pack(
+            pady=5)
+
+        def edit_horse():
+            self.edit_horse_information(horse)
+
+        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=("Arial", 12), bg="#FFC107", fg="black")
+        edit_button.pack(pady=10)
+
+        def delete_horse():
+            self.schedule.remove_horse(horse.get_name())
+            self.display_all_horses()
+
+        delete_horse_button = tk.Button(self, text="Delete Horse", command=delete_horse, font=("Arial", 12),
+                                        bg="#f44336", fg="black")
+        delete_horse_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=("Arial", 12), bg="gray",
+                                fg="black")
+        back_button.pack(pady=10)
+
+    def edit_horse_information(self, horse):
+        """
+        Opens a form in the current window to edit a horse's information.
+        :param horse: Horse object to edit.
+        :return: None
+        """
+        # Clear all widgets from the current window
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
+
+        tk.Label(self, text="Edit Horse Information", font=("Arial", 14), bg="white").pack(pady=10)
+
+        # Name
+        tk.Label(self, text="Name:", font=("Arial", 12), bg="white").pack(pady=5)
+        name_entry = tk.Entry(self)
+        name_entry.insert(0, horse.get_name())
+        name_entry.pack(pady=5)
+
+        # Max Weight
+        tk.Label(self, text="Max Weight (lbs):", font=("Arial", 12), bg="white").pack(pady=5)
+        max_weight_entry = tk.Entry(self)
+        max_weight_entry.insert(0, str(horse.get_max_weight()))
+        max_weight_entry.pack(pady=5)
+
+        # Skill Level
+        tk.Label(self, text="Skill Level:", font=("Arial", 12), bg="white").pack(pady=5)
+        skill_levels = {
+            "Beginner": tk.IntVar(value=0 if "B" not in horse.get_skill_level() else 1),
+            "Novice": tk.IntVar(value=0 if "N" not in horse.get_skill_level() else 1),
+            "Intermediate": tk.IntVar(value=0 if "I" not in horse.get_skill_level() else 1),
+            "Open": tk.IntVar(value=0 if "O" not in horse.get_skill_level() else 1),
+        }
+        for level, var in skill_levels.items():
+            check_box = tk.Checkbutton(self, text=level, variable=var, bg="white")
+            check_box.pack(pady=5)
+
+        # Jumper
+        tk.Label(self, text="Jumper (Yes/No):", font=("Arial", 12), bg="white").pack(pady=5)
+        jumper_var = tk.StringVar(value="Yes" if horse.is_jumping_horse() else "No")
+        jumper_entry = tk.Entry(self, textvariable=jumper_var)
+        jumper_entry.pack(pady=5)
+
+        # Max Daily Jumps
+        tk.Label(self, text="Max Daily Jumps:", font=("Arial", 12), bg="white").pack(pady=5)
+        max_jumps_entry = tk.Entry(self)
+        max_jumps_entry.insert(0, str(horse.get_max_daily_jumps()))
+        max_jumps_entry.pack(pady=5)
+
+        def save_changes():
+            try:
+                new_name = name_entry.get()
+                new_max_weight = int(max_weight_entry.get())
+                selected_skills = [level for level, var in skill_levels.items() if var.get() == 1]
+                if not selected_skills:
+                    messagebox.showerror("Skill Issue!", "At least one skill level must be selected!")
+                    return
+                skills = [skill[0] for skill in selected_skills]
+                new_skill = "-".join(skills)
+
+                new_jumper = jumper_var.get().strip().lower() == "yes"
+                new_max_jumps = int(max_jumps_entry.get())
+
+                horse.set_name(new_name)
+                horse.set_max_weight(new_max_weight)
+                horse.set_skill_level(new_skill)
+                horse.set_is_jumping_horse(new_jumper)
+                horse._max_daily_jumps = new_max_jumps  # Assuming there's no setter for max_daily_jumps
+
+                messagebox.showinfo("Success", "Horse information updated successfully.")
+                self.display_horse_information(horse)
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to update horse: {e}")
+
+        save_button = tk.Button(self, text="Save", command=save_changes, font=("Arial", 12), bg="#4CAF50", fg="white")
+        save_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Cancel", command=lambda: self.display_horse_information(horse),
+                                font=("Arial", 12), bg="#f44336", fg="black")
+        back_button.pack(pady=10)
+
 
     def display_all_riders(self):
         """
@@ -365,24 +548,28 @@ class App(tk.Tk):
         Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leasers.
         :return: None
         '''
-        import tkinter as tk
-        from tkinter import messagebox, StringVar
+        # Reinitialize the background label if it's missing
+        if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
+            self.bg_label = tk.Label(self)
+            self.bg_label.place(relwidth=1, relheight=1)
+            self.resize_background()
 
-        add_horse_window = tk.Toplevel(self)
-        add_horse_window.title("Add Horse")
-        add_horse_window.geometry("400x600")
+        # Clear all widgets except the background label
+        for widget in self.winfo_children():
+            if widget != self.bg_label:
+                widget.destroy()
 
-        self.active_window = add_horse_window
+        self.active_window = self
 
-        tk.Label(add_horse_window, text="Name:").pack(pady=5)
-        name_entry = tk.Entry(add_horse_window)
+        tk.Label(self, text="Name:").pack(pady=5)
+        name_entry = tk.Entry(self)
         name_entry.pack(pady=5)
 
-        tk.Label(add_horse_window, text="Max Weight:").pack(pady=5)
-        max_weight_entry = tk.Entry(add_horse_window)
+        tk.Label(self, text="Max Weight:").pack(pady=5)
+        max_weight_entry = tk.Entry(self)
         max_weight_entry.pack(pady=5)
 
-        tk.Label(add_horse_window, text="Skill Level:").pack(pady=5)
+        tk.Label(self, text="Skill Level:").pack(pady=5)
         skill_levels = {
             "Beginner": tk.IntVar(),
             "Novice": tk.IntVar(),
@@ -390,18 +577,18 @@ class App(tk.Tk):
             "Open": tk.IntVar(),
         }
         for level, var in skill_levels.items():
-            tk.Checkbutton(add_horse_window, text=level, variable=var).pack(pady=3)
+            tk.Checkbutton(self, text=level, variable=var).pack(pady=3)
 
-        tk.Label(add_horse_window, text="Is Jumper (yes/no):").pack(pady=5)
-        is_jumper_entry = tk.Entry(add_horse_window)
+        tk.Label(self, text="Is Jumper (yes/no):").pack(pady=5)
+        is_jumper_entry = tk.Entry(self)
         is_jumper_entry.pack(pady=5)
 
-        tk.Label(add_horse_window, text="Max Rides per Day:").pack(pady=5)
-        max_rides_entry = tk.Entry(add_horse_window)
+        tk.Label(self, text="Max Rides per Day:").pack(pady=5)
+        max_rides_entry = tk.Entry(self)
         max_rides_entry.pack(pady=5)
 
-        leaser_frame = tk.Frame(add_horse_window)
-        leaser_frame.pack(pady=10, fill=tk.X)
+        leaser_frame = tk.Frame(self)
+        leaser_frame.pack(pady=10)
 
         leaser_menus = []
 
@@ -422,9 +609,9 @@ class App(tk.Tk):
                 _, last_menu = leaser_menus.pop()
                 last_menu.destroy()
 
-        tk.Label(add_horse_window, text="Leasers (optional):").pack(pady=5)
-        tk.Button(add_horse_window, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
-        tk.Button(add_horse_window, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Label(self, text="Leasers (optional):").pack(pady=5)
+        tk.Button(self, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Button(self, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
 
         def submit_horse():
             try:
@@ -445,11 +632,11 @@ class App(tk.Tk):
                                   max_daily_jumps=max_rides, leaser=leasers)
                 self.schedule.add_horse(new_horse)
                 messagebox.showinfo("Success", f"Horse '{name}' added successfully.")
-                add_horse_window.destroy()
+                self.display_all_horses()
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add horse: {e}")
 
-        tk.Button(add_horse_window, text="Add Horse", command=submit_horse).pack(pady=20)
+        tk.Button(self, text="Add Horse", command=submit_horse).pack(pady=20)
 
     def add_rider(self):
         '''

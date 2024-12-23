@@ -129,12 +129,18 @@ class Horse:
         '''
         return self._name
 
+    def set_name(self, name):
+        self._name = name
+
     def get_max_weight(self):
         '''
         Gets the maximum rider weight the horse can handle.
         :return: integer representing the maximum weight in pounds
         '''
         return self._max_weight
+
+    def set_max_weight(self, weight):
+        self._max_weight = weight
 
     def reset_horse(self):
         '''
