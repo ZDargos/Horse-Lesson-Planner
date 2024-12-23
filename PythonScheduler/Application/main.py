@@ -152,7 +152,7 @@ class App(tk.Tk):
 
     def display_all_riders(self):
         """
-        Displays all riders using a Treeview for faster rendering.
+        Displays all riders using a Treeview for faster rendering with a fixed-size box.
         :return: None
         """
         # Clear all widgets except the background label
@@ -160,25 +160,29 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}", font=("Arial", 16), bg="white")
+        header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}\nDouble Click To See Details", font=("Arial", 16),
+                                bg="white")
         header_label.pack(pady=10)
 
         style = ttk.Style()
         style.configure("Treeview", font=("Arial", 14))  # Row font
         style.configure("Treeview.Heading", font=("Arial", 14, "bold"))  # Header font
 
-        # Treeview setup
-        tree = ttk.Treeview(self, columns=("Name"), show="headings", height=20)
-        tree.heading("Name", text="Rider Name  |  Double Click To See More Information")
-        tree.column("Name", anchor="center", width=75)
+        # Treeview setup with fixed width and height
+        tree_frame = tk.Frame(self, width=250, height=550)  # Fixed frame size
+        tree_frame.pack(pady=20)
+        tree_frame.pack_propagate(False)  # Prevent the frame from resizing to its content
 
+        tree = ttk.Treeview(tree_frame, columns=("Name"), show="headings", height=20)
+        tree.heading("Name", text="Riders")
+        tree.column("Name", anchor="w", width=200)  # Adjust column width
 
         # Add riders to the Treeview
         riders = self.schedule.get_riders()
         riders = [i.get_name() for i in riders]
         riders.sort()
         for rider in riders:
-            tree.insert("", "end", values=(rider))
+            tree.insert("", "end", values=(rider,))
 
         def on_double_click(event):
             selected_item = tree.selection()
@@ -189,7 +193,7 @@ class App(tk.Tk):
                     self.display_rider_information(self.schedule.get_rider(rider))
 
         tree.bind("<Double-1>", on_double_click)
-        tree.pack(fill="both", expand=True)
+        tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="#f44336",
                                 fg="black")
