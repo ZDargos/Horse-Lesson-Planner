@@ -21,6 +21,8 @@ from Classes.Rider import *
 from Classes.Weekly_Schedule import *
 from Classes.Data_Manipulation import *
 
+app_font = "Times New Roman"
+
 class App(tk.Tk):
     def __init__(self):
         '''
@@ -49,13 +51,15 @@ class App(tk.Tk):
 
         self.schedule_displayed = False
 
+
+
     def initialize_background_image(self):
         '''
         Loads and sets the background image for the application window, resizing it to fit the window dimensions.
         :return: None
         '''
         try:
-            self.image_path = "bg.jpg"  # Ensure this image file is present in the directory
+            self.image_path = "bg3.jpg"  # Ensure this image file is present in the directory
             self.original_image = Image.open(self.image_path)
             self.resize_background()
         except Exception as e:
@@ -83,10 +87,10 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=("Arial", 16), bg="white", borderwidth=-10)
+        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=(app_font, 16), bg="white", borderwidth=-10)
         welcome_label.pack(pady=50)
 
-        enter_button = tk.Button(self, text="Enter", command=self.file_upload_screen, font=("Arial", 14), bg="white",
+        enter_button = tk.Button(self, text="Enter", command=self.file_upload_screen, font=(app_font, 14), bg="white",
                                  fg="black")
         enter_button.pack(pady=20)
 
@@ -103,39 +107,39 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=("Arial", 14),
+        instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=(app_font, 14),
                                      bg="white")
         instruction_label.pack(pady=20)
 
-        upload_button = tk.Button(self, text="Upload Horse Data", command=self.upload_horse_data, font=("Arial", 14),
+        upload_button = tk.Button(self, text="Upload Horse Data", command=self.upload_horse_data, font=(app_font, 14),
                                   bg="white", fg="black")
         upload_button.pack(pady=10)
 
         upload_rider_button = tk.Button(self, text="Upload Rider Data", command=self.upload_rider_data_from_excel,
-                                        font=("Arial", 14), bg="white", fg="black")
+                                        font=(app_font, 14), bg="white", fg="black")
         upload_rider_button.pack(pady=10)
 
-        add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=("Arial", 14), bg="white",
+        add_lesson_button = tk.Button(self, text="Add Lesson", command=self.add_lesson, font=(app_font, 14), bg="white",
                                      fg="black")
         add_lesson_button.pack(pady=10)
 
-        tk.Button(self, text="View All Riders", command=self.display_all_riders, font=("Arial", 14), bg="white", fg="black").pack(pady=10)
+        tk.Button(self, text="View All Riders", command=self.display_all_riders, font=(app_font, 14), bg="white", fg="black").pack(pady=10)
 
-        tk.Button(self, text="View All Horses", command=self.display_all_horses, font=("Arial", 14), bg="white",
+        tk.Button(self, text="View All Horses", command=self.display_all_horses, font=(app_font, 14), bg="white",
                   fg="black").pack(pady=10)
 
         generate_schedule_button = tk.Button(self, text="Generate Schedule", command=self.process_schedule,
-                                             font=("Arial", 14), bg="white",
+                                             font=(app_font, 14), bg="white",
                                              fg="black")
         generate_schedule_button.pack(pady=10)
 
         show_schedule_button = tk.Button(self, text="Show Schedule", command=lambda: self.show_schedule(self.schedule),
-                                         font=("Arial", 14), bg="white",
+                                         font=(app_font, 14), bg="white",
                                          fg="black")
         show_schedule_button.pack(pady=10)
 
 
-        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=("Arial", 12), bg="white",
+        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 12), bg="white",
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -150,13 +154,13 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        header_label = tk.Label(self, text=f"All Horses: {len(self.schedule.get_horses())}\nDouble Click To See Details", font=("Arial", 16),
+        header_label = tk.Label(self, text=f"All Horses: {len(self.schedule.get_horses())}\nDouble Click To See Details", font=(app_font, 16),
                                 bg="white")
         header_label.pack(pady=10)
 
         style = ttk.Style()
-        style.configure("Treeview", font=("Arial", 14))  # Row font
-        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))  # Header font
+        style.configure("Treeview", font=(app_font, 14))  # Row font
+        style.configure("Treeview.Heading", font=(app_font, 14, "bold"))  # Header font
 
         # Treeview setup with fixed width and height
         tree_frame = tk.Frame(self, width=250, height=300)  # Fixed frame size
@@ -185,11 +189,11 @@ class App(tk.Tk):
         tree.bind("<Double-1>", on_double_click)
         tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
-        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=("Arial", 14), bg="white",
+        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=(app_font, 14), bg="white",
                                      fg="black")
         add_horse_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=(app_font, 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
@@ -210,36 +214,36 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text=f"Name: {horse.get_name()}", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Leaser: {horse.get_leaser()}", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Max Weight: {horse.get_max_weight()} lbs", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Skill Level: {horse.get_skill_level()}", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Jumper: {'Yes' if horse.is_jumping_horse() else 'No'}", font=("Arial", 12),
+        tk.Label(self, text=f"Name: {horse.get_name()}", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Leaser: {horse.get_leaser()}", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Max Weight: {horse.get_max_weight()} lbs", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Skill Level: {horse.get_skill_level()}", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Jumper: {'Yes' if horse.is_jumping_horse() else 'No'}", font=(app_font, 12),
                  bg="white").pack(pady=5)
-        tk.Label(self, text=f"Max Daily Jumps: {horse.get_max_daily_jumps()}", font=("Arial", 12), bg="white").pack(
+        tk.Label(self, text=f"Max Daily Jumps: {horse.get_max_daily_jumps()}", font=(app_font, 12), bg="white").pack(
             pady=5)
 
         jumper_times = horse.get_jumper_times()
         non_jumper_times = horse.get_non_jumper_times()
-        tk.Label(self, text=f"Jumper Times This Week: {jumper_times}", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Non-Jumper Times This Week: {non_jumper_times}", font=("Arial", 12), bg="white").pack(
+        tk.Label(self, text=f"Jumper Times This Week: {jumper_times}", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Non-Jumper Times This Week: {non_jumper_times}", font=(app_font, 12), bg="white").pack(
             pady=5)
 
         def edit_horse():
             self.edit_horse_information(horse)
 
-        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=("Arial", 12), bg="#FFC107", fg="black")
+        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=(app_font, 12), bg="#FFC107", fg="black")
         edit_button.pack(pady=10)
 
         def delete_horse():
             self.schedule.remove_horse(horse.get_name())
             self.display_all_horses()
 
-        delete_horse_button = tk.Button(self, text="Delete Horse", command=delete_horse, font=("Arial", 12),
+        delete_horse_button = tk.Button(self, text="Delete Horse", command=delete_horse, font=(app_font, 12),
                                         bg="#f44336", fg="black")
         delete_horse_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=("Arial", 12), bg="gray",
+        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=(app_font, 12), bg="gray",
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -249,27 +253,38 @@ class App(tk.Tk):
         :param horse: Horse object to edit.
         :return: None
         """
+        m_frame_color = "#466791"
+        text_color = "#000000"
         # Clear all widgets from the current window
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text="Edit Horse Information", font=("Arial", 14), bg="white").pack(pady=10)
+        tk.Label(self, text="Edit Horse Information", font=(app_font, 14), bg=m_frame_color, fg=text_color).pack(pady=10)
+
+        main_frame = tk.Frame(self, bg=m_frame_color)
+        main_frame.pack(pady=10)
 
         # Name
-        tk.Label(self, text="Name:", font=("Arial", 12), bg="white").pack(pady=5)
-        name_entry = tk.Entry(self)
+        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
+                                                                                 sticky="e")
+        name_entry = tk.Entry(main_frame)
         name_entry.insert(0, horse.get_name())
-        name_entry.pack(pady=5)
+        name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
         # Max Weight
-        tk.Label(self, text="Max Weight (lbs):", font=("Arial", 12), bg="white").pack(pady=5)
-        max_weight_entry = tk.Entry(self)
+        tk.Label(main_frame, text="Max Weight (lbs):", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10,
+                                                                                             pady=5, sticky="e")
+        max_weight_entry = tk.Entry(main_frame)
         max_weight_entry.insert(0, str(horse.get_max_weight()))
-        max_weight_entry.pack(pady=5)
+        max_weight_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
         # Skill Level
-        tk.Label(self, text="Skill Level:", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color).grid(row=2, column=0, padx=10,
+                                                                                        pady=5, sticky="e")
+        skill_frame = tk.Frame(main_frame, bg=m_frame_color)
+        skill_frame.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+
         skill_levels = {
             "Beginner": tk.IntVar(value=0 if "B" not in horse.get_skill_level() else 1),
             "Novice": tk.IntVar(value=0 if "N" not in horse.get_skill_level() else 1),
@@ -277,20 +292,22 @@ class App(tk.Tk):
             "Open": tk.IntVar(value=0 if "O" not in horse.get_skill_level() else 1),
         }
         for level, var in skill_levels.items():
-            check_box = tk.Checkbutton(self, text=level, variable=var, bg="white")
-            check_box.pack(pady=5)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color)
+            check_box.pack(side="left", padx=5)
 
         # Jumper
-        tk.Label(self, text="Jumper (Yes/No):", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(main_frame, text="Jumper (Yes/No):", font=(app_font, 12), bg=m_frame_color).grid(row=3, column=0, padx=10,
+                                                                                            pady=5, sticky="e")
         jumper_var = tk.StringVar(value="Yes" if horse.is_jumping_horse() else "No")
-        jumper_entry = tk.Entry(self, textvariable=jumper_var)
-        jumper_entry.pack(pady=5)
+        jumper_entry = tk.Entry(main_frame, textvariable=jumper_var)
+        jumper_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Max Daily Jumps
-        tk.Label(self, text="Max Daily Jumps:", font=("Arial", 12), bg="white").pack(pady=5)
-        max_jumps_entry = tk.Entry(self)
+        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, 12), bg=m_frame_color).grid(row=4, column=0, padx=10,
+                                                                                            pady=5, sticky="e")
+        max_jumps_entry = tk.Entry(main_frame)
         max_jumps_entry.insert(0, str(horse.get_max_daily_jumps()))
-        max_jumps_entry.pack(pady=5)
+        max_jumps_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
         def save_changes():
             try:
@@ -317,13 +334,12 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to update horse: {e}")
 
-        save_button = tk.Button(self, text="Save", command=save_changes, font=("Arial", 12), bg="#4CAF50", fg="white")
+        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, 12), bg="#4CAF50", fg="white")
         save_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Cancel", command=lambda: self.display_horse_information(horse),
-                                font=("Arial", 12), bg="#f44336", fg="black")
+                                font=(app_font, 12), bg="#f44336", fg="black")
         back_button.pack(pady=10)
-
 
     def display_all_riders(self):
         """
@@ -335,13 +351,13 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}\nDouble Click To See Details", font=("Arial", 16),
+        header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}\nDouble Click To See Details", font=(app_font, 16),
                                 bg="white")
         header_label.pack(pady=10)
 
         style = ttk.Style()
-        style.configure("Treeview", font=("Arial", 14))  # Row font
-        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))  # Header font
+        style.configure("Treeview", font=(app_font, 14))  # Row font
+        style.configure("Treeview.Heading", font=(app_font, 14, "bold"))  # Header font
 
         # Treeview setup with fixed width and height
         tree_frame = tk.Frame(self, width=250, height=550)  # Fixed frame size
@@ -370,11 +386,11 @@ class App(tk.Tk):
         tree.bind("<Double-1>", on_double_click)
         tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
-        add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=("Arial", 14), bg="#61e334",
+        add_rider_button = tk.Button(self, text="Add Rider", command=self.add_rider, font=(app_font, 14), bg="#61e334",
                                      fg="black")
         add_rider_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=(app_font, 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
@@ -395,9 +411,9 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text=f"Name: {rider.get_name()}", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Weight: {rider.get_weight()} lbs", font=("Arial", 12), bg="white").pack(pady=5)
-        tk.Label(self, text=f"Skill Level: {rider.get_skill_level()}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Name: {rider.get_name()}", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Weight: {rider.get_weight()} lbs", font=(app_font, 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Skill Level: {rider.get_skill_level()}", font=(app_font, 12), bg="white").pack(pady=5)
 
         recent_horses = rider.get_recent_horses()
         if recent_horses:
@@ -406,14 +422,14 @@ class App(tk.Tk):
                 horses += f'{horse}'
                 if horse != recent_horses[-1]:
                     horses += ", "
-            tk.Label(self, text=f"Recent Horses: {horses}", font=("Arial", 12, "bold"), bg="white").pack(pady=5)
+            tk.Label(self, text=f"Recent Horses: {horses}", font=(app_font, 12, "bold"), bg="white").pack(pady=5)
         else:
-            tk.Label(self, text="No recent horses.", font=("Arial", 12, "italic"), bg="white").pack(pady=5)
+            tk.Label(self, text="No recent horses.", font=(app_font, 12, "italic"), bg="white").pack(pady=5)
 
-        tk.Label(self, text=f"Total Owed: ${rider.get_total_owed():.2f}", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text=f"Total Owed: ${rider.get_total_owed():.2f}", font=(app_font, 12), bg="white").pack(pady=5)
 
         lessons = rider.get_weekly_schedule()
-        tk.Label(self, text="Current Lessons:", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text="Current Lessons:", font=(app_font, 12), bg="white").pack(pady=5)
         all_lessons = ""
         def lesson_to_string(lesson):
             time = self.data_manipulator.military_to_standard(lesson[1])
@@ -421,22 +437,22 @@ class App(tk.Tk):
         if lessons:
             for lesson in lessons:
                 all_lessons+= f'{lesson_to_string(lesson)}\n'
-            tk.Label(self, text=all_lessons, font=("Arial", 12), bg="white").pack(pady=5)
+            tk.Label(self, text=all_lessons, font=(app_font, 12), bg="white").pack(pady=5)
         else:
-            tk.Label(self, text="No lessons planned", font=("Arial", 12, "italic"), bg="white").pack(pady=5)
+            tk.Label(self, text="No lessons planned", font=(app_font, 12, "italic"), bg="white").pack(pady=5)
         def edit_rider():
             self.edit_rider_information(rider)
 
-        edit_button = tk.Button(self, text="Edit", command=edit_rider, font=("Arial", 12), bg="#FFC107", fg="black")
+        edit_button = tk.Button(self, text="Edit", command=edit_rider, font=(app_font, 12), bg="#FFC107", fg="black")
         edit_button.pack(pady=10)
         def delete_rider():
             self.schedule.remove_rider(rider.get_name())
             self.display_all_riders()
 
-        delete_rider_button = tk.Button(self, text="Delete Rider", command=delete_rider, font=("Arial", 12), bg="#f44336", fg="black")
+        delete_rider_button = tk.Button(self, text="Delete Rider", command=delete_rider, font=(app_font, 12), bg="#f44336", fg="black")
         delete_rider_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="gray",
+        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=(app_font, 12), bg="gray",
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -451,16 +467,16 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text="Edit Rider Information", font=("Arial", 14), bg="white").pack(pady=10)
+        tk.Label(self, text="Edit Rider Information", font=(app_font, 14), bg="white").pack(pady=10)
 
         # Name
-        tk.Label(self, text="Name:", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text="Name:", font=(app_font, 12), bg="white").pack(pady=5)
         name_entry = tk.Entry(self)
         name_entry.insert(0, rider.get_name())
         name_entry.pack(pady=5)
 
         # Weight
-        tk.Label(self, text="Weight (lbs):", font=("Arial", 12), bg="white").pack(pady=5)
+        tk.Label(self, text="Weight (lbs):", font=(app_font, 12), bg="white").pack(pady=5)
         weight_entry = tk.Entry(self)
         weight_entry.insert(0, str(rider.get_weight()))
         weight_entry.pack(pady=5)
@@ -499,11 +515,11 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to update rider: {e}")
 
-        save_button = tk.Button(self, text="Save", command=save_changes, font=("Arial", 12), bg="#4CAF50", fg="white")
+        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, 12), bg="#4CAF50", fg="white")
         save_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Cancel", command=lambda: self.display_rider_information(rider),
-                                font=("Arial", 12), bg="#f44336", fg="black")
+                                font=(app_font, 12), bg="#f44336", fg="black")
         back_button.pack(pady=10)
 
     def load_saves(self):
@@ -654,15 +670,15 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text="Name:", font=("Arial", 15)).pack(pady=5)
+        tk.Label(self, text="Name:", font=(app_font, 15)).pack(pady=5)
         name_entry = tk.Entry(self)
         name_entry.pack(pady=5)
 
-        tk.Label(self, text="Weight:", font=("Arial", 15)).pack(pady=5)
+        tk.Label(self, text="Weight:", font=(app_font, 15)).pack(pady=5)
         weight_entry = tk.Entry(self)
         weight_entry.pack(pady=5)
 
-        tk.Label(self, text="Skill Level:", font=("Arial", 15)).pack(pady=5)
+        tk.Label(self, text="Skill Level:", font=(app_font, 15)).pack(pady=5)
 
         # Skill Level Checkboxes
         skill_levels = {
@@ -672,7 +688,7 @@ class App(tk.Tk):
             "Open": tk.IntVar(),
         }
         for level, var in skill_levels.items():
-            tk.Checkbutton(self, text=level, variable=var, font=("Arial", 15), bg="#A9876E").pack(pady=3)
+            tk.Checkbutton(self, text=level, variable=var, font=(app_font, 15), bg="#A9876E").pack(pady=3)
 
         def submit_rider():
             try:
@@ -692,9 +708,9 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add rider: {e}")
 
-        tk.Button(self, text="Add Rider", command=submit_rider, bg="#61e334", font=("Arial", 15)).pack(pady=20)
+        tk.Button(self, text="Add Rider", command=submit_rider, bg="#61e334", font=(app_font, 15)).pack(pady=20)
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.display_all_riders, font=(app_font, 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
@@ -703,7 +719,8 @@ class App(tk.Tk):
         Opens a new window to add a new lesson to the schedule, with options to select the rider, day, time, type of lesson, and duration.
         :return: None
         '''
-        m_frame_color = "#466791"
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
@@ -723,7 +740,7 @@ class App(tk.Tk):
         rider_name_option.set(riders[0])
 
         # Rider Name
-        rider_label = tk.Label(main_frame, text="Name Of Rider:", font=("Arial", 12), bg=m_frame_color)
+        rider_label = tk.Label(main_frame, text="Name Of Rider:", font=(app_font, 12), bg=m_frame_color, fg=text_color)
         rider_label.grid(row=0, column=0, padx=10, pady=5, sticky="e")
         rider_options = tk.OptionMenu(main_frame, rider_name_option, *riders)
         rider_options.config(bg="white",relief="raised", bd=5, fg="black")
@@ -734,7 +751,7 @@ class App(tk.Tk):
         day_option = StringVar()
         day_option.set(days_of_week[0])
 
-        day_label = tk.Label(main_frame, text="Day of week:", font=("Arial", 12), bg=m_frame_color)
+        day_label = tk.Label(main_frame, text="Day of week:", font=(app_font, 12), bg=m_frame_color, fg=text_color)
         day_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
         day_options = tk.OptionMenu(main_frame, day_option, *days_of_week)
         day_options.config(bg="white",relief="raised", bd=5, fg="black")
@@ -744,26 +761,26 @@ class App(tk.Tk):
         jump_var = StringVar()
         jump_var.set("Jumping")
 
-        type_label = tk.Label(main_frame, text="Type of lesson:", font=("Arial", 12), bg=m_frame_color)
+        type_label = tk.Label(main_frame, text="Type of lesson:", font=(app_font, 12), bg=m_frame_color, fg=text_color)
         type_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
         jumping_lesson_dropdown = ttk.Combobox(main_frame, textvariable=jump_var,
                                                values=["Jumping", "Not Jumping", "Hack"],
                                                width=10,
-                                               font=("Arial", 12), state="readonly")
+                                               font=(app_font, 12), state="readonly")
         jumping_lesson_dropdown.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
         # Duration
         duration_var = StringVar()
         duration_var.set("30")
 
-        duration_label = tk.Label(main_frame, text="Duration of Lesson (in minutes):", font=("Arial", 12), bg=m_frame_color)
+        duration_label = tk.Label(main_frame, text="Duration of Lesson (in minutes):", font=(app_font, 12), bg=m_frame_color, fg=text_color)
         duration_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
         duration_dropdown = ttk.Combobox(main_frame, textvariable=duration_var, values=["30", "60"], width=5,
-                                         font=("Arial", 12), state="readonly")
+                                         font=(app_font, 12), state="readonly")
         duration_dropdown.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Time Input
-        time_label = tk.Label(main_frame, text="Time:", font=("Arial", 12), bg=m_frame_color)
+        time_label = tk.Label(main_frame, text="Time:", font=(app_font, 12), bg=m_frame_color,fg=text_color)
         time_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
 
         time_frame = tk.Frame(main_frame, bg=m_frame_color)
@@ -774,16 +791,16 @@ class App(tk.Tk):
         ampm_var = tk.StringVar(value="AM")
 
         hour_spinbox = ttk.Spinbox(time_frame, from_=1, to=12, wrap=True, textvariable=hour_var, width=3,
-                                   font=("Arial", 12))
+                                   font=(app_font, 12))
         hour_spinbox.pack(side="left", padx=5)
 
         minute_spinbox = ttk.Spinbox(time_frame, from_=0, to=59, wrap=True, textvariable=minute_var, format="%02.0f",
                                      width=3,
-                                     font=("Arial", 12))
+                                     font=(app_font, 12))
         minute_spinbox.pack(side="left", padx=5)
 
         ampm_dropdown = ttk.Combobox(time_frame, textvariable=ampm_var, values=["AM", "PM"], width=3,
-                                     font=("Arial", 12),
+                                     font=(app_font, 12),
                                      state="readonly")
         ampm_dropdown.pack(side="left", padx=5)
 
@@ -822,11 +839,11 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add rider: {e}")
 
-        submit_button = tk.Button(self, text="Add Lesson", command=submit_lesson, font=("Arial", 12), bg="#4CAF50",
-                                  fg="white")
+        submit_button = tk.Button(self, text="Add Lesson", command=submit_lesson, font=(app_font, 12), bg="#4CAF50",
+                                  fg="black")
         submit_button.pack(pady=20)
 
-        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=(app_font, 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -917,10 +934,10 @@ class App(tk.Tk):
 
         # Header and control buttons
         generate_schedule_button = tk.Button(self, text="Re-Generate Schedule", command=self.process_schedule,
-                                             font=("Arial", 14), bg="white", fg="black")
+                                             font=(app_font, 14), bg="white", fg="black")
         generate_schedule_button.pack(pady=10)
 
-        schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=("Arial", 16), bg="white")
+        schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=(app_font, 16), bg="white")
         schedule_label.pack(pady=20)
 
         export_button = ttk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf)
@@ -949,24 +966,24 @@ class App(tk.Tk):
                 day_frame = tk.Frame(outer_frame, bg="white", borderwidth=2, relief="groove")
                 day_frame.grid(row=0, column=col, padx=10, pady=10, sticky="n")
 
-                day_label = tk.Label(day_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
+                day_label = tk.Label(day_frame, text=f"{day}:", font=(app_font, 14, "bold"), bg="white")
                 day_label.pack(anchor="w", padx=10, pady=5)
 
                 planner = daily_schedule.get_planner()
                 if planner:
                     for time, lessons in sorted(planner.items()):
                         time_label = tk.Label(day_frame, text=f"  {daily_schedule.military_to_standard(time)}",
-                                              font=("Arial", 12), bg="white")
+                                              font=(app_font, 12), bg="white")
                         time_label.pack(anchor="w", padx=20)
 
                         for rider, horse in lessons:
                             lesson_label = tk.Label(day_frame,
                                                     text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
-                                                    font=("Arial", 10), bg="white")
+                                                    font=(app_font, 10), bg="white")
                             lesson_label.pack(anchor="w", padx=40)
                 else:
                     no_schedule_label = tk.Label(day_frame, text="  No lessons scheduled.",
-                                                 font=("Arial", 10, "italic"), bg="white")
+                                                 font=(app_font, 10, "italic"), bg="white")
                     no_schedule_label.pack(anchor="w", padx=20)
         else:
             # Single-column scrollable layout for normal state
@@ -985,27 +1002,27 @@ class App(tk.Tk):
             scrollbar.pack(side="right", fill="y")
 
             for day, daily_schedule in self.schedule_data._planner.items():
-                day_label = tk.Label(scrollable_frame, text=f"{day}:", font=("Arial", 14, "bold"), bg="white")
+                day_label = tk.Label(scrollable_frame, text=f"{day}:", font=(app_font, 14, "bold"), bg="white")
                 day_label.pack(anchor="w", padx=10, pady=5)
 
                 planner = daily_schedule.get_planner()
                 if planner:
                     for time, lessons in sorted(planner.items()):
                         time_label = tk.Label(scrollable_frame, text=f"  {daily_schedule.military_to_standard(time)}",
-                                              font=("Arial", 12), bg="white")
+                                              font=(app_font, 12), bg="white")
                         time_label.pack(anchor="w", padx=20)
 
                         for rider, horse in lessons:
                             lesson_label = tk.Label(scrollable_frame,
                                                     text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
-                                                    font=("Arial", 10), bg="white")
+                                                    font=(app_font, 10), bg="white")
                             lesson_label.pack(anchor="w", padx=40)
                 else:
                     no_schedule_label = tk.Label(scrollable_frame, text="  No lessons scheduled.",
-                                                 font=("Arial", 10, "italic"), bg="white")
+                                                 font=(app_font, 10, "italic"), bg="white")
                     no_schedule_label.pack(anchor="w", padx=20)
 
-        back_button = tk.Button(self, text="Back", command=self.leave_schedule_screen, font=("Arial", 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.leave_schedule_screen, font=(app_font, 12), bg="#f44336",
                                 fg="black")
         back_button.pack(pady=20)
 
