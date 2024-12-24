@@ -703,6 +703,7 @@ class App(tk.Tk):
         Opens a new window to add a new lesson to the schedule, with options to select the rider, day, time, type of lesson, and duration.
         :return: None
         '''
+        m_frame_color = "#466791"
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
@@ -710,7 +711,7 @@ class App(tk.Tk):
 
         self.active_window = self
 
-        main_frame = tk.Frame(self, bg="#466791")
+        main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
 
         rider_name_option = StringVar()
@@ -722,9 +723,10 @@ class App(tk.Tk):
         rider_name_option.set(riders[0])
 
         # Rider Name
-        rider_label = tk.Label(main_frame, text="Name Of Rider:", font=("Arial", 12), bg="white")
+        rider_label = tk.Label(main_frame, text="Name Of Rider:", font=("Arial", 12), bg=m_frame_color)
         rider_label.grid(row=0, column=0, padx=10, pady=5, sticky="e")
         rider_options = tk.OptionMenu(main_frame, rider_name_option, *riders)
+        rider_options.config(bg="white",relief="raised", bd=5, fg="black")
         rider_options.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
         # Day of Week
@@ -732,18 +734,20 @@ class App(tk.Tk):
         day_option = StringVar()
         day_option.set(days_of_week[0])
 
-        day_label = tk.Label(main_frame, text="Day of week:", font=("Arial", 12), bg="white")
+        day_label = tk.Label(main_frame, text="Day of week:", font=("Arial", 12), bg=m_frame_color)
         day_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
         day_options = tk.OptionMenu(main_frame, day_option, *days_of_week)
+        day_options.config(bg="white",relief="raised", bd=5, fg="black")
         day_options.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
         # Type of Lesson
         jump_var = StringVar()
         jump_var.set("Jumping")
 
-        type_label = tk.Label(main_frame, text="Type of lesson:", font=("Arial", 12), bg="white")
+        type_label = tk.Label(main_frame, text="Type of lesson:", font=("Arial", 12), bg=m_frame_color)
         type_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
-        jumping_lesson_dropdown = ttk.Combobox(main_frame, textvariable=jump_var, values=["Jumping", "Not Jumping"],
+        jumping_lesson_dropdown = ttk.Combobox(main_frame, textvariable=jump_var,
+                                               values=["Jumping", "Not Jumping", "Hack"],
                                                width=10,
                                                font=("Arial", 12), state="readonly")
         jumping_lesson_dropdown.grid(row=2, column=1, padx=10, pady=5, sticky="w")
@@ -752,36 +756,50 @@ class App(tk.Tk):
         duration_var = StringVar()
         duration_var.set("30")
 
-        duration_label = tk.Label(main_frame, text="Duration of Lesson (in minutes):", font=("Arial", 12), bg="white")
+        duration_label = tk.Label(main_frame, text="Duration of Lesson (in minutes):", font=("Arial", 12), bg=m_frame_color)
         duration_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
         duration_dropdown = ttk.Combobox(main_frame, textvariable=duration_var, values=["30", "60"], width=5,
                                          font=("Arial", 12), state="readonly")
         duration_dropdown.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Time Input
-        time_label = tk.Label(main_frame, text="Time:", font=("Arial", 12), bg="white")
+        time_label = tk.Label(main_frame, text="Time:", font=("Arial", 12), bg=m_frame_color)
         time_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
 
-        time_frame = tk.Frame(main_frame, bg="white")
+        time_frame = tk.Frame(main_frame, bg=m_frame_color)
         time_frame.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
         hour_var = tk.StringVar(value="12")
         minute_var = tk.StringVar(value="00")
         ampm_var = tk.StringVar(value="AM")
 
-        hour_spinbox = ttk.Spinbox(time_frame, from_=1, to=12, wrap=True, textvariable=hour_var, width=5,
+        hour_spinbox = ttk.Spinbox(time_frame, from_=1, to=12, wrap=True, textvariable=hour_var, width=3,
                                    font=("Arial", 12))
         hour_spinbox.pack(side="left", padx=5)
 
         minute_spinbox = ttk.Spinbox(time_frame, from_=0, to=59, wrap=True, textvariable=minute_var, format="%02.0f",
-                                     width=5,
+                                     width=3,
                                      font=("Arial", 12))
         minute_spinbox.pack(side="left", padx=5)
 
-        ampm_dropdown = ttk.Combobox(time_frame, textvariable=ampm_var, values=["AM", "PM"], width=5,
+        ampm_dropdown = ttk.Combobox(time_frame, textvariable=ampm_var, values=["AM", "PM"], width=3,
                                      font=("Arial", 12),
                                      state="readonly")
         ampm_dropdown.pack(side="left", padx=5)
+
+        def toggle_hack_state(*args):
+            if jump_var.get() == "Hack":
+                duration_dropdown.config(state="disabled")
+                hour_spinbox.config(state="disabled")
+                minute_spinbox.config(state="disabled")
+                ampm_dropdown.config(state="disabled")
+            else:
+                duration_dropdown.config(state="readonly")
+                hour_spinbox.config(state="normal")
+                minute_spinbox.config(state="normal")
+                ampm_dropdown.config(state="readonly")
+
+        jump_var.trace("w", toggle_hack_state)
 
         def get_time():
             if ampm_var.get() == "AM":
@@ -793,9 +811,9 @@ class App(tk.Tk):
         def submit_lesson():
             try:
                 rider = rider_name_option.get()
-                time = get_time()
+                time = get_time() if jump_var.get() != "Hack" else "-1"
                 day = day_option.get()
-                duration = int(duration_var.get())
+                duration = int(duration_var.get()) if jump_var.get() != "Hack" else 30
                 jumper = True if jump_var.get() == "Jumping" else False
 
                 self.schedule.add_lesson(rider, day, time, duration, jumper)
