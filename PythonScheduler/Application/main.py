@@ -151,11 +151,15 @@ class App(tk.Tk):
                                          fg="black")
         show_schedule_button.pack(pady=10)
 
-
+        save_changes_button = tk.Button(self, text="Save Changes", command=self.save_data, font=(app_font, 12), bg=accept_color, fg="black")
+        save_changes_button.pack(pady=10)
         back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 12), bg=back_color,
                                 fg="black")
         back_button.pack(pady=10)
 
+    def save_data(self):
+        self.save_horse_data()
+        self.save_rider_data()
 
     def display_all_horses(self):
         """
@@ -637,6 +641,7 @@ class App(tk.Tk):
     def load_saves(self):
         self.data_manipulator.load_riders_from_pickle(self.schedule)
         self.data_manipulator.load_horses_from_pickle(self.schedule)
+
     def upload_horse_data(self):
         '''
         Prompts the user to select and upload a file containing horse data in CSV or Excel format, and processes the file for use within the application.
@@ -1076,6 +1081,7 @@ class App(tk.Tk):
         '''
         m_frame_color = "#000000"
         text_color = "#e7e9ea"
+        display_font_size = 14
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
@@ -1100,6 +1106,7 @@ class App(tk.Tk):
             # Multi-column layout with horizontal scrolling
             outer_canvas = tk.Canvas(self, bg=m_frame_color)
             x_scrollbar = tk.Scrollbar(self, orient="horizontal", command=outer_canvas.xview)
+            y_scrollbar = tk.Scrollbar(self, orient="vertical", command=outer_canvas.yview)
             outer_frame = tk.Frame(outer_canvas, bg=m_frame_color)
             self.resize_background()
 
@@ -1108,10 +1115,11 @@ class App(tk.Tk):
                 lambda e: outer_canvas.configure(scrollregion=outer_canvas.bbox("all"))
             )
             outer_canvas.create_window((0, 0), window=outer_frame, anchor="nw")
-            outer_canvas.configure(xscrollcommand=x_scrollbar.set)
+            outer_canvas.configure(xscrollcommand=x_scrollbar.set, yscrollcommand=y_scrollbar.set)
 
             outer_canvas.pack(side="top", fill="both", expand=True)
             x_scrollbar.pack(side="bottom", fill="x")
+            y_scrollbar.pack(side="right", fill="y")
 
             for col, (day, daily_schedule) in enumerate(self.schedule_data._planner.items()):
                 day_frame = tk.Frame(outer_frame, bg="white", borderwidth=2, relief="groove")
@@ -1124,17 +1132,17 @@ class App(tk.Tk):
                 if planner:
                     for time, lessons in sorted(planner.items()):
                         time_label = tk.Label(day_frame, text=f"  {daily_schedule.military_to_standard(time)}",
-                                              font=(app_font, 12), bg="white")
+                                              font=(app_font, display_font_size+1), bg="white")
                         time_label.pack(anchor="w", padx=20)
 
                         for rider, horse in lessons:
                             lesson_label = tk.Label(day_frame,
                                                     text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
-                                                    font=(app_font, 10), bg="white")
+                                                    font=(app_font, display_font_size), bg="white")
                             lesson_label.pack(anchor="w", padx=40)
                 else:
                     no_schedule_label = tk.Label(day_frame, text="  No lessons scheduled.",
-                                                 font=(app_font, 10, "italic"), bg="white")
+                                                 font=(app_font, display_font_size, "italic"), bg="white")
                     no_schedule_label.pack(anchor="w", padx=20)
         else:
             # Single-column scrollable layout for normal state
@@ -1153,24 +1161,24 @@ class App(tk.Tk):
             scrollbar.pack(side="right", fill="y")
 
             for day, daily_schedule in self.schedule_data._planner.items():
-                day_label = tk.Label(scrollable_frame, text=f"{day}:", font=(app_font, 14, "bold"), bg="white")
+                day_label = tk.Label(scrollable_frame, text=f"{day}:", font=(app_font, display_font_size+2, "bold"), bg="white")
                 day_label.pack(anchor="w", padx=10, pady=5)
 
                 planner = daily_schedule.get_planner()
                 if planner:
                     for time, lessons in sorted(planner.items()):
                         time_label = tk.Label(scrollable_frame, text=f"  {daily_schedule.military_to_standard(time)}",
-                                              font=(app_font, 12), bg="white")
+                                              font=(app_font, display_font_size+1), bg="white")
                         time_label.pack(anchor="w", padx=20)
 
                         for rider, horse in lessons:
                             lesson_label = tk.Label(scrollable_frame,
                                                     text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
-                                                    font=(app_font, 10), bg="white")
+                                                    font=(app_font, display_font_size), bg="white")
                             lesson_label.pack(anchor="w", padx=40)
                 else:
                     no_schedule_label = tk.Label(scrollable_frame, text="  No lessons scheduled.",
-                                                 font=(app_font, 10, "italic"), bg="white")
+                                                 font=(app_font, display_font_size, "italic"), bg="white")
                     no_schedule_label.pack(anchor="w", padx=20)
 
         back_button = tk.Button(self, text="Back", command=self.leave_schedule_screen, font=(app_font, 12), bg=back_color,
