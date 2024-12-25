@@ -120,7 +120,7 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=(app_font, 14, "bold"),
+        instruction_label = tk.Label(self, text="Main Operation", font=(app_font, 14, "bold"),
                                      bg=m_frame_color, fg=text_color)
         instruction_label.pack(pady=20)
 
@@ -232,7 +232,7 @@ class App(tk.Tk):
                 widget.destroy()
 
         main_frame = tk.Frame(self, bg=m_frame_color)
-        main_frame.pack(anchor="w",padx=100, pady=10)
+        main_frame.pack(pady=10)
 
         tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
                                                                                  sticky="e")
@@ -275,6 +275,7 @@ class App(tk.Tk):
                                                                                                      padx=10, pady=5,
                                                                                                      sticky="w")
 
+        ''' Relic code
         jumper_times = horse.get_jumper_times()
         tk.Label(main_frame, text="Jumper Times This Week:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=6, column=0,
                                                                                                    padx=10, pady=5,
@@ -288,7 +289,7 @@ class App(tk.Tk):
                                                                                                        sticky="e")
         tk.Label(main_frame, text=non_jumper_times, font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=7, column=1, padx=10,
                                                                                           pady=5, sticky="w")
-
+        '''
         def edit_horse():
             self.edit_horse_information(horse)
 
