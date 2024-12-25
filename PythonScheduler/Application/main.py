@@ -33,7 +33,7 @@ class App(tk.Tk):
         '''
         super().__init__()
         self.title("Welcome")
-        self.geometry("600x800")
+        self.geometry("710x800")
         self.resizable(True, True)
 
         self.bg_label = tk.Label(self)
@@ -63,7 +63,7 @@ class App(tk.Tk):
         :return: None
         '''
         try:
-            self.image_path = "bg5.jpg"  # Ensure this image file is present in the directory
+            self.image_path = "bg6.jpg"  # Ensure this image file is present in the directory
             self.original_image = Image.open(self.image_path)
             self.resize_background()
         except Exception as e:
@@ -92,6 +92,7 @@ class App(tk.Tk):
                 widget.destroy()
 
         self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
 
 
@@ -119,6 +120,7 @@ class App(tk.Tk):
         self.active_window = self
 
         self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         instruction_label = tk.Label(self, text="Main Operation", font=(app_font, 14, "bold"),
                                      bg=m_frame_color, fg=text_color)
@@ -173,6 +175,8 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
         header_label = tk.Label(self, text=f"All Horses: {len(self.schedule.get_horses())}\nDouble Click To See Details", font=(app_font, 16),
                                 bg=m_frame_color, fg=text_color)
         header_label.pack(pady=10)
@@ -235,6 +239,9 @@ class App(tk.Tk):
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
+
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
@@ -326,6 +333,9 @@ class App(tk.Tk):
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
+
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         tk.Label(self, text="Edit Horse Information", font=(app_font, display_font_size+2), bg=m_frame_color, fg=text_color).pack(pady=10)
 
@@ -419,6 +429,9 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
+
         header_label = tk.Label(self, text=f"All Riders: {len(self.schedule.get_riders())}\nDouble Click To See Details", font=(app_font, 16),
                                 bg=m_frame_color, fg=text_color)
         header_label.pack(pady=10)
@@ -481,6 +494,9 @@ class App(tk.Tk):
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
+
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
@@ -571,6 +587,9 @@ class App(tk.Tk):
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
+
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         tk.Label(self, text="Edit Rider Information", font=(app_font, display_font_size+2), bg=m_frame_color, fg=text_color).pack(
             pady=10)
@@ -688,6 +707,7 @@ class App(tk.Tk):
         text_color = "#e7e9ea"
         display_font_size = 13
         # Reinitialize the background label if it's missing
+        self.resize_background()
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
             self.bg_label.place(relwidth=1, relheight=1)
@@ -698,11 +718,13 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
         self.active_window = self
 
         # Create a main frame for the form layout
         main_frame = tk.Frame(self, bg=m_frame_color)
-        main_frame.pack(pady=10, padx=10)
+        main_frame.pack(pady=40, padx=10)
 
         # Name
         tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
@@ -812,9 +834,11 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
         # Create a main frame for the form layout
         main_frame = tk.Frame(self, bg=m_frame_color)
-        main_frame.pack(pady=10, padx=10)
+        main_frame.pack(pady=40, padx=10)
 
         # Name
         tk.Label(main_frame, text="Name:", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
@@ -879,6 +903,9 @@ class App(tk.Tk):
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
+
+        self.bg_label.config(image=self.background_image)
+        self.resize_background()
 
         self.active_window = self
 
@@ -1078,6 +1105,7 @@ class App(tk.Tk):
                 self.current_state = new_state
                 self.render_schedule_layout()
 
+
     def render_schedule_layout(self):
         '''
         Renders the schedule layout dynamically based on the current window state.
@@ -1086,6 +1114,7 @@ class App(tk.Tk):
         m_frame_color = "#000000"
         text_color = "#e7e9ea"
         display_font_size = 14
+        self.resize_background()
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
