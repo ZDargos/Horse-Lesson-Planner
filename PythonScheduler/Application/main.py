@@ -28,7 +28,8 @@ def check_and_install(package_name, import_name=None):
 libraries = [
     ("tkinter", "tkinter"),  # Built-in, no pip installation needed
     ("Pillow", "PIL"),       # Pillow for Image, ImageTk
-    ("reportlab", "reportlab", "pandas"),  # ReportLab for PDF generation
+    ("reportlab", "reportlab"),  # ReportLab for PDF generation
+    ("pandas", "pandas")
 ]
 
 for package, import_name in libraries:
