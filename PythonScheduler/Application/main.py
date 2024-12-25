@@ -43,6 +43,7 @@ class App(tk.Tk):
         self.after(1, self.initialize_background_image)
         self.bind("<Configure>", self.resize_background)
 
+
         self.schedule = Weekly_Schedule()
         self.data_manipulator = Data_Manipulation(".data/rider_data.pkl", ".data/horse_data.pkl")
         self.load_saves()
@@ -52,6 +53,7 @@ class App(tk.Tk):
         self.active_window = self
 
         self.schedule_displayed = False
+
 
 
 
@@ -83,7 +85,8 @@ class App(tk.Tk):
         Displays the welcome screen of the application, with a title and an "Enter" button to navigate to the file upload screen.
         :return: None
         '''
-
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
@@ -91,10 +94,10 @@ class App(tk.Tk):
         self.bg_label.config(image=self.background_image)
 
 
-        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=(app_font, 16), bg="white", borderwidth=-10)
+        welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=(app_font, 16), bg=m_frame_color, borderwidth=-10, fg=text_color)
         welcome_label.pack(pady=50)
 
-        enter_button = tk.Button(self, text="Enter", command=self.file_upload_screen, font=(app_font, 14), bg="white",
+        enter_button = tk.Button(self, text="Enter", command=self.pseudo_solve_speed, font=(app_font, 14), bg="white",
                                  fg="black")
         enter_button.pack(pady=20)
 
@@ -104,6 +107,9 @@ class App(tk.Tk):
         Displays the file upload screen, allowing the user to upload horse and rider data, and navigate to other functionalities such as adding or removing entities.
         :return: None
         '''
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
+        button_color = ""
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
@@ -112,8 +118,8 @@ class App(tk.Tk):
 
         self.bg_label.config(image=self.background_image)
 
-        instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=(app_font, 14),
-                                     bg="white")
+        instruction_label = tk.Label(self, text="Please upload Horse and Rider data files:", font=(app_font, 14, "bold"),
+                                     bg=m_frame_color, fg=text_color)
         instruction_label.pack(pady=20)
 
         upload_button = tk.Button(self, text="Upload Horse Data", command=self.upload_horse_data, font=(app_font, 14),
@@ -144,7 +150,7 @@ class App(tk.Tk):
         show_schedule_button.pack(pady=10)
 
 
-        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 12), bg="white",
+        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 12), bg=back_color,
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -154,13 +160,15 @@ class App(tk.Tk):
         Displays all horses using a Treeview for faster rendering with a fixed-size box.
         :return: None
         """
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
 
         header_label = tk.Label(self, text=f"All Horses: {len(self.schedule.get_horses())}\nDouble Click To See Details", font=(app_font, 16),
-                                bg="white")
+                                bg=m_frame_color, fg=text_color)
         header_label.pack(pady=10)
 
         style = ttk.Style()
@@ -194,11 +202,11 @@ class App(tk.Tk):
         tree.bind("<Double-1>", on_double_click)
         tree.pack(fill="both", expand=True)  # Fill within the fixed-size frame
 
-        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=(app_font, 14), bg="white",
+        add_horse_button = tk.Button(self, text="Add Horse", command=self.add_horse, font=(app_font, 14), bg=accept_color,
                                      fg="black")
         add_horse_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=(app_font, 12), bg="#f44336",
+        back_button = tk.Button(self, text="Back", command=self.file_upload_screen, font=(app_font, 12), bg=back_color,
                                 fg="black")
         back_button.pack(pady=20)
 
@@ -208,8 +216,8 @@ class App(tk.Tk):
         :param horse: Horse object whose information is to be displayed.
         :return: None
         """
-        m_frame_color = "#466791"
-        text_color = "#000000"
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -224,59 +232,65 @@ class App(tk.Tk):
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(anchor="w",padx=100, pady=10)
 
-        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color).grid(row=0, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
                                                                                  sticky="e")
-        tk.Label(main_frame, text=horse.get_name(), font=(app_font, 12), bg=m_frame_color).grid(row=0, column=1, padx=10,
+        tk.Label(main_frame, text=horse.get_name(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=1, padx=10,
                                                                                           pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Leaser:", font=(app_font, 12), bg=m_frame_color).grid(row=1, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Leaser:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10, pady=5,
                                                                                    sticky="e")
-        tk.Label(main_frame, text=horse.get_leaser(), font=(app_font, 12), bg=m_frame_color).grid(row=1, column=1, padx=10,
-                                                                                            pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Max Weight:", font=(app_font, 12), bg=m_frame_color).grid(row=2, column=0, padx=10, pady=5,
+        if horse.get_leaser():
+            tk.Label(main_frame, text=horse.get_leaser(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=1, padx=10,
+                                                                                            pady=5, sticky="w")
+        else:
+            tk.Label(main_frame, text="No leasers", font=(app_font, 12, "italic"), bg=m_frame_color, fg=text_color).grid(
+                row=1, column=1, padx=10,
+                pady=5, sticky="w")
+
+        tk.Label(main_frame, text="Max Weight:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10, pady=5,
                                                                                        sticky="e")
-        tk.Label(main_frame, text=f"{horse.get_max_weight()} lbs", font=(app_font, 12), bg=m_frame_color).grid(row=2,
+        tk.Label(main_frame, text=f"{horse.get_max_weight()} lbs", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2,
                                                                                                          column=1,
                                                                                                          padx=10,
                                                                                                          pady=5,
                                                                                                          sticky="w")
 
-        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color).grid(row=3, column=0, padx=10,
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
                                                                                         pady=5, sticky="e")
-        tk.Label(main_frame, text=horse.get_skill_level(), font=(app_font, 12), bg=m_frame_color).grid(row=3, column=1,
+        tk.Label(main_frame, text=horse.get_skill_level(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=1,
                                                                                                  padx=10, pady=5,
                                                                                                  sticky="w")
 
-        tk.Label(main_frame, text="Jumper:", font=(app_font, 12), bg=m_frame_color).grid(row=4, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Jumper:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10, pady=5,
                                                                                    sticky="e")
-        tk.Label(main_frame, text="Yes" if horse.is_jumping_horse() else "No", font=(app_font, 12), bg=m_frame_color).grid(
+        tk.Label(main_frame, text="Yes" if horse.is_jumping_horse() else "No", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(
             row=4, column=1, padx=10, pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, 12), bg=m_frame_color).grid(row=5, column=0, padx=10,
+        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=10,
                                                                                             pady=5, sticky="e")
-        tk.Label(main_frame, text=horse.get_max_daily_jumps(), font=(app_font, 12), bg=m_frame_color).grid(row=5, column=1,
+        tk.Label(main_frame, text=horse.get_max_daily_jumps(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=1,
                                                                                                      padx=10, pady=5,
                                                                                                      sticky="w")
 
         jumper_times = horse.get_jumper_times()
-        tk.Label(main_frame, text="Jumper Times This Week:", font=(app_font, 12), bg=m_frame_color).grid(row=6, column=0,
+        tk.Label(main_frame, text="Jumper Times This Week:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=6, column=0,
                                                                                                    padx=10, pady=5,
                                                                                                    sticky="e")
-        tk.Label(main_frame, text=jumper_times, font=(app_font, 12), bg=m_frame_color).grid(row=6, column=1, padx=10, pady=5,
+        tk.Label(main_frame, text=jumper_times, font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=6, column=1, padx=10, pady=5,
                                                                                       sticky="w")
 
         non_jumper_times = horse.get_non_jumper_times()
-        tk.Label(main_frame, text="Non-Jumper Times This Week:", font=(app_font, 12), bg=m_frame_color).grid(row=7, column=0,
+        tk.Label(main_frame, text="Non-Jumper Times This Week:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=7, column=0,
                                                                                                        padx=10, pady=5,
                                                                                                        sticky="e")
-        tk.Label(main_frame, text=non_jumper_times, font=(app_font, 12), bg=m_frame_color).grid(row=7, column=1, padx=10,
+        tk.Label(main_frame, text=non_jumper_times, font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=7, column=1, padx=10,
                                                                                           pady=5, sticky="w")
 
         def edit_horse():
             self.edit_horse_information(horse)
 
-        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=(app_font, 12), bg="#FFC107", fg="black")
+        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=(app_font, 12), bg=accept_color, fg="black")
         edit_button.pack(pady=10)
 
         def delete_horse():
@@ -297,8 +311,8 @@ class App(tk.Tk):
         :param horse: Horse object to edit.
         :return: None
         """
-        m_frame_color = "#466791"
-        text_color = "#000000"
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Clear all widgets from the current window
         for widget in self.winfo_children():
             if widget != self.bg_label:
@@ -328,7 +342,7 @@ class App(tk.Tk):
                                                                                         pady=5, sticky="e")
         skill_frame = tk.Frame(main_frame, bg=m_frame_color)
         skill_frame.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-
+        print(horse.get_skill_level())
         skill_levels = {
             "Beginner": tk.IntVar(value=0 if "B" not in horse.get_skill_level() else 1),
             "Novice": tk.IntVar(value=0 if "N" not in horse.get_skill_level() else 1),
@@ -336,7 +350,7 @@ class App(tk.Tk):
             "Open": tk.IntVar(value=0 if "O" not in horse.get_skill_level() else 1),
         }
         for level, var in skill_levels.items():
-            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color, selectcolor=m_frame_color)
             check_box.pack(side="left", padx=5)
 
         # Jumper
@@ -446,6 +460,8 @@ class App(tk.Tk):
         :param rider: Rider object whose information is to be displayed.
         :return: None
         """
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -457,59 +473,59 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        main_frame = tk.Frame(self, bg="white")
+        main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
 
-        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg="white").grid(row=0, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
                                                                                  sticky="e")
-        tk.Label(main_frame, text=rider.get_name(), font=(app_font, 12), bg="white").grid(row=0, column=1, padx=10,
+        tk.Label(main_frame, text=rider.get_name(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=1, padx=10,
                                                                                           pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Weight:", font=(app_font, 12), bg="white").grid(row=1, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Weight:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10, pady=5,
                                                                                    sticky="e")
-        tk.Label(main_frame, text=f"{rider.get_weight()} lbs", font=(app_font, 12), bg="white").grid(row=1, column=1,
+        tk.Label(main_frame, text=f"{rider.get_weight()} lbs", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=1,
                                                                                                      padx=10, pady=5,
                                                                                                      sticky="w")
 
-        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg="white").grid(row=2, column=0, padx=10,
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10,
                                                                                         pady=5, sticky="e")
-        tk.Label(main_frame, text=rider.get_skill_level(), font=(app_font, 12), bg="white").grid(row=2, column=1,
+        tk.Label(main_frame, text=rider.get_skill_level(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2, column=1,
                                                                                                  padx=10, pady=5,
                                                                                                  sticky="w")
 
         recent_horses = rider.get_recent_horses()
-        tk.Label(main_frame, text="Recent Horses:", font=(app_font, 12), bg="white").grid(row=3, column=0, padx=10,
+        tk.Label(main_frame, text="Recent Horses:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
                                                                                           pady=5, sticky="e")
         if recent_horses:
             horses = ", ".join(recent_horses)
-            tk.Label(main_frame, text=horses, font=(app_font, 12), bg="white").grid(row=3, column=1, padx=10, pady=5,
+            tk.Label(main_frame, text=horses, font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=1, padx=10, pady=5,
                                                                                     sticky="w")
         else:
-            tk.Label(main_frame, text="No recent horses.", font=(app_font, 12, "italic"), bg="white").grid(row=3,
+            tk.Label(main_frame, text="No recent horses.", font=(app_font, 12, "italic"), bg=m_frame_color, fg=text_color).grid(row=3,
                                                                                                            column=1,
                                                                                                            padx=10,
                                                                                                            pady=5,
                                                                                                            sticky="w")
 
-        tk.Label(main_frame, text="Total Owed:", font=(app_font, 12), bg="white").grid(row=4, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Total Owed:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10, pady=5,
                                                                                        sticky="e")
-        tk.Label(main_frame, text=f"${rider.get_total_owed():.2f}", font=(app_font, 12), bg="white").grid(row=4,
+        tk.Label(main_frame, text=f"${rider.get_total_owed():.2f}", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=4,
                                                                                                           column=1,
                                                                                                           padx=10,
                                                                                                           pady=5,
                                                                                                           sticky="w")
 
-        tk.Label(main_frame, text="Current Lessons:", font=(app_font, 12), bg="white").grid(row=5, column=0, padx=10,
+        tk.Label(main_frame, text="Current Lessons:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=10,
                                                                                             pady=5, sticky="e")
         lessons = rider.get_weekly_schedule()
         if lessons:
             all_lessons = "\n".join([
                                         f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]} and {'jumping' if lesson[2] else 'not jumping'}"
                                         for lesson in lessons])
-            tk.Label(main_frame, text=all_lessons, font=(app_font, 12), bg="white").grid(row=5, column=1, padx=10,
+            tk.Label(main_frame, text=all_lessons, font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=1, padx=10,
                                                                                          pady=5, sticky="w")
         else:
-            tk.Label(main_frame, text="No lessons planned", font=(app_font, 12, "italic"), bg="white").grid(row=5,
+            tk.Label(main_frame, text="No lessons planned", font=(app_font, 12, "italic"), bg=m_frame_color, fg=text_color).grid(row=5,
                                                                                                             column=1,
                                                                                                             padx=10,
                                                                                                             pady=5,
@@ -518,7 +534,7 @@ class App(tk.Tk):
         def edit_rider():
             self.edit_rider_information(rider)
 
-        edit_button = tk.Button(self, text="Edit", command=edit_rider, font=(app_font, 12), bg="#FFC107", fg="black")
+        edit_button = tk.Button(self, text="Edit", command=edit_rider, font=(app_font, 12), bg=accept_color, fg="black")
         edit_button.pack(pady=10)
 
         def delete_rider():
@@ -985,6 +1001,10 @@ class App(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Error generating schedule: {e}")
 
+    def pseudo_solve_speed(self):
+        self.show_schedule(self.schedule)
+        self.leave_schedule_screen()
+
     def show_schedule(self, schedule):
         '''
         Displays the generated weekly schedule, adjusting layout dynamically based on window state (maximized or normal).
@@ -1019,6 +1039,8 @@ class App(tk.Tk):
         Renders the schedule layout dynamically based on the current window state.
         :return: None
         '''
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Clear all widgets except the background label
         for widget in self.winfo_children():
             if widget != self.bg_label:
@@ -1031,7 +1053,7 @@ class App(tk.Tk):
                                              font=(app_font, 14), bg="white", fg="black")
         generate_schedule_button.pack(pady=10)
 
-        schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=(app_font, 16), bg="white")
+        schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=(app_font, 16), bg=m_frame_color, fg=text_color)
         schedule_label.pack(pady=20)
 
         export_button = ttk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf)
@@ -1041,9 +1063,9 @@ class App(tk.Tk):
 
         if is_maximized:
             # Multi-column layout with horizontal scrolling
-            outer_canvas = tk.Canvas(self, bg="white")
+            outer_canvas = tk.Canvas(self, bg=m_frame_color)
             x_scrollbar = tk.Scrollbar(self, orient="horizontal", command=outer_canvas.xview)
-            outer_frame = tk.Frame(outer_canvas, bg="white")
+            outer_frame = tk.Frame(outer_canvas, bg=m_frame_color)
             self.resize_background()
 
             outer_frame.bind(
@@ -1081,7 +1103,7 @@ class App(tk.Tk):
                     no_schedule_label.pack(anchor="w", padx=20)
         else:
             # Single-column scrollable layout for normal state
-            canvas = tk.Canvas(self, bg="white")
+            canvas = tk.Canvas(self, bg=m_frame_color)
             scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
             scrollable_frame = tk.Frame(canvas, bg="white")
 
@@ -1092,7 +1114,7 @@ class App(tk.Tk):
             canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
             canvas.configure(yscrollcommand=scrollbar.set)
 
-            canvas.pack(side="left", fill="both", expand=True)
+            canvas.pack(side="left", fill="y", expand=True)
             scrollbar.pack(side="right", fill="y")
 
             for day, daily_schedule in self.schedule_data._planner.items():
