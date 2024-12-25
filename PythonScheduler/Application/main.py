@@ -14,6 +14,8 @@ from reportlab.pdfgen import canvas
 import sys
 import os
 
+from six import text_type
+
 print(os.getcwd()[:-11])  # prints the current working directory path
 sys.path.append(os.path.abspath(os.getcwd()[:-11]))
 from Classes.Horse import *
@@ -176,7 +178,7 @@ class App(tk.Tk):
         style.configure("Treeview.Heading", font=(app_font, 14, "bold"))  # Header font
 
         # Treeview setup with fixed width and height
-        tree_frame = tk.Frame(self, width=250, height=300)  # Fixed frame size
+        tree_frame = tk.Frame(self, width=250, height=400)  # Fixed frame size
         tree_frame.pack(pady=20)
         tree_frame.pack_propagate(False)  # Prevent the frame from resizing to its content
 
@@ -342,7 +344,6 @@ class App(tk.Tk):
                                                                                         pady=5, sticky="e")
         skill_frame = tk.Frame(main_frame, bg=m_frame_color)
         skill_frame.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-        print(horse.get_skill_level())
         skill_levels = {
             "Beginner": tk.IntVar(value=0 if "B" not in horse.get_skill_level() else 1),
             "Novice": tk.IntVar(value=0 if "N" not in horse.get_skill_level() else 1),
@@ -420,7 +421,7 @@ class App(tk.Tk):
         style.configure("Treeview.Heading", font=(app_font, 14, "bold"))  # Header font
 
         # Treeview setup with fixed width and height
-        tree_frame = tk.Frame(self, width=250, height=550)  # Fixed frame size
+        tree_frame = tk.Frame(self, width=250, height=475)  # Fixed frame size
         tree_frame.pack(pady=20)
         tree_frame.pack_propagate(False)  # Prevent the frame from resizing to its content
 
@@ -602,7 +603,7 @@ class App(tk.Tk):
             "Open": tk.IntVar(value=0 if "O" not in rider.get_skill_level() else 1),
         }
         for level, var in skill_levels.items():
-            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color, selectcolor=m_frame_color)
             check_box.pack(side="left", padx=5)
 
         def save_changes():
@@ -674,6 +675,8 @@ class App(tk.Tk):
         Opens a new window to add a new horse to the schedule, with fields for the horse's name, attributes, and optional leasers.
         :return: None
         '''
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -687,15 +690,25 @@ class App(tk.Tk):
 
         self.active_window = self
 
-        tk.Label(self, text="Name:").pack(pady=5)
-        name_entry = tk.Entry(self)
-        name_entry.pack(pady=5)
+        # Create a main frame for the form layout
+        main_frame = tk.Frame(self, bg=m_frame_color)
+        main_frame.pack(pady=10, padx=10)
 
-        tk.Label(self, text="Max Weight:").pack(pady=5)
-        max_weight_entry = tk.Entry(self)
-        max_weight_entry.pack(pady=5)
+        # Name
+        tk.Label(main_frame, text="Name:", bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        name_entry = tk.Entry(main_frame)
+        name_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        tk.Label(self, text="Skill Level:").pack(pady=5)
+        # Max Weight
+        tk.Label(main_frame, text="Max Weight:", bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        max_weight_entry = tk.Entry(main_frame)
+        max_weight_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        # Skill Level
+        tk.Label(main_frame, text="Skill Level:", bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=5, pady=5, sticky="ne")
+        skill_frame = tk.Frame(main_frame,bg=m_frame_color)
+        skill_frame.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
         skill_levels = {
             "Beginner": tk.IntVar(),
             "Novice": tk.IntVar(),
@@ -703,18 +716,24 @@ class App(tk.Tk):
             "Open": tk.IntVar(),
         }
         for level, var in skill_levels.items():
-            tk.Checkbutton(self, text=level, variable=var).pack(pady=3)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color,
+                                       selectcolor=m_frame_color)
+            check_box.pack(side="left", padx=5)
 
-        tk.Label(self, text="Is Jumper (yes/no):").pack(pady=5)
-        is_jumper_entry = tk.Entry(self)
-        is_jumper_entry.pack(pady=5)
+        # Is Jumper
+        tk.Label(main_frame, text="Is Jumper (yes/no):", bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        is_jumper_entry = tk.Entry(main_frame)
+        is_jumper_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
-        tk.Label(self, text="Max Rides per Day:").pack(pady=5)
-        max_rides_entry = tk.Entry(self)
-        max_rides_entry.pack(pady=5)
+        # Max Rides per Day
+        tk.Label(main_frame, text="Max Rides per Day:", bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        max_rides_entry = tk.Entry(main_frame)
+        max_rides_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
 
-        leaser_frame = tk.Frame(self)
-        leaser_frame.pack(pady=10)
+        # Leasers
+        tk.Label(main_frame, text="Leasers (optional):", bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=5, pady=5, sticky="ne")
+        leaser_frame = tk.Frame(main_frame, bg=m_frame_color)
+        leaser_frame.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
         leaser_menus = []
 
@@ -735,10 +754,10 @@ class App(tk.Tk):
                 _, last_menu = leaser_menus.pop()
                 last_menu.destroy()
 
-        tk.Label(self, text="Leasers (optional):").pack(pady=5)
-        tk.Button(self, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
-        tk.Button(self, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Button(leaser_frame, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Button(leaser_frame, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
 
+        # Submit Button
         def submit_horse():
             try:
                 name = name_entry.get()
@@ -762,13 +781,16 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add horse: {e}")
 
-        tk.Button(self, text="Add Horse", command=submit_horse).pack(pady=20)
+        tk.Button(self, text="Add Horse", command=submit_horse, bg=accept_color, fg="black").pack(pady=20)
+        tk.Button(self, text="Cancel", command=self.display_all_horses, bg=back_color, fg="black").pack(pady=10)
 
     def add_rider(self):
         '''
         Opens a new window to add a new rider to the schedule, with fields for the rider's name, weight, and skill level.
         :return: None
         '''
+        m_frame_color = "#000000"
+        text_color = "#e7e9ea"
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -780,17 +802,26 @@ class App(tk.Tk):
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text="Name:", font=(app_font, 15)).pack(pady=5)
-        name_entry = tk.Entry(self)
-        name_entry.pack(pady=5)
+        # Create a main frame for the form layout
+        main_frame = tk.Frame(self, bg=m_frame_color)
+        main_frame.pack(pady=10, padx=10)
 
-        tk.Label(self, text="Weight:", font=(app_font, 15)).pack(pady=5)
-        weight_entry = tk.Entry(self)
-        weight_entry.pack(pady=5)
+        # Name
+        tk.Label(main_frame, text="Name:", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        name_entry = tk.Entry(main_frame)
+        name_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        tk.Label(self, text="Skill Level:", font=(app_font, 15)).pack(pady=5)
+        # Weight
+        tk.Label(main_frame, text="Weight:", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        weight_entry = tk.Entry(main_frame)
+        weight_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-        # Skill Level Checkboxes
+        # Skill Level
+        tk.Label(main_frame, text="Skill Level:", bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=5, pady=5,
+                                                                                        sticky="ne")
+        skill_frame = tk.Frame(main_frame, bg=m_frame_color)
+        skill_frame.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
         skill_levels = {
             "Beginner": tk.IntVar(),
             "Novice": tk.IntVar(),
@@ -798,8 +829,11 @@ class App(tk.Tk):
             "Open": tk.IntVar(),
         }
         for level, var in skill_levels.items():
-            tk.Checkbutton(self, text=level, variable=var, font=(app_font, 15), bg="#A9876E").pack(pady=3)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color,
+                                       selectcolor=m_frame_color)
+            check_box.pack(side="left", padx=5)
 
+        # Submit Button
         def submit_rider():
             try:
                 name = name_entry.get()
