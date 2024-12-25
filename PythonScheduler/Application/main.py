@@ -224,6 +224,7 @@ class App(tk.Tk):
         """
         m_frame_color = "#000000"
         text_color = "#e7e9ea"
+        display_font_size = 13
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -238,44 +239,44 @@ class App(tk.Tk):
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
 
-        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
                                                                                  sticky="e")
-        tk.Label(main_frame, text=horse.get_name(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=1, padx=10,
+        tk.Label(main_frame, text=horse.get_name(), font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=1, padx=10,
                                                                                           pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Leaser:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Leaser:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10, pady=5,
                                                                                    sticky="e")
 
         if horse.get_leaser():
-            tk.Label(main_frame, text=horse.get_leaser(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=1, padx=10,
+            tk.Label(main_frame, text=horse.get_leaser(), font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=1, column=1, padx=10,
                                                                                             pady=5, sticky="w")
         else:
-            tk.Label(main_frame, text="No leasers", font=(app_font, 12, "italic"), bg=m_frame_color, fg=text_color).grid(
+            tk.Label(main_frame, text="No leasers", font=(app_font, display_font_size, "italic"), bg=m_frame_color, fg=text_color).grid(
                 row=1, column=1, padx=10,
                 pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Max Weight:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Max Weight:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10, pady=5,
                                                                                        sticky="e")
-        tk.Label(main_frame, text=f"{horse.get_max_weight()} lbs", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2,
+        tk.Label(main_frame, text=f"{horse.get_max_weight()} lbs", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=2,
                                                                                                          column=1,
                                                                                                          padx=10,
                                                                                                          pady=5,
                                                                                                          sticky="w")
 
-        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
                                                                                         pady=5, sticky="e")
-        tk.Label(main_frame, text=horse.get_skill_level(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=1,
+        tk.Label(main_frame, text=horse.get_skill_level(), font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=3, column=1,
                                                                                                  padx=10, pady=5,
                                                                                                  sticky="w")
 
-        tk.Label(main_frame, text="Jumper:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Jumper:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10, pady=5,
                                                                                    sticky="e")
-        tk.Label(main_frame, text="Yes" if horse.is_jumping_horse() else "No", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(
+        tk.Label(main_frame, text="Yes" if horse.is_jumping_horse() else "No", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(
             row=4, column=1, padx=10, pady=5, sticky="w")
 
-        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=10,
+        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=10,
                                                                                             pady=5, sticky="e")
-        tk.Label(main_frame, text=horse.get_max_daily_jumps(), font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=1,
+        tk.Label(main_frame, text=horse.get_max_daily_jumps(), font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=5, column=1,
                                                                                                      padx=10, pady=5,
                                                                                                      sticky="w")
 
@@ -297,18 +298,18 @@ class App(tk.Tk):
         def edit_horse():
             self.edit_horse_information(horse)
 
-        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=(app_font, 12), bg=accept_color, fg="black")
+        edit_button = tk.Button(self, text="Edit", command=edit_horse, font=(app_font, display_font_size), bg=accept_color, fg="black")
         edit_button.pack(pady=10)
 
         def delete_horse():
             self.schedule.remove_horse(horse.get_name())
             self.display_all_horses()
 
-        delete_horse_button = tk.Button(self, text="Delete Horse", command=delete_horse, font=(app_font, 12),
+        delete_horse_button = tk.Button(self, text="Delete Horse", command=delete_horse, font=(app_font, display_font_size),
                                         bg="#f44336", fg="black")
         delete_horse_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=(app_font, 12), bg="gray",
+        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=(app_font, display_font_size), bg="gray",
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -320,32 +321,33 @@ class App(tk.Tk):
         """
         m_frame_color = "#000000"
         text_color = "#e7e9ea"
+        display_font_size = 13
         # Clear all widgets from the current window
         for widget in self.winfo_children():
             if widget != self.bg_label:
                 widget.destroy()
 
-        tk.Label(self, text="Edit Horse Information", font=(app_font, 14), bg=m_frame_color, fg=text_color).pack(pady=10)
+        tk.Label(self, text="Edit Horse Information", font=(app_font, display_font_size+2), bg=m_frame_color, fg=text_color).pack(pady=10)
 
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
 
         # Name
-        tk.Label(main_frame, text="Name:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
+        tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=10, pady=5,
                                                                                  sticky="e")
-        name_entry = tk.Entry(main_frame)
+        name_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         name_entry.insert(0, horse.get_name())
         name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
         # Max Weight
-        tk.Label(main_frame, text="Max Weight (lbs):", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10,
+        tk.Label(main_frame, text="Max Weight (lbs):", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10,
                                                                                              pady=5, sticky="e")
-        max_weight_entry = tk.Entry(main_frame)
+        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         max_weight_entry.insert(0, str(horse.get_max_weight()))
         max_weight_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
         # Skill Level
-        tk.Label(main_frame, text="Skill Level:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10,
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=10,
                                                                                         pady=5, sticky="e")
         skill_frame = tk.Frame(main_frame, bg=m_frame_color)
         skill_frame.grid(row=2, column=1, padx=10, pady=5, sticky="w")
@@ -360,16 +362,16 @@ class App(tk.Tk):
             check_box.pack(side="left", padx=5)
 
         # Jumper
-        tk.Label(main_frame, text="Jumper (Yes/No):", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
+        tk.Label(main_frame, text="Jumper (Yes/No):", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
                                                                                             pady=5, sticky="e")
         jumper_var = tk.StringVar(value="Yes" if horse.is_jumping_horse() else "No")
-        jumper_entry = tk.Entry(main_frame, textvariable=jumper_var)
+        jumper_entry = tk.Entry(main_frame, textvariable=jumper_var, font=(app_font, display_font_size))
         jumper_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Max Daily Jumps
-        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10,
+        tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10,
                                                                                             pady=5, sticky="e")
-        max_jumps_entry = tk.Entry(main_frame)
+        max_jumps_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         max_jumps_entry.insert(0, str(horse.get_max_daily_jumps()))
         max_jumps_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
