@@ -9,39 +9,49 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk, StringVar
 
-def check_and_install(package_name, import_name=None):
-    """
-    Checks if a package is installed and installs it if missing.
-    :param package_name: The name of the package for pip installation.
-    :param import_name: The name used to import the package (if different from package_name).
-    """
-    if import_name is None:
-        import_name = package_name
+import tkinter as tk
+from tkinter import filedialog, messagebox, simpledialog, ttk
+from PIL import Image, ImageTk  # Ensure Pillow is installed
+from tkinter import StringVar
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
-    if importlib.util.find_spec(import_name) is None:
-        print(f"{import_name} not found. Installing {package_name}...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
-    else:
-        print(f"{import_name} is already installed.")
-
-# Check and install required libraries
-libraries = [
-    ("tkinter", "tkinter"),  # Built-in, no pip installation needed
-    ("Pillow", "PIL"),       # Pillow for Image, ImageTk
-    ("reportlab", "reportlab"),  # ReportLab for PDF generation
-    ("pandas", "pandas")
-]
-
-for package, import_name in libraries:
-    if package == "tkinter":
-        # Tkinter is built-in for most Python distributions; verify installation
-        try:
-            import tkinter
-            print("tkinter is installed.")
-        except ImportError:
-            print("tkinter is missing. Please install a Python distribution with tkinter included.")
-    else:
-        check_and_install(package, import_name)
+# Add these lines as per your current working directory setup to import classes
+import sys
+import os
+# def check_and_install(package_name, import_name=None):
+#     """
+#     Checks if a package is installed and installs it if missing.
+#     :param package_name: The name of the package for pip installation.
+#     :param import_name: The name used to import the package (if different from package_name).
+#     """
+#     if import_name is None:
+#         import_name = package_name
+#
+#     if importlib.util.find_spec(import_name) is None:
+#         print(f"{import_name} not found. Installing {package_name}...")
+#         subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+#     else:
+#         print(f"{import_name} is already installed.")
+#
+# # Check and install required libraries
+# libraries = [
+#     ("tkinter", "tkinter"),  # Built-in, no pip installation needed
+#     ("Pillow", "PIL"),       # Pillow for Image, ImageTk
+#     ("reportlab", "reportlab"),  # ReportLab for PDF generation
+#     ("pandas", "pandas")
+# ]
+#
+# for package, import_name in libraries:
+#     if package == "tkinter":
+#         # Tkinter is built-in for most Python distributions; verify installation
+#         try:
+#             import tkinter
+#             print("tkinter is installed.")
+#         except ImportError:
+#             print("tkinter is missing. Please install a Python distribution with tkinter included.")
+#     else:
+#         check_and_install(package, import_name)
 from PIL import Image, ImageTk
 # Check for additional imports
 additional_imports = ["StringVar"]
