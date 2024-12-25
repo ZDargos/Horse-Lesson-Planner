@@ -28,7 +28,7 @@ def check_and_install(package_name, import_name=None):
 libraries = [
     ("tkinter", "tkinter"),  # Built-in, no pip installation needed
     ("Pillow", "PIL"),       # Pillow for Image, ImageTk
-    ("reportlab", "reportlab"),  # ReportLab for PDF generation
+    ("reportlab", "reportlab", "pandas"),  # ReportLab for PDF generation
 ]
 
 for package, import_name in libraries:
@@ -41,7 +41,7 @@ for package, import_name in libraries:
             print("tkinter is missing. Please install a Python distribution with tkinter included.")
     else:
         check_and_install(package, import_name)
-from PIL import Image, ImageTk  
+from PIL import Image, ImageTk
 # Check for additional imports
 additional_imports = ["StringVar"]
 for additional in additional_imports:
