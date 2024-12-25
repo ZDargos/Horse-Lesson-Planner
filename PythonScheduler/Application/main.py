@@ -1130,7 +1130,7 @@ class App(tk.Tk):
         schedule_label = tk.Label(self, text="Week of " + self.data_manipulator.get_time_stamp(), font=(app_font, 16), bg=m_frame_color, fg=text_color)
         schedule_label.pack(pady=20)
 
-        export_button = ttk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf)
+        export_button = tk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf, bg=accept_color, fg="black")
         export_button.pack(pady=10)
 
         is_maximized = self.state() == 'zoomed'
