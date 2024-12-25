@@ -4,7 +4,6 @@
 
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
-import pandas as pd
 from PIL import Image, ImageTk  # Ensure Pillow is installed
 from tkinter import StringVar
 from reportlab.lib.pagesizes import letter
@@ -14,7 +13,6 @@ from reportlab.pdfgen import canvas
 import sys
 import os
 
-from six import text_type
 
 print(os.getcwd()[:-11])  # prints the current working directory path
 sys.path.append(os.path.abspath(os.getcwd()[:-11]))
@@ -96,12 +94,14 @@ class App(tk.Tk):
         self.bg_label.config(image=self.background_image)
 
 
+
         welcome_label = tk.Label(self, text="Welcome to the Horse Lesson Scheduler", font=(app_font, 16), bg=m_frame_color, borderwidth=-10, fg=text_color)
         welcome_label.pack(pady=50)
 
         enter_button = tk.Button(self, text="Enter", command=self.pseudo_solve_speed, font=(app_font, 14), bg="white",
                                  fg="black")
         enter_button.pack(pady=20)
+
 
 
     def file_upload_screen(self):
@@ -683,6 +683,7 @@ class App(tk.Tk):
         '''
         m_frame_color = "#000000"
         text_color = "#e7e9ea"
+        display_font_size = 13
         # Reinitialize the background label if it's missing
         if not hasattr(self, "bg_label") or not self.bg_label.winfo_exists():
             self.bg_label = tk.Label(self)
@@ -701,17 +702,17 @@ class App(tk.Tk):
         main_frame.pack(pady=10, padx=10)
 
         # Name
-        tk.Label(main_frame, text="Name:", bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        name_entry = tk.Entry(main_frame)
+        tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        name_entry = tk.Entry(main_frame,font=(app_font, display_font_size))
         name_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
         # Max Weight
-        tk.Label(main_frame, text="Max Weight:", bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        max_weight_entry = tk.Entry(main_frame)
+        tk.Label(main_frame, text="Max Weight:", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         max_weight_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
         # Skill Level
-        tk.Label(main_frame, text="Skill Level:", bg=m_frame_color, fg=text_color).grid(row=2, column=0, padx=5, pady=5, sticky="ne")
+        tk.Label(main_frame, text="Skill Level:", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=2, column=0, padx=5, pady=5, sticky="ne")
         skill_frame = tk.Frame(main_frame,bg=m_frame_color)
         skill_frame.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
@@ -727,17 +728,17 @@ class App(tk.Tk):
             check_box.pack(side="left", padx=5)
 
         # Is Jumper
-        tk.Label(main_frame, text="Is Jumper (yes/no):", bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=5, pady=5, sticky="e")
-        is_jumper_entry = tk.Entry(main_frame)
+        tk.Label(main_frame, text="Is Jumper (yes/no):", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        is_jumper_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         is_jumper_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
         # Max Rides per Day
-        tk.Label(main_frame, text="Max Rides per Day:", bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=5, pady=5, sticky="e")
-        max_rides_entry = tk.Entry(main_frame)
+        tk.Label(main_frame, text="Max Rides per Day:", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        max_rides_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         max_rides_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
 
         # Leasers
-        tk.Label(main_frame, text="Leasers (optional):", bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=5, pady=5, sticky="ne")
+        tk.Label(main_frame, text="Leasers (optional):", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=5, column=0, padx=5, pady=5, sticky="ne")
         leaser_frame = tk.Frame(main_frame, bg=m_frame_color)
         leaser_frame.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
@@ -760,8 +761,8 @@ class App(tk.Tk):
                 _, last_menu = leaser_menus.pop()
                 last_menu.destroy()
 
-        tk.Button(leaser_frame, text="Add Leaser", command=add_leaser_menu).pack(side=tk.LEFT, padx=10)
-        tk.Button(leaser_frame, text="Remove Leaser", command=remove_leaser_menu).pack(side=tk.LEFT, padx=10)
+        tk.Button(leaser_frame, text="Add Leaser", command=add_leaser_menu, font=(app_font, display_font_size)).pack(side=tk.LEFT, padx=10)
+        tk.Button(leaser_frame, text="Remove Leaser", command=remove_leaser_menu, font=(app_font, display_font_size)).pack(side=tk.LEFT, padx=10)
 
         # Submit Button
         def submit_horse():
@@ -787,8 +788,8 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add horse: {e}")
 
-        tk.Button(self, text="Add Horse", command=submit_horse, bg=accept_color, fg="black").pack(pady=20)
-        tk.Button(self, text="Cancel", command=self.display_all_horses, bg=back_color, fg="black").pack(pady=10)
+        tk.Button(self, text="Add Horse", command=submit_horse, bg=accept_color, fg="black", font=(app_font, display_font_size+2)).pack(pady=20)
+        tk.Button(self, text="Cancel", command=self.display_all_horses, bg=back_color, fg="black", font=(app_font, display_font_size+2)).pack(pady=10)
 
     def add_rider(self):
         '''
