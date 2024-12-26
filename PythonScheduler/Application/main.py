@@ -10,9 +10,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk, StringVar
 
 import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk, StringVar
 from PIL import Image, ImageTk  # Ensure Pillow is installed
-from tkinter import StringVar
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
@@ -54,13 +53,13 @@ import os
 #         check_and_install(package, import_name)
 from PIL import Image, ImageTk
 # Check for additional imports
-additional_imports = ["StringVar"]
-for additional in additional_imports:
-    try:
-        exec(f"from tkinter import {additional}")
-        print(f"{additional} is available in tkinter.")
-    except ImportError:
-        print(f"{additional} could not be imported from tkinter.")
+# additional_imports = ["StringVar"]
+# for additional in additional_imports:
+#     try:
+#         exec(f"from tkinter import {additional}")
+#         print(f"{additional} is available in tkinter.")
+#     except ImportError:
+#         print(f"{additional} could not be imported from tkinter.")
 
 
 
@@ -641,36 +640,40 @@ class App(tk.Tk):
         self.bg_label.config(image=self.background_image)
         self.resize_background()
 
-        tk.Label(self, text="Edit Rider Information", font=(app_font, display_font_size+2), bg=m_frame_color, fg=text_color).pack(
+        tk.Label(self, text="Edit Rider Information", font=(app_font, display_font_size + 2), bg=m_frame_color,
+                 fg=text_color).pack(
             pady=10)
 
         main_frame = tk.Frame(self, bg=m_frame_color)
         main_frame.pack(pady=10)
 
         # Name
-        tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=0, column=0,
-                                                                                                      padx=10, pady=5,
-                                                                                                      sticky="e")
+        tk.Label(main_frame, text="Name:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(
+            row=0, column=0,
+            padx=10, pady=5,
+            sticky="e")
         name_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         name_entry.insert(0, rider.get_name())
         name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
         # Weight
-        tk.Label(main_frame, text="Weight (lbs):", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=1,
-                                                                                                              column=0,
-                                                                                                              padx=10,
-                                                                                                              pady=5,
-                                                                                                              sticky="e")
+        tk.Label(main_frame, text="Weight (lbs):", font=(app_font, display_font_size), bg=m_frame_color,
+                 fg=text_color).grid(row=1,
+                                     column=0,
+                                     padx=10,
+                                     pady=5,
+                                     sticky="e")
         weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
         weight_entry.insert(0, str(rider.get_weight()))
         weight_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
         # Skill Level
-        tk.Label(main_frame, text="Skill Level:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=2,
-                                                                                                             column=0,
-                                                                                                             padx=10,
-                                                                                                             pady=5,
-                                                                                                             sticky="e")
+        tk.Label(main_frame, text="Skill Level:", font=(app_font, display_font_size), bg=m_frame_color,
+                 fg=text_color).grid(row=2,
+                                     column=0,
+                                     padx=10,
+                                     pady=5,
+                                     sticky="e")
         skill_frame = tk.Frame(main_frame, bg=m_frame_color)
         skill_frame.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
@@ -681,8 +684,38 @@ class App(tk.Tk):
             "Open": tk.IntVar(value=0 if "O" not in rider.get_skill_level() else 1),
         }
         for level, var in skill_levels.items():
-            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color, selectcolor=m_frame_color)
+            check_box = tk.Checkbutton(skill_frame, text=level, variable=var, bg=m_frame_color, fg=text_color,
+                                       selectcolor=m_frame_color)
             check_box.pack(side="left", padx=5)
+
+        lessons = rider.get_weekly_schedule()
+        removed_lessons = []
+
+        def remove_lesson(lesson, button, label):
+            removed_lessons.append(lesson)
+            button.destroy()
+            label.destroy()
+
+        lessons_frame = tk.Frame(main_frame, bg=m_frame_color)
+        lessons_frame.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+
+        for lesson in lessons:
+            lesson_text = f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]}" + ((f" and {'jumping' if lesson[2] else 'not jumping'}") if self.data_manipulator.military_to_standard(lesson[1]) != "Hack" else "")
+            lesson_frame = tk.Frame(lessons_frame, bg=m_frame_color)
+            lesson_frame.pack(anchor="w", pady=2)
+
+            lesson_label = tk.Label(lesson_frame, text=lesson_text, font=(app_font, display_font_size),
+                                    bg=m_frame_color, fg=text_color)
+            lesson_label.pack(side="left")
+            remove_button = tk.Button(
+                lesson_frame,
+                text="Remove",
+                command=lambda l=lesson, b=lesson_frame, lbl=lesson_label: remove_lesson(l, b, lbl),
+                font=(app_font, display_font_size - 2),
+                bg="#f44336",
+                fg="white"
+            )
+            remove_button.pack(side="left", padx=5)
 
         def save_changes():
             try:
@@ -699,15 +732,20 @@ class App(tk.Tk):
                 rider.set_weight(new_weight)
                 rider.set_skill_level(new_skill)
 
+                for lesson in removed_lessons:
+                    rider.remove_lesson_time(lesson)
+
                 messagebox.showinfo("Success", "Rider information updated successfully.")
                 self.display_rider_information(rider)
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to update rider: {e}")
 
-        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, display_font_size), bg="#4CAF50", fg="white")
+        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, display_font_size),
+                                bg="#4CAF50", fg="white")
         save_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Cancel", command=lambda: self.display_rider_information(rider), font=(app_font, display_font_size), bg="#f44336", fg="black")
+        back_button = tk.Button(self, text="Cancel", command=lambda: self.display_rider_information(rider),
+                                font=(app_font, display_font_size), bg="#f44336", fg="black")
         back_button.pack(pady=10)
 
     def load_saves(self):
