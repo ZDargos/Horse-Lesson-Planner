@@ -401,7 +401,7 @@ class App(tk.Tk):
         # Max Weight
         tk.Label(main_frame, text="Max Weight (lbs):", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=10,
                                                                                              pady=5, sticky="e")
-        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=4)
         max_weight_entry.insert(0, str(horse.get_max_weight()))
         max_weight_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
@@ -424,13 +424,13 @@ class App(tk.Tk):
         tk.Label(main_frame, text="Jumper (Yes/No):", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=3, column=0, padx=10,
                                                                                             pady=5, sticky="e")
         jumper_var = tk.StringVar(value="Yes" if horse.is_jumping_horse() else "No")
-        jumper_entry = tk.Entry(main_frame, textvariable=jumper_var, font=(app_font, display_font_size))
+        jumper_entry = tk.Entry(main_frame, textvariable=jumper_var, font=(app_font, display_font_size), width=3)
         jumper_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Max Daily Jumps
         tk.Label(main_frame, text="Max Daily Jumps:", font=(app_font, display_font_size), bg=m_frame_color, fg=text_color).grid(row=4, column=0, padx=10,
                                                                                             pady=5, sticky="e")
-        max_jumps_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        max_jumps_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=3)
         max_jumps_entry.insert(0, str(horse.get_max_daily_jumps()))
         max_jumps_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
@@ -663,7 +663,7 @@ class App(tk.Tk):
                                      padx=10,
                                      pady=5,
                                      sticky="e")
-        weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=4)
         weight_entry.insert(0, str(rider.get_weight()))
         weight_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
@@ -821,7 +821,7 @@ class App(tk.Tk):
 
         # Max Weight
         tk.Label(main_frame, text="Max Weight:", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        max_weight_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=4)
         max_weight_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
         # Skill Level
@@ -842,12 +842,12 @@ class App(tk.Tk):
 
         # Is Jumper
         tk.Label(main_frame, text="Is Jumper (yes/no):", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
-        is_jumper_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        is_jumper_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=3)
         is_jumper_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
         # Max Rides per Day
         tk.Label(main_frame, text="Max Rides per Day:", bg=m_frame_color, fg=text_color, font=(app_font, display_font_size)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
-        max_rides_entry = tk.Entry(main_frame, font=(app_font, display_font_size))
+        max_rides_entry = tk.Entry(main_frame, font=(app_font, display_font_size), width=3)
         max_rides_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
 
         # Leasers
@@ -930,12 +930,12 @@ class App(tk.Tk):
 
         # Name
         tk.Label(main_frame, text="Name:", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        name_entry = tk.Entry(main_frame)
+        name_entry = tk.Entry(main_frame, font=(app_font, 15))
         name_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
         # Weight
-        tk.Label(main_frame, text="Weight:", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        weight_entry = tk.Entry(main_frame)
+        tk.Label(main_frame, text="Weight (lbs):", font=(app_font, 15), bg=m_frame_color, fg=text_color).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        weight_entry = tk.Entry(main_frame, font=(app_font, 15), width=4)
         weight_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
         # Skill Level
