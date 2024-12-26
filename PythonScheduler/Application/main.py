@@ -202,9 +202,9 @@ class App(tk.Tk):
                                          fg="black")
         show_schedule_button.pack(pady=10)
 
-        save_changes_button = tk.Button(self, text="Save Changes", command=self.save_data, font=(app_font, 12), bg=accept_color, fg="black")
+        save_changes_button = tk.Button(self, text="Save Changes", command=self.save_data, font=(app_font, 14), bg=accept_color, fg="black")
         save_changes_button.pack(pady=10)
-        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 12), bg=back_color,
+        back_button = tk.Button(self, text="Back", command=self.welcome_screen, font=(app_font, 14), bg=back_color,
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -365,7 +365,7 @@ class App(tk.Tk):
                                         bg="#f44336", fg="black")
         delete_horse_button.pack(pady=10)
 
-        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=(app_font, display_font_size), bg="gray",
+        back_button = tk.Button(self, text="Back", command=self.display_all_horses, font=(app_font, display_font_size), bg=back_color,
                                 fg="black")
         back_button.pack(pady=10)
 
@@ -459,11 +459,11 @@ class App(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to update horse: {e}")
 
-        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, 12), bg=accept_color, fg=text_color)
+        save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, 12), bg=accept_color, fg="black")
         save_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Cancel", command=lambda: self.display_horse_information(horse),
-                                font=(app_font, 12), bg=back_color, fg=text_color)
+                                font=(app_font, 12), bg=back_color, fg="black")
         back_button.pack(pady=10)
 
     def display_all_riders(self):
@@ -713,7 +713,7 @@ class App(tk.Tk):
                 command=lambda l=lesson, b=lesson_frame, lbl=lesson_label: remove_lesson(l, b, lbl),
                 font=(app_font, display_font_size - 2),
                 bg="#f44336",
-                fg="white"
+                fg="black"
             )
             remove_button.pack(side="left", padx=5)
 
@@ -741,11 +741,11 @@ class App(tk.Tk):
                 messagebox.showerror("Error", f"Failed to update rider: {e}")
 
         save_button = tk.Button(self, text="Save", command=save_changes, font=(app_font, display_font_size),
-                                bg="#4CAF50", fg="white")
+                                bg=accept_color, fg="black")
         save_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Cancel", command=lambda: self.display_rider_information(rider),
-                                font=(app_font, display_font_size), bg="#f44336", fg="black")
+                                font=(app_font, display_font_size), bg=back_color, fg="black")
         back_button.pack(pady=10)
 
     def load_saves(self):
