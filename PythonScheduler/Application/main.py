@@ -1261,6 +1261,7 @@ class App(tk.Tk):
                                                     text=f"    Rider: {rider} | Horse: {horse if horse else 'TBD'}",
                                                     font=(app_font, display_font_size), bg="white")
                             lesson_label.pack(anchor="w", padx=40)
+
                 else:
                     no_schedule_label = tk.Label(day_frame, text="  No lessons scheduled.",
                                                  font=(app_font, display_font_size, "italic"), bg="white")
@@ -1401,7 +1402,7 @@ class App(tk.Tk):
                 pdf.setFont("Helvetica-Bold", 12)
                 pdf.drawString(current_column, y_position, f"{day}:")
                 y_position -= 20
-
+                used_horses = []
                 if planner:
                     for time, details in sorted(planner.items()):
                         # Add time
@@ -1415,6 +1416,26 @@ class App(tk.Tk):
                             pdf.setFont("Helvetica", 10)
                             pdf.drawString(current_column + 40, y_position, f"Rider: {rider} | Horse: {horse_name}")
                             y_position -= 15
+                            if horse_name not in used_horses:
+                                used_horses.append(horse_name)
+                    unused_horses = [""]
+                    line = 0
+                    pdf.setFont("Helvetica", 12)
+                    pdf.drawString(current_column + 20, y_position, "Unused Horses For Today:")
+                    y_position -= 15
+                    pdf.setFont("Helvetica", 10)
+                    for horse in self.schedule.get_horses():
+                        if horse.get_name() not in used_horses:
+                            if len(unused_horses[line]) > 30:
+                                line += 1
+                                unused_horses.append("")
+                            unused_horses[line] += f"{horse.get_name()}, "
+                            
+                    unused_horses[-1] = unused_horses[-1][:-2]
+                    for line in unused_horses:
+                        pdf.drawString(current_column + 40, y_position, line)
+                        y_position -= 15
+
                 else:
                     # Add "No lessons scheduled" message
                     pdf.setFont("Helvetica-Oblique", 10)
