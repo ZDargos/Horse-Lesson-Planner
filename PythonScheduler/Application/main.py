@@ -700,7 +700,7 @@ class App(tk.Tk):
         lessons_frame.grid(row=5, column=1, padx=10, pady=5, sticky="w")
 
         for lesson in lessons:
-            lesson_text = f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]}" + ((f" and {'jumping' if lesson[2] else 'not jumping'}") if self.data_manipulator.military_to_standard(lesson[1]) != "Hack" else "")
+            lesson_text = f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]}" + ((f" and {'jumping' if lesson[2] else 'not jumping'}") if self.data_manipulator.military_to_standard(lesson[1]) != "Hack" else "") + ("(Prepaid)" if (lesson[3] > 30 and lesson[4]) else "")
             lesson_frame = tk.Frame(lessons_frame, bg=m_frame_color)
             lesson_frame.pack(anchor="w", pady=2)
 
@@ -1073,6 +1073,13 @@ class App(tk.Tk):
                                      state="readonly")
         ampm_dropdown.pack(side="left", padx=5)
 
+        prepaids = {
+            "Prepaid": tk.IntVar()
+        }
+        tk.Label(main_frame, text="Prepaid:", font=(app_font, 12), bg=m_frame_color, fg=text_color).grid(row=5, column=0, padx=10,pady=5, sticky='e')
+        check_box = tk.Checkbutton(main_frame, text="", variable=prepaids["Prepaid"], bg=m_frame_color, fg=text_color,
+                                       selectcolor=m_frame_color)
+        check_box.grid(row=5, column=1, padx=10, pady=5, stick='w')
         def toggle_hack_state(*args):
             if jump_var.get() == "Hack":
                 duration_dropdown.config(state="disabled")
@@ -1101,8 +1108,8 @@ class App(tk.Tk):
                 day = day_option.get()
                 duration = int(duration_var.get()) if jump_var.get() != "Hack" else 30
                 jumper = True if jump_var.get() == "Jumping" else False
-
-                self.schedule.add_lesson(rider, day, time, duration, jumper)
+                prepaid = prepaids["Prepaid"].get()
+                self.schedule.add_lesson(rider, day, time, duration, jumper, prepaid)
                 messagebox.showinfo("Success", f"Lesson added successfully.")
                 self.file_upload_screen()
             except Exception as e:
@@ -1430,7 +1437,7 @@ class App(tk.Tk):
                                 line += 1
                                 unused_horses.append("")
                             unused_horses[line] += f"{horse.get_name()}, "
-                            
+
                     unused_horses[-1] = unused_horses[-1][:-2]
                     for line in unused_horses:
                         pdf.drawString(current_column + 40, y_position, line)
@@ -1450,10 +1457,21 @@ class App(tk.Tk):
             self.save_rider_data()
             self.save_horse_data()
             self.save_schedule_data()
-
+            self.charge_riders()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export schedule: {e}")
 
+    def charge_riders(self):
+        for rider in self.schedule.get_riders():
+            for lesson in rider.get_weekly_schedule():
+                if lesson[3] == -1:
+                    rider.add_charge(60.0)
+                elif lesson[3] <= 30:
+                    rider.add_charge(75.0)
+                elif lesson[5]:
+                    rider.add_charge(85.0)
+                else:
+                    rider.add_charge(90.0)
 
 # Application entry
 if __name__ == "__main__":

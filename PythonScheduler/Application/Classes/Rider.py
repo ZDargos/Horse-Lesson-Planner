@@ -23,6 +23,7 @@ class Rider:
         self._weekly_schedule = weekly_schedule if weekly_schedule is not None else []
         self._total_owed = total_owed
 
+
     def get_name(self):
         '''
         Gets the rider's name.
@@ -114,7 +115,7 @@ class Rider:
         '''
         return self._weekly_schedule
 
-    def add_lesson_time(self, day, time, length, jumper):
+    def add_lesson_time(self, day, time, length, jumper, prepaid=False):
         '''
         Adds a lesson time to the rider's weekly schedule.
         :param day: string representing the day of the lesson
@@ -126,7 +127,7 @@ class Rider:
         if length <= 30:
             self.add_half_hour_lesson(day, time, jumper)
         else:
-            self.add_hour_lesson(day, time, jumper)
+            self.add_hour_lesson(day, time, jumper=jumper, prepaid=prepaid)
 
     def remove_lesson_time(self, lesson_time):
         '''
@@ -137,6 +138,7 @@ class Rider:
         for i, lesson in enumerate(self._weekly_schedule):
             if lesson == lesson_time:
                 self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i + 1:]
+
                 return True
         return False
 
@@ -181,8 +183,8 @@ class Rider:
         :param jumper: boolean indicating if the lesson is a jumping lesson
         :return: None
         '''
-        self._weekly_schedule.append((day, hour, jumper))
-        self.add_charge(75.0)
+        self._weekly_schedule.append((day, hour, jumper, 30))
+        #self.add_charge(75.0)
 
     def remove_half_hour_lesson(self, day, hour, jumper=False):
         '''
@@ -193,11 +195,11 @@ class Rider:
         :return: None
         '''
         for i, lesson in enumerate(self._weekly_schedule):
-            if lesson == (day, hour, jumper):
+            if lesson == (day, hour, jumper, 30):
                 self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i + 1:]
-                self.remove_charge(75.0)
+                #self.remove_charge(75.0)
 
-    def add_hour_lesson(self, day, hour, prepaid=False, jumper=False):
+    def add_hour_lesson(self, day, hour, jumper=False, prepaid=False, ):
         '''
         Adds a 1-hour lesson to the rider's weekly schedule and charges $85 if prepaid or $90 otherwise.
         :param day: string representing the day of the lesson
@@ -206,13 +208,13 @@ class Rider:
         :param jumper: boolean indicating if the lesson is a jumping lesson
         :return: None
         '''
-        self._weekly_schedule.append((day, hour, jumper))
-        if prepaid:
-            self.add_charge(85.0)
-        else:
-            self.add_charge(90.0)
+        self._weekly_schedule.append((day, hour, jumper, 60, prepaid))
+        # if prepaid:
+        #     self.add_charge(85.0)
+        # else:
+        #     self.add_charge(90.0)
 
-    def remove_hour_lesson(self, lesson, prepaid=False):
+    def remove_hour_lesson(self, lesson):
         '''
         Removes a 1-hour lesson from the rider's weekly schedule and deducts the appropriate charge.
         :param lesson: tuple representing the lesson to be removed
@@ -222,10 +224,10 @@ class Rider:
         for i,lessonn in enumerate(self._weekly_schedule):
             if lessonn == lesson:
                 self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i+1:]
-                if prepaid:
-                    self.remove_charge(85.00)
-                else:
-                    self.remove_charge(90.00)
+                # if prepaid:
+                #     self.remove_charge(85.00)
+                # else:
+                #     self.remove_charge(90.00)
 
     def __str__(self):
         '''
