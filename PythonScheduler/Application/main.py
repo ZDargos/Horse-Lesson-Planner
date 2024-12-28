@@ -700,7 +700,7 @@ class App(tk.Tk):
         lessons_frame.grid(row=5, column=1, padx=10, pady=5, sticky="w")
 
         for lesson in lessons:
-            lesson_text = f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]}" + ((f" and {'jumping' if lesson[2] else 'not jumping'}") if self.data_manipulator.military_to_standard(lesson[1]) != "Hack" else "") + ("(Prepaid)" if (lesson[3] > 30 and lesson[4]) else "")
+            lesson_text = f"{self.data_manipulator.military_to_standard(lesson[1])} on {lesson[0]}" + ((f" and {'jumping' if lesson[2] else 'not jumping'}") if self.data_manipulator.military_to_standard(lesson[1]) != "Hack" else "") + ("(Prepaid)" if (len(lesson) > 4 and lesson[4]) else "")
             lesson_frame = tk.Frame(lessons_frame, bg=m_frame_color)
             lesson_frame.pack(anchor="w", pady=2)
 
