@@ -1605,7 +1605,7 @@ class App(tk.Tk):
                         continue
                     formatted_time = self.data_manipulator.military_to_standard(lesson_time)
                     lesson_frame = tk.Frame(lessons_frame, bg=m_frame_color)
-                    lesson_frame.pack(anchor="w", pady=10, fill="x")
+                    lesson_frame.pack(anchor="w", pady=5, fill="x")
 
                     tk.Label(lesson_frame, text=formatted_time, font=(app_font, display_font_size + 1),
                              bg=m_frame_color, fg=text_color).pack(side="left", padx=10)
@@ -1620,7 +1620,7 @@ class App(tk.Tk):
 
                         rider_label = tk.Label(rider_frame, text=f"{rider_name}", font=(app_font, display_font_size),
                                  bg=m_frame_color, fg=text_color)
-                        rider_label.pack(side="left", padx=5)
+                        rider_label.pack(side="left", padx=2)
 
                         remove_button = tk.Button(
                             rider_frame,
