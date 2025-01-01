@@ -136,11 +136,10 @@ class Rider:
         :return: boolean indicating if the lesson was successfully removed
         '''
         for i, lesson in enumerate(self._weekly_schedule):
-            if lesson == lesson_time:
+            if lesson == lesson_time or lesson[1] == lesson_time:
                 self._weekly_schedule = self._weekly_schedule[:i] + self._weekly_schedule[i + 1:]
-
                 return True
-        return False
+        raise LookupError
 
     def clear_lessons(self):
         '''

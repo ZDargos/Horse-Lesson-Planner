@@ -27,6 +27,9 @@ class Weekly_Schedule:
         self._riders = riders if riders is not None else []
         self._horses = horses if horses is not None else []
 
+    def get_planner(self):
+        return self._planner
+
     def add_rider(self, rider):
         '''
         Adds a rider to the weekly schedule.
