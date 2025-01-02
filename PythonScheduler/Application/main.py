@@ -488,7 +488,10 @@ class App(tk.Tk):
                 leaser_var = tk.StringVar(value=leaser)
                 menu = tk.OptionMenu(leaser_frame, leaser_var, *riders)
                 menu.config(font=(app_font, display_font_size - 2))
-                menu.pack(pady=2, anchor="w")
+                if leaser != horse.get_leaser().split(";")[0]:
+                    menu.pack(pady=2, anchor="w")
+                else:
+                    menu.pack(pady=0, anchor='w')
                 leaser_menus.append((leaser_var, menu))
 
 
