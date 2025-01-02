@@ -2,13 +2,6 @@
 # Date: 12/13/24
 # Description: File storing all of the functionality of the application. The usage of tkinter and culmination of the app
 
-import importlib.util
-import subprocess
-import sys
-import os
-import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog, ttk, StringVar
-
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk, StringVar
 from PIL import Image, ImageTk  # Ensure Pillow is installed
@@ -1317,6 +1310,10 @@ class App(tk.Tk):
         export_button = tk.Button(self, text="Save to PDF", command=self.export_schedule_as_pdf, font=(app_font, self.display_font_size+1), bg=accept_color, fg="black")
         export_button.pack(pady=10)
 
+        print_button = tk.Button(self, text="Print", command=self.print_schedule,
+                                  font=(app_font, self.display_font_size + 1), bg=accept_color, fg="black")
+        print_button.pack(pady=10)
+
         is_maximized = self.state() == 'zoomed'
 
         if is_maximized:
@@ -1443,16 +1440,19 @@ class App(tk.Tk):
         for rider in self.schedule.get_riders():
             print(rider)
 
-    def export_schedule_as_pdf(self):
+    def export_schedule_as_pdf(self, file_path=""):
         response = messagebox.askokcancel("Are you sure", "Rider and horse data will be updated. Are you sure you want to go with this schedule?")
         if not response:
             return 1
-        file_path = filedialog.asksaveasfilename(
-            defaultextension=".pdf",
-            filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
-        )
-        if not file_path:
-            return
+        if file_path == "":
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".pdf",
+                filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
+            )
+            if not file_path:
+                return
+        else:
+            file_path = ".data/temp_sched.pdf"
 
         try:
             pdf = canvas.Canvas(file_path, pagesize=letter)
@@ -1542,13 +1542,21 @@ class App(tk.Tk):
                 y_position -= 10
 
             pdf.save()
-            messagebox.showinfo("Success", f"Schedule exported as PDF to {file_path}")
+            if file_path != ".data/temp_sched.pdf":
+                messagebox.showinfo("Success", f"Schedule exported as PDF to {file_path}")
             self.save_rider_data()
             self.save_horse_data()
             self.save_schedule_data()
-            self.charge_riders()
+            #self.charge_riders()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export schedule: {e}")
+
+    def print_schedule(self):
+        """
+        Exports the schedule as a PDF, opens it for printing, and deletes the temporary file afterward.
+        """
+        self.export_schedule_as_pdf(".data\\temp_sched.pdf")
+        os.startfile(".data\\temp_sched.pdf")
 
     def charge_riders(self):
         for rider in self.schedule.get_riders():
