@@ -1,6 +1,6 @@
 # Author: Zack Dragos
 # Date: 12/21/24
-
+import os.path
 import pickle
 from tkinter import messagebox
 import pandas as pd
@@ -10,10 +10,10 @@ from Classes.Weekly_Schedule import *
 from Classes.Horse import *
 
 class Data_Manipulation:
-    def __init__(self, rider_file="", horse_file=""):
+    def __init__(self, rider_file="", horse_file="", options_file=""):
         self.__rider_file = rider_file
         self.__horse_file = horse_file
-
+        self.__options_file = options_file
 
     def set_rider_file(self, r_file):
         self.__rider_file = r_file
@@ -176,3 +176,18 @@ class Data_Manipulation:
         today = datetime.date.today()  # Find the most recent Sunday
         start_of_week = today - datetime.timedelta(days=today.weekday() + 1)
         return str(start_of_week)  # Get the start of the current week
+
+    def load_options(self, app):
+        if os.path.exists(self.__options_file):
+            options = open(self.__options_file, "r")
+            line = "t"
+            while line:
+                line = options.readline()
+                option = line.strip()
+                option = option.split(",")
+                if option[0] == "display_font_size":
+                    app.display_font_size = int(option[1])
+            options.close()
+    def save_options(self, app):
+        options = open(self.__options_file, 'w')
+        options.write("display_font_size," + str(app.display_font_size))
