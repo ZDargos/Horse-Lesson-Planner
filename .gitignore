@@ -1,1 +1,5 @@
 PythonScheduler/Application/.data/
+.data/
+rider_data.pkl
+horse_data.pkl
+schedules/
