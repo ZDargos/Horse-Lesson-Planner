@@ -6,10 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="5da3ae61-96ae-4e5e-a9b6-ccbc5dedbeba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Horse.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Horse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Rider.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Rider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Weekly_Schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/Classes/Weekly_Schedule.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/Analysis-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/EXE-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PKG-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PKG-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PYZ-00.pyz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/PYZ-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/base_library.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/main.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/main.pkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/warn-main.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/warn-main.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/build/main/xref-main.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/build/main/xref-main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonScheduler/Application/main.spec" beforeDir="false" afterPath="$PROJECT_DIR$/PythonScheduler/Application/main.spec" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,17 +40,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Daily_Schedule.executor": "Run",
-    "Python.Horse.executor": "Run",
-    "Python.Weekly_Schedule.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/zrdra/gitRepositories/Horse-Lesson-Planner"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Daily_Schedule.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Horse.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Weekly_Schedule.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/zrdra/gitRepositories/Horse-Lesson-Planner&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
