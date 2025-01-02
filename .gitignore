@@ -1,5 +1,3 @@
-PythonScheduler/Application/.data/
+*data.pkl
 .data/
-rider_data.pkl
-horse_data.pkl
 schedules/
